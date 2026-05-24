@@ -1,0 +1,141 @@
+#!/bin/bash
+set -euo pipefail
+
+DATA="/data"
+CACHE_DIR="$DATA/nix-cache"
+
+resolve_uid() {
+  jq -r --arg u "$1" '.[] | select(.name == $u) | .uid' /etc/users.json
+}
+
+run_as_user() {
+  local name="$1"; shift
+  local uid home user_path
+  uid=$(resolve_uid "$name")
+  home="/home/$name"
+  user_path="$home/.nix-profile/bin:$home/.local/state/nix/profiles/home-manager/home-path/bin"
+
+  setpriv --reuid="$uid" --regid="$uid" --init-groups \
+    env HOME="$home" USER="$name" PATH="$user_path:$PATH" \
+    "$@"
+}
+
+DAEMON_PIDS=()
+cleanup() {
+  for pid in "${DAEMON_PIDS[@]}"; do
+    kill "$pid" 2>/dev/null || true
+  done
+  wait
+}
+trap cleanup EXIT TERM INT
+
+# Runtime-mutable but reboot-reset nix store overlay on Fly volume.
+# /home remains persistent under /data/homes/*.
+NIX_EPHEMERAL_ROOT="$DATA/nix-ephemeral"
+NIX_UPPER="$NIX_EPHEMERAL_ROOT/upper"
+NIX_WORK="$NIX_EPHEMERAL_ROOT/work"
+rm -rf "$NIX_UPPER" "$NIX_WORK"
+mkdir -p /nix-base "$NIX_UPPER" "$NIX_WORK" "$CACHE_DIR"
+touch "$CACHE_DIR/.copy-lock"
+chmod 0666 "$CACHE_DIR/.copy-lock"
+chmod 1777 "$CACHE_DIR"
+mount --bind /nix /nix-base
+mount -t overlay overlay \
+  -o "lowerdir=/nix-base,upperdir=$NIX_UPPER,workdir=$NIX_WORK" \
+  /nix
+
+# Nix daemon
+nix-daemon &
+DAEMON_PIDS+=($!)
+while [ ! -S /nix/var/nix/daemon-socket/socket ]; do sleep 0.05; done
+
+# Per-user persistent homes and Home Manager activation
+while IFS=$'\t' read -r name uid; do
+  persist="$DATA/homes/$name"
+  home="/home/$name"
+  shared_user_dir="/opt/app/users/$name"
+  persist_nixcfg="$persist/nixcfg"
+
+  mkdir -p "$persist" "$home"
+  chown "$uid:$uid" "$persist"
+
+  # One-time seed transfer from image to persistent volume.
+  if [ ! -d "$persist_nixcfg" ] || [ -z "$(ls -A "$persist_nixcfg" 2>/dev/null)" ]; then
+    mkdir -p "$persist_nixcfg"
+    cp -R "$shared_user_dir/." "$persist_nixcfg/"
+    # nix flake refuses dirty / non-git path: refs in strict modes.
+    (cd "$persist_nixcfg" && git init -q && git add -A && \
+      git -c user.email=seed@local -c user.name=seed commit -q -m seed) || true
+  fi
+  chown -R "$uid:$uid" "$persist_nixcfg"
+  chmod -R u+rwX "$persist_nixcfg"
+
+  # Bind persistent dir onto the shared tree so relative path refs in the
+  # user's flake.nix (e.g. path:../../nix/base) resolve to /opt/app/nix/*.
+  mount --bind "$persist_nixcfg" "$shared_user_dir"
+
+  # Mount persistent home and keep ~/.nixcfg pointing at the shared tree.
+  mount --bind "$persist" "$home"
+  ln -snf "$shared_user_dir" "$home/.nixcfg"
+
+  hm_profiles="$home/.local/state/nix/profiles"
+  hm_gcroots="$home/.local/state/home-manager/gcroots"
+  activation=$(jq -r --arg u "$name" '.[$u]' /etc/home-manager-activations.json)
+
+  run_as_user "$name" mkdir -p "$hm_profiles" "$hm_gcroots"
+
+  if [ "$(jq -r '.rebuildOnBoot == true' /etc/home-manager-policy.json)" = "true" ]; then
+    if [ -n "$activation" ] && [ "$activation" != "null" ]; then
+      run_as_user "$name" "$activation/activate" 2>/dev/null || true
+    fi
+    echo "Rebuilding Home Manager from user config for $name..." >&2
+    run_as_user "$name" bash -c 'cd ~/.nixcfg && home-manager switch --flake .' \
+      || echo "Warning: Home Manager rebuild failed for $name, using image default" >&2
+  elif [ "$(jq -r '.activateOnBoot != false' /etc/home-manager-policy.json)" = "true" ] \
+    && [ -n "$activation" ] && [ "$activation" != "null" ]; then
+    run_as_user "$name" "$activation/activate" \
+      || echo "Warning: Home Manager activation failed for $name" >&2
+  fi
+done < <(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)
+
+# Application daemons
+# user: "*" = all users, ["a","b"] = listed users, "name" = single user, omitted = root
+while IFS= read -r daemon; do
+  readarray -t cmd < <(echo "$daemon" | jq -r '.command[]')
+  user_field=$(echo "$daemon" | jq -c '.user // empty')
+
+  if [ "$user_field" = '"*"' ]; then
+    while IFS=$'\t' read -r name uid; do
+      run_as_user "$name" "${cmd[@]}" &
+      DAEMON_PIDS+=($!)
+    done < <(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)
+  elif echo "$daemon" | jq -e '.user | type == "array"' >/dev/null 2>&1; then
+    while IFS= read -r name; do
+      run_as_user "$name" "${cmd[@]}" &
+      DAEMON_PIDS+=($!)
+    done < <(echo "$daemon" | jq -r '.user[]')
+  elif [ -n "$user_field" ] && [ "$user_field" != '""' ]; then
+    run_as_user "$(echo "$daemon" | jq -r '.user')" "${cmd[@]}" &
+    DAEMON_PIDS+=($!)
+  else
+    "${cmd[@]}" &
+    DAEMON_PIDS+=($!)
+  fi
+done < <(jq -c '.[]' /etc/daemons.json)
+
+# Foreground entrypoint
+ep_user=$(jq -r '.user' /etc/entrypoint.json)
+readarray -t ep_cmd < <(jq -r '.command[]' /etc/entrypoint.json)
+
+if [ "$ep_user" = "root" ]; then
+  cd /root
+  exec env HOME=/root USER=root "${ep_cmd[@]}"
+fi
+
+ep_uid=$(resolve_uid "$ep_user")
+ep_home="/home/$ep_user"
+ep_path="$ep_home/.nix-profile/bin:$ep_home/.local/state/nix/profiles/home-manager/home-path/bin"
+cd "$ep_home"
+exec setpriv --reuid="$ep_uid" --regid="$ep_uid" --init-groups \
+  env HOME="$ep_home" USER="$ep_user" PATH="$ep_path:$PATH" \
+  "${ep_cmd[@]}"
