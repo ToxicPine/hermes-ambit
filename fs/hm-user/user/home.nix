@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  sources = import ../../hm-base/npins;
+  sources = import ./npins;
 
   unstable = import sources.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
@@ -12,7 +12,7 @@ let
   hermes-agent = (flake-compat { src = sources.hermes-agent; }).defaultNix;
 in
 {
-  imports = [ ../../hm-base ];
+  imports = [ (import ../../hm-base { inherit sources; }) ];
 
   home.packages = [
     unstable.codex
@@ -35,6 +35,9 @@ in
       };
 
       model = {
+        default = "gpt-5.5";
+        provider = "openai-codex";
+        base_url = "https://chatgpt.com/backend-api/codex";
         openai_runtime = "codex_app_server";
       };
 

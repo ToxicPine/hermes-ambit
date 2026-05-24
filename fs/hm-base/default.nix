@@ -1,3 +1,4 @@
+{ sources ? import ./npins }:
 {
   config,
   lib,
@@ -6,7 +7,6 @@
 }:
 
 let
-  sources = import ./npins;
   flake-compat = import sources.flake-compat;
   hermes-agent = (flake-compat { src = sources.hermes-agent; }).defaultNix;
 in

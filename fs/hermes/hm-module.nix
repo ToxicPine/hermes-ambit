@@ -284,6 +284,13 @@ in
       file = {
         ".hermes/config.yaml".source = effectiveConfigFile;
         ".hermes/.managed".text = "";
+        # Managed-mode hermes (_ensure_hermes_home_managed) hard-requires
+        # these subdirs at startup; .keep stubs guarantee they exist on
+        # first boot before hermes touches the filesystem.
+        ".hermes/memories/.keep".text = "";
+        ".hermes/cron/.keep".text = "";
+        ".hermes/sessions/.keep".text = "";
+        ".hermes/logs/.keep".text = "";
       }
       // documentFiles
       // pluginFiles;
