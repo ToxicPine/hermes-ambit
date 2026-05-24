@@ -21,12 +21,12 @@ On your own machine, installing `ffmpeg` changes the same system the agent is al
 With Docker:
 
 ```sh
-nix build .#default
+nix-build
 docker load < result
 docker run -v hermes-data:/data -p 8080:8080 hermes-gateway:latest
 ```
 
-You can edit the default Hermes Agent settings via `hm/user/home.nix`. For Hermes Agent set-up, see `docs/HERMES.md`.
+You can edit the default Hermes Agent settings via `fs/hm-user/user/home.nix`. For Hermes Agent set-up, see `docs/HERMES.md`.
 
 If you want to deploy `hermes-ambit` on the cloud, see `DEPLOYMENT.md`.
 
@@ -41,14 +41,14 @@ If you want to deploy `hermes-ambit` on the cloud, see `DEPLOYMENT.md`.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `flake.nix` declares which users exist. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `default.nix` declares which users exist. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
 
-In `system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A daemon is a background command started before the entrypoint:
+In `system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
 
 ```nix
 {
   packages = with pkgs; [ ripgrep rsync tree ];
-  daemons = [
+  spawnables = [
     { name = "worker"; command = [ "my-worker" ]; user = "user"; }
   ];
   entrypoint = {
@@ -59,7 +59,7 @@ In `system.nix`, the entrypoint is the main command for the container. If it exi
 }
 ```
 
-In `flake.nix`, users are just named accounts with stable uids:
+In `default.nix`, users are just named accounts with stable uids:
 
 ```nix
 userConfig = {
@@ -70,7 +70,9 @@ userConfig = {
 Inside the running container, that user's config appears at `~/.nixcfg`. The agent can edit `~/.nixcfg/home.nix`, then run `rebuild` to apply it:
 
 ```nix
+{ pkgs, ... }:
 {
+  imports = [ ../../hm-base ];
   home.packages = with pkgs; [ ffmpeg jq ];
   programs.bash.shellAliases.ll = "ls -la";
   programs.hermes-agent.settings.gateway.port = 8080;
