@@ -1,9 +1,7 @@
-{ baseHomeModule, ... }:
+{ ... }:
 
 {
-  imports = [
-    baseHomeModule
-  ];
+  imports = [ ../../hm-base ];
 
   programs.hermes-agent = {
     enable = true;

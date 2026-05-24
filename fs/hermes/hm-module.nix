@@ -133,7 +133,7 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      inherit (hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}) default;
       defaultText = lib.literalExpression "hermes-agent.packages.\${system}.default";
       description = ''
         Hermes Agent package. Override to add Python deps:
@@ -272,60 +272,66 @@ in
       }
     ];
 
-    home.packages = [ cfg.package ];
+    home = {
+      packages = [ cfg.package ];
 
-    home.sessionVariables = {
-      HERMES_HOME = "${config.home.homeDirectory}/.hermes";
-      HERMES_MANAGED = "true";
-      MESSAGING_CWD = cfg.workingDirectory;
+      sessionVariables = {
+        HERMES_HOME = "${config.home.homeDirectory}/.hermes";
+        HERMES_MANAGED = "true";
+        MESSAGING_CWD = cfg.workingDirectory;
+      };
+
+      file = {
+        ".hermes/config.yaml".source = effectiveConfigFile;
+        ".hermes/.managed".text = "";
+      }
+      // documentFiles
+      // pluginFiles;
+
+      activation = {
+        # .env rendered at activation. Container-level env vars (Fly secrets)
+        # pass straight through to the hermes process via `env … hermes gateway`
+        # in lib/fs/bin/entrypoint, so most deployments leave .env empty.
+        hermesEnvFile = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          install -d -m 0700 "$HOME/.hermes"
+          (
+            umask 0177
+            {
+              :
+              ${lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (
+                  k: v: "printf '%s=%s\\n' ${lib.escapeShellArg k} ${lib.escapeShellArg v}"
+                ) cfg.environment
+              )}
+              ${lib.concatMapStringsSep "\n" (f: ''
+                if [ -f ${lib.escapeShellArg f} ]; then
+                  cat ${lib.escapeShellArg f}
+                  printf '\n'
+                fi
+              '') cfg.environmentFiles}
+            } > "$HOME/.hermes/.env"
+          )
+          chmod 0600 "$HOME/.hermes/.env"
+        '';
+
+        hermesAuth = lib.mkIf (cfg.authFile != null) (
+          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            install -d -m 0700 "$HOME/.hermes"
+            ${
+              if cfg.authFileForceOverwrite then
+                ''
+                  install -m 0600 ${cfg.authFile} "$HOME/.hermes/auth.json"
+                ''
+              else
+                ''
+                  if [ ! -f "$HOME/.hermes/auth.json" ]; then
+                    install -m 0600 ${cfg.authFile} "$HOME/.hermes/auth.json"
+                  fi
+                ''
+            }
+          ''
+        );
+      };
     };
-
-    home.file = {
-      ".hermes/config.yaml".source = effectiveConfigFile;
-      ".hermes/.managed".text = "";
-    }
-    // documentFiles
-    // pluginFiles;
-
-    # .env rendered at activation. Container-level env vars (Fly secrets)
-    # pass straight through to the hermes process via `env … hermes gateway`
-    # in lib/fs/bin/entrypoint, so most deployments leave .env empty.
-    home.activation.hermesEnvFile = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      install -d -m 0700 "$HOME/.hermes"
-      umask 0177
-      {
-        :
-        ${lib.concatStringsSep "\n" (
-          lib.mapAttrsToList (
-            k: v: "printf '%s=%s\\n' ${lib.escapeShellArg k} ${lib.escapeShellArg v}"
-          ) cfg.environment
-        )}
-        ${lib.concatMapStringsSep "\n" (f: ''
-          if [ -f ${lib.escapeShellArg f} ]; then
-            cat ${lib.escapeShellArg f}
-            printf '\n'
-          fi
-        '') cfg.environmentFiles}
-      } > "$HOME/.hermes/.env"
-      chmod 0600 "$HOME/.hermes/.env"
-    '';
-
-    home.activation.hermesAuth = lib.mkIf (cfg.authFile != null) (
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        install -d -m 0700 "$HOME/.hermes"
-        ${
-          if cfg.authFileForceOverwrite then
-            ''
-              install -m 0600 ${cfg.authFile} "$HOME/.hermes/auth.json"
-            ''
-          else
-            ''
-              if [ ! -f "$HOME/.hermes/auth.json" ]; then
-                install -m 0600 ${cfg.authFile} "$HOME/.hermes/auth.json"
-              fi
-            ''
-        }
-      ''
-    );
   };
 }

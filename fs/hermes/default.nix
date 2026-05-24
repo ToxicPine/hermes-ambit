@@ -5,7 +5,7 @@
 #
 # Consume from flake.nix:
 #   hermes = import ./fs/hermes { inherit (inputs) hermes-agent; };
-#   # ...then pass hermes.hmModule into HM via extraSpecialArgs.
+#   # ...then pass hermes.hmModule into HM via hmExtraSpecialArgs.
 
 { hermes-agent }:
 

@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-unstable,
   ...
 }:
 
@@ -16,7 +15,7 @@
     port = 8080;
   };
 
-  daemons = [ ];
+  spawnables = [ ];
 
   packages = with pkgs; [
     bzip2

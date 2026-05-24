@@ -6,7 +6,7 @@
 }:
 
 let
-  lib = pkgs.lib;
+  inherit (pkgs) lib;
   inherit (lib) types mkOption;
 
   userType = types.submodule {
@@ -16,7 +16,7 @@ let
     freeformType = types.attrsOf types.unspecified;
   };
 
-  daemonType = types.submodule {
+  spawnableType = types.submodule {
     options = {
       name = mkOption { type = types.str; };
       command = mkOption { type = types.listOf types.str; };
@@ -39,7 +39,7 @@ let
     options = {
       imageName = mkOption { type = types.str; };
       packages = mkOption { type = types.listOf types.package; };
-      daemons = mkOption { type = types.listOf daemonType; };
+      spawnables = mkOption { type = types.listOf spawnableType; };
       entrypoint = mkOption { type = entrypointType; };
     };
   };
@@ -132,7 +132,7 @@ let
 
   usersJson = pkgs.writeText "users.json" (builtins.toJSON userList);
   entrypointJson = pkgs.writeText "entrypoint.json" (builtins.toJSON cfg.system.entrypoint);
-  daemonsJson = pkgs.writeText "daemons.json" (builtins.toJSON cfg.system.daemons);
+  spawnablesJson = pkgs.writeText "spawnables.json" (builtins.toJSON cfg.system.spawnables);
 
   normalizeDest =
     dest:
@@ -171,13 +171,12 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     [
       pkgs.dockerTools.binSh
       pkgs.dockerTools.caCertificates
-      # Essentials required by lib/fs/bin/entrypoint and the boot path.
-      pkgs.bashInteractive # entrypoint shebang
-      pkgs.coreutils # cp, mkdir, chmod, chown, env, dirname, …
-      pkgs.jq # parses /etc/{users,entrypoint,daemons,home-manager-*}.json
-      pkgs.util-linux # setpriv, mount, flock
-      pkgs.nix # nix-daemon, nix copy (HM cache push)
-      pkgs.git # seed `git init` for nix flake on first boot
+      pkgs.bashInteractive
+      pkgs.util-linux
+      pkgs.coreutils
+      pkgs.nix
+      pkgs.git
+      pkgs.jq
     ]
     ++ cfg.system.packages
     ++ cfg.runtime.contents
@@ -189,7 +188,7 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     cp ${groupFile} etc/group
     cp ${usersJson} etc/users.json
     cp ${entrypointJson} etc/entrypoint.json
-    cp ${daemonsJson} etc/daemons.json
+    cp ${spawnablesJson} etc/spawnables.json
     ${installRuntimeFiles}
     ${installRuntimeTrees}
     cat > etc/nsswitch.conf <<'EOF'
@@ -226,7 +225,6 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     Env = [
       "PATH=/bin:/sbin:/usr/bin:/usr/sbin"
       "NIX_PAGER=cat"
-      "NIX_PATH=nixpkgs=flake:nixpkgs"
       "HOME=/root"
     ];
     ExposedPorts = {

@@ -36,12 +36,12 @@ If you want to deploy `hermes-ambit` on the cloud, see `DEPLOYMENT.md`.
 - The agent has a config file it can edit from inside the container: `~/.nixcfg/home.nix`. After editing it, `rebuild` applies the new tools and settings.
 - The default tools are already in the image, so the container can start without waiting for a big install step.
 - When `rebuild` finishes, its results are saved in `/data/nix-cache`. If the agent asks for the same tools again, they can be reused from that cache.
-- `homeManagerPolicy` decides what happens on startup: use the ready-cached environment, rebuild from the saved config, or leave the user environment alone.
+- `hmPolicy` decides what happens on startup: use the ready-cached environment, rebuild from the saved config, or leave the user environment alone.
 - Each agent can run as a separate Linux user with its own home directory, configuration, installed tools, and unique uid.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `flake.nix` declares which users exist. The changeable layer is per user: each user gets `fs/users/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `flake.nix` declares which users exist. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
 
 In `system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A daemon is a background command started before the entrypoint:
 

@@ -20,9 +20,9 @@ run_as_user() {
     "$@"
 }
 
-DAEMON_PIDS=()
+BG_PIDS=()
 cleanup() {
-  for pid in "${DAEMON_PIDS[@]}"; do
+  for pid in "${BG_PIDS[@]}"; do
     kill "$pid" 2>/dev/null || true
   done
   wait
@@ -46,14 +46,14 @@ mount -t overlay overlay \
 
 # Nix daemon
 nix-daemon &
-DAEMON_PIDS+=($!)
+BG_PIDS+=($!)
 while [ ! -S /nix/var/nix/daemon-socket/socket ]; do sleep 0.05; done
 
 # Per-user persistent homes and Home Manager activation
 while IFS=$'\t' read -r name uid; do
   persist="$DATA/homes/$name"
   home="/home/$name"
-  shared_user_dir="/opt/app/users/$name"
+  shared_user_dir="/opt/app/hm-user/$name"
   persist_nixcfg="$persist/nixcfg"
 
   mkdir -p "$persist" "$home"
@@ -63,20 +63,20 @@ while IFS=$'\t' read -r name uid; do
   if [ ! -d "$persist_nixcfg" ] || [ -z "$(ls -A "$persist_nixcfg" 2>/dev/null)" ]; then
     mkdir -p "$persist_nixcfg"
     cp -R "$shared_user_dir/." "$persist_nixcfg/"
-    # nix flake refuses dirty / non-git path: refs in strict modes.
-    (cd "$persist_nixcfg" && git init -q && git add -A && \
-      git -c user.email=seed@local -c user.name=seed commit -q -m seed) || true
   fi
   chown -R "$uid:$uid" "$persist_nixcfg"
   chmod -R u+rwX "$persist_nixcfg"
 
-  # Bind persistent dir onto the shared tree so relative path refs in the
-  # user's flake.nix (e.g. path:../../nix/base) resolve to /opt/app/nix/*.
+  # Bind the user's editable nixcfg into the shared /opt/app tree. The
+  # whole tree (image-layer + this bind) is one Nix flake at /opt/app,
+  # so relative refs like `imports = [ ../../hm-base ]` inside the
+  # user's home.nix resolve correctly after Nix copies /opt/app to the
+  # store.
   mount --bind "$persist_nixcfg" "$shared_user_dir"
 
-  # Mount persistent home and keep ~/.nixcfg pointing at the shared tree.
+  # Persistent home + ~/.nixcfg → /opt/app entry point.
   mount --bind "$persist" "$home"
-  ln -snf "$shared_user_dir" "$home/.nixcfg"
+  ln -snf /opt/app "$home/.nixcfg"
 
   hm_profiles="$home/.local/state/nix/profiles"
   hm_gcroots="$home/.local/state/home-manager/gcroots"
@@ -89,7 +89,7 @@ while IFS=$'\t' read -r name uid; do
       run_as_user "$name" "$activation/activate" 2>/dev/null || true
     fi
     echo "Rebuilding Home Manager from user config for $name..." >&2
-    run_as_user "$name" bash -c 'cd ~/.nixcfg && home-manager switch --flake .' \
+    run_as_user "$name" /opt/app/bin/rebuild \
       || echo "Warning: Home Manager rebuild failed for $name, using image default" >&2
   elif [ "$(jq -r '.activateOnBoot != false' /etc/home-manager-policy.json)" = "true" ] \
     && [ -n "$activation" ] && [ "$activation" != "null" ]; then
@@ -98,30 +98,30 @@ while IFS=$'\t' read -r name uid; do
   fi
 done < <(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)
 
-# Application daemons
+# Spawnables: background processes launched once at boot.
 # user: "*" = all users, ["a","b"] = listed users, "name" = single user, omitted = root
-while IFS= read -r daemon; do
-  readarray -t cmd < <(echo "$daemon" | jq -r '.command[]')
-  user_field=$(echo "$daemon" | jq -c '.user // empty')
+while IFS= read -r spawnable; do
+  readarray -t cmd < <(echo "$spawnable" | jq -r '.command[]')
+  user_field=$(echo "$spawnable" | jq -c '.user // empty')
 
   if [ "$user_field" = '"*"' ]; then
     while IFS=$'\t' read -r name uid; do
       run_as_user "$name" "${cmd[@]}" &
-      DAEMON_PIDS+=($!)
+      BG_PIDS+=($!)
     done < <(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)
-  elif echo "$daemon" | jq -e '.user | type == "array"' >/dev/null 2>&1; then
+  elif echo "$spawnable" | jq -e '.user | type == "array"' >/dev/null 2>&1; then
     while IFS= read -r name; do
       run_as_user "$name" "${cmd[@]}" &
-      DAEMON_PIDS+=($!)
-    done < <(echo "$daemon" | jq -r '.user[]')
+      BG_PIDS+=($!)
+    done < <(echo "$spawnable" | jq -r '.user[]')
   elif [ -n "$user_field" ] && [ "$user_field" != '""' ]; then
-    run_as_user "$(echo "$daemon" | jq -r '.user')" "${cmd[@]}" &
-    DAEMON_PIDS+=($!)
+    run_as_user "$(echo "$spawnable" | jq -r '.user')" "${cmd[@]}" &
+    BG_PIDS+=($!)
   else
     "${cmd[@]}" &
-    DAEMON_PIDS+=($!)
+    BG_PIDS+=($!)
   fi
-done < <(jq -c '.[]' /etc/daemons.json)
+done < <(jq -c '.[]' /etc/spawnables.json)
 
 # Foreground entrypoint
 ep_user=$(jq -r '.user' /etc/entrypoint.json)
