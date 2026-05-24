@@ -41,9 +41,9 @@ If you want to deploy `hermes-ambit` on the cloud, see `DEPLOYMENT.md`.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `sys.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `flake.nix` declares which users exist. The changeable layer is per user: each user gets `fs/users/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `flake.nix` declares which users exist. The changeable layer is per user: each user gets `fs/users/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
 
-In `sys.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A daemon is a background command started before the entrypoint:
+In `system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A daemon is a background command started before the entrypoint:
 
 ```nix
 {

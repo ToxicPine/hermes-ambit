@@ -33,7 +33,7 @@
         };
       };
 
-      systemConfig = import ./sys.nix { inherit pkgs pkgs-unstable; };
+      systemConfig = import ./system.nix { inherit pkgs pkgs-unstable; };
     in
 
     let
