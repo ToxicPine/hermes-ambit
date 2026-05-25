@@ -15,7 +15,12 @@
     port = 8080;
   };
 
-  spawnables = [ ];
+  spawnables = [
+    {
+      name = "nix-gc";
+      command = [ "/opt/app/bin/nix-gc-loop" ];
+    }
+  ];
 
   packages = with pkgs; [
     bzip2
@@ -35,6 +40,7 @@
     psmisc
     ripgrep
     rsync
+    snooze
     tree
     unzip
     which
