@@ -187,11 +187,12 @@ let
   # about the freshly-seeded paths after upgrade.
   imageClosure = pkgs.closureInfo { rootPaths = imageContents; };
   nixBase = pkgs.runCommand "nix-base" { } ''
-    mkdir -p $out/store $out/var/nix
+    : "''${out:?out must be set by runCommand}"
+    mkdir -p "$out/store" "$out/var/nix"
     while IFS= read -r p; do
       [ -n "$p" ] && cp -a "$p" "$out/store/"
     done < ${imageClosure}/store-paths
-    cp ${imageClosure}/registration $out/var/nix/db-base
+    cp ${imageClosure}/registration "$out/var/nix/db-base"
   '';
 in
 pkgs.dockerTools.buildLayeredImageWithNixDb {
