@@ -29,20 +29,12 @@ cleanup() {
 }
 trap cleanup EXIT TERM INT
 
-# Runtime-mutable but reboot-reset nix store overlay on Fly volume.
-# /home remains persistent under /data/homes/*.
-NIX_EPHEMERAL_ROOT="$DATA/nix-ephemeral"
-NIX_UPPER="$NIX_EPHEMERAL_ROOT/upper"
-NIX_WORK="$NIX_EPHEMERAL_ROOT/work"
-rm -rf "$NIX_UPPER" "$NIX_WORK"
-mkdir -p /nix-base "$NIX_UPPER" "$NIX_WORK" "$CACHE_DIR"
+mkdir -p "$CACHE_DIR" /nix/store /nix/var/nix
 touch "$CACHE_DIR/.copy-lock"
 chmod 0666 "$CACHE_DIR/.copy-lock"
 chmod 1777 "$CACHE_DIR"
-mount --bind /nix /nix-base
-mount -t overlay overlay \
-  -o "lowerdir=/nix-base,upperdir=$NIX_UPPER,workdir=$NIX_WORK" \
-  /nix
+cp -an /nix-base/store/. /nix/store/
+nix-store --load-db < /nix-base/var/nix/db-base 2>/dev/null || true
 
 # Nix daemon
 nix-daemon &
@@ -56,7 +48,7 @@ while IFS=$'\t' read -r name uid; do
   shared_user_dir="/opt/app/hm-user/$name"
   persist_nixcfg="$persist/nixcfg"
 
-  mkdir -p "$persist" "$home"
+  mkdir -p "$persist"
   chown "$uid:$uid" "$persist"
 
   # One-time seed transfer from image to persistent volume.
@@ -67,16 +59,18 @@ while IFS=$'\t' read -r name uid; do
   chown -R "$uid:$uid" "$persist_nixcfg"
   chmod -R u+rwX "$persist_nixcfg"
 
-  # Bind the user's editable nixcfg into the shared /opt/app tree. The
-  # whole tree (image-layer + this bind) is one Nix flake at /opt/app,
-  # so relative refs like `imports = [ ../../hm-base ]` inside the
-  # user's home.nix resolve correctly after Nix copies /opt/app to the
+  # Symlink the user's editable nixcfg into the shared /opt/app flake
+  # tree, so relative refs like `imports = [ ../../hm-base ]` inside
+  # the user's home.nix still resolve when Nix copies /opt/app to the
   # store.
-  mount --bind "$persist_nixcfg" "$shared_user_dir"
+  rm -rf "$shared_user_dir"
+  ln -snf "$persist_nixcfg" "$shared_user_dir"
 
-  # Persistent home + ~/.nixcfg → /opt/app entry point.
-  mount --bind "$persist" "$home"
-  ln -snf /opt/app "$home/.nixcfg"
+  # Persistent home directory + ~/.nixcfg → the user's editable nixcfg
+  # dir (so ~/.nixcfg/home.nix is the file they actually edit).
+  rm -rf "$home"
+  ln -snf "$persist" "$home"
+  ln -snf "$persist_nixcfg" "$persist/.nixcfg"
 
   hm_profiles="$home/.local/state/nix/profiles"
   hm_gcroots="$home/.local/state/home-manager/gcroots"

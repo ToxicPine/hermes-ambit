@@ -23,7 +23,7 @@ With Docker:
 ```sh
 nix-build
 docker load < result
-docker run -v hermes-data:/data -p 8080:8080 hermes-gateway:latest
+docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 hermes-gateway:latest
 ```
 
 You can edit the default Hermes Agent settings via `fs/hm-user/user/home.nix`. For Hermes Agent set-up, see `docs/HERMES.md`.

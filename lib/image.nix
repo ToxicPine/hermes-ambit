@@ -152,9 +152,9 @@ let
     '') _treesChecked
   );
 
-  installTree = src: dest: ''
+  installTree = src: dest: noClobber: ''
     mkdir -p ${dest}
-    cp -R ${src}/. ${dest}/
+    cp -R ${if noClobber then "-n " else ""}${src}/. ${dest}/
     if [ -d ${dest}/bin ]; then
       chmod 0755 ${dest}/bin
       find ${dest}/bin -type f -exec chmod 0755 {} +
@@ -162,12 +162,8 @@ let
   '';
 in
 
-pkgs.dockerTools.buildLayeredImageWithNixDb {
-  name = cfg.system.imageName;
-  tag = "latest";
-  maxLayers = 125;
-
-  contents = lib.unique (
+let
+  imageContents = lib.unique (
     [
       pkgs.dockerTools.binSh
       pkgs.dockerTools.caCertificates
@@ -181,6 +177,29 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     ++ cfg.system.packages
     ++ cfg.runtime.contents
   );
+
+  # The full closure of the image, materialized as a real directory
+  # tree at build time (outside the image's proot/fakechroot, so cp
+  # actually works). The entrypoint seeds /nix from this on every
+  # boot via `cp -an`, so image upgrades that introduce new store
+  # paths heal themselves without needing CAP_SYS_ADMIN or a manual
+  # volume reset. The included db registration lets nix-daemon learn
+  # about the freshly-seeded paths after upgrade.
+  imageClosure = pkgs.closureInfo { rootPaths = imageContents; };
+  nixBase = pkgs.runCommand "nix-base" { } ''
+    mkdir -p $out/store $out/var/nix
+    while IFS= read -r p; do
+      [ -n "$p" ] && cp -a "$p" "$out/store/"
+    done < ${imageClosure}/store-paths
+    cp ${imageClosure}/registration $out/var/nix/db-base
+  '';
+in
+pkgs.dockerTools.buildLayeredImageWithNixDb {
+  name = cfg.system.imageName;
+  tag = "latest";
+  maxLayers = 125;
+
+  contents = imageContents;
 
   fakeRootCommands = ''
     mkdir -p etc/nixcfg etc/nix
@@ -202,11 +221,14 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     substituters = file:///data/nix-cache?trusted=true https://cache.nixos.org/
     EOF
     mkdir -p nix/var/nix/daemon-socket
+    mkdir -p nix-base
+    cp -R ${nixBase}/. nix-base/
     mkdir -p usr/bin
     ln -s ${pkgs.coreutils}/bin/env usr/bin/env
+    ln -s ${appPrefix}/bin/rebuild usr/bin/rebuild
 
-    ${installTree ./fs appPrefix}
-    ${installTree ../fs appPrefix}
+    ${installTree ./fs appPrefix false}
+    ${installTree ../fs appPrefix true}
 
     ${lib.concatStringsSep "\n" (
       map (u: ''
@@ -232,6 +254,7 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     };
     Volumes = {
       "/data" = { };
+      "/nix" = { };
     };
   };
 }
