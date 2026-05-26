@@ -1,13 +1,17 @@
 {
   system ? "x86_64-linux",
-  sources ? import ./fs/hm-base/npins,
+  sources ? import ../fs/hm-base/npins,
+  app ? null,
 }:
 
 let
   pkgs = import sources.nixpkgs { inherit system; };
   home-manager = import sources.home-manager { inherit pkgs; };
 
-  systemConfig = import ./system.nix { inherit pkgs; };
+  baseSystemConfig = import ./system.nix { inherit pkgs; };
+  systemConfig = baseSystemConfig // {
+    packages = baseSystemConfig.packages ++ pkgs.lib.optional (app != null) app;
+  };
   userConfig = {
     user = {
       uid = 1000;
@@ -20,7 +24,7 @@ let
     rebuildOnBoot = false;
   };
 
-  hm = import ./lib/hm.nix {
+  hm = import ../lib/hm.nix {
     inherit
       pkgs
       home-manager
@@ -29,7 +33,7 @@ let
       ;
   };
 in
-import ./lib/image.nix {
+import ../lib/image.nix {
   inherit pkgs;
   users = userConfig;
   inherit (hm) runtime;

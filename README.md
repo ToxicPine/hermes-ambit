@@ -21,7 +21,7 @@ On your own machine, installing `ffmpeg` changes the same system the agent is al
 With Docker:
 
 ```sh
-nix-build
+nix build .#container
 docker load < result
 docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 hermes-gateway:latest
 ```
@@ -41,9 +41,9 @@ If you want to deploy `hermes-ambit` on the cloud, see `DEPLOYMENT.md`.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `default.nix` declares which users exist. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `nix/system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `nix/default.nix` declares which users exist and builds the image. The root `flake.nix` exposes `app` and `container` for `nix build`, and `app/flake.nix` keeps the app build flake-native inside the `app/` directory. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
 
-In `system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
+In `nix/system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
 
 ```nix
 {
@@ -59,7 +59,7 @@ In `system.nix`, the entrypoint is the main command for the container. If it exi
 }
 ```
 
-In `default.nix`, users are just named accounts with stable uids:
+In `nix/default.nix`, users are just named accounts with stable uids:
 
 ```nix
 userConfig = {
