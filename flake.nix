@@ -24,17 +24,19 @@
         system:
         import ./nix {
           inherit system sources;
-          main = main.packages.${system}.default;
         };
 
       mkDevShells =
         system: let pkgs = pkgsFor system; in {
           default = pkgs.mkShell {
             packages = with pkgs; [
+              bun
               nixfmt-rfc-style
               nil
+              nodejs
               npins
               ripgrep
+              typescript
             ];
           };
         };
@@ -43,6 +45,7 @@
         system: {
           default = self.packages.${system}.container;
           container = container system;
+          deployer = main.packages.${system}.default;
         };
 
     in {

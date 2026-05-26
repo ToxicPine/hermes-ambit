@@ -1,17 +1,14 @@
 {
   system ? "x86_64-linux",
   sources ? import ../fs/hm-base/npins,
-  app ? null,
 }:
 
 let
   pkgs = import sources.nixpkgs { inherit system; };
   home-manager = import sources.home-manager { inherit pkgs; };
 
-  baseSystemConfig = import ./system.nix { inherit pkgs; };
-  systemConfig = baseSystemConfig // {
-    packages = baseSystemConfig.packages ++ pkgs.lib.optional (app != null) app;
-  };
+  systemConfig = import ./system.nix { inherit pkgs; };
+
   userConfig = {
     user = {
       uid = 1000;

@@ -228,6 +228,12 @@ The TUI should feel compatible with Hermes concepts such as model, provider,
 toolsets, skills, profiles, JSON output, and readable progress. It should not try
 to reimplement the Hermes chat interface.
 
+See `TUI_PLAN.md` for the detailed CLI/TUI/JSON command surface. That plan was
+derived from the local deployer code plus upstream Hermes CLI setup/model/auth
+and profile flows, and intentionally adapts only the relevant setup and
+configuration patterns rather than copying Hermes' full chat-oriented command
+surface.
+
 ## Cloud Resource Intent
 
 The library should provision the resources needed to run the public Hermes
@@ -325,7 +331,7 @@ changes should not rebuild the Docker image.
    links.
 4. Build provider-specific GCP/Azure package surfaces over the shared library,
    including user-volume implementations for Home Manager state.
-5. Implement provider discovery and dry-run planning before mutation.
+5. Implement provider discovery and planning before mutation.
 6. Choose and implement the minimal durable file-store strategy for each
   provider.
 7. Add a `constants.ts` placeholder for the universal Docker image URL, then use
@@ -335,18 +341,3 @@ changes should not rebuild the Docker image.
 9. Add focused tests for planning, idempotency, redaction, rendering, and error
    mapping. Keep real-cloud validation manual and minimal.
 10. Update README/deployment docs once the first supported path is real.
-
-## Open Questions
-
-- What fixed universal Docker image URL should be stored in `constants.ts`?
-- Which Hermes runtime entrypoint should the deployed container run first?
-- What is the minimal Hermes config surface for v1?
-- What file-share backing should be the default for `/data` and `/nix` on each
-  provider?
-- Should the first Google path create a project by default when possible, or ask
-  explicitly before creating one?
-- Should the first Azure path always create a new resource group inside a
-  selected subscription?
-- Where should local deployment profiles live?
-- Should the TUI import an existing local Hermes profile or create a separate
-  cloud deployment profile?

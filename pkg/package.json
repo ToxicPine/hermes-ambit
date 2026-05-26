@@ -1,0 +1,24 @@
+{
+  "name": "hermes-universal-cloud",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.2.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "check": "tsc -b packages/shared packages/gcp packages/azure",
+    "generate:clients": "bun run prepare:openapi && orval --config orval.config.ts",
+    "prepare:openapi": "bun run scripts/prepare-openapi.ts",
+    "postinstall": "bun2nix -o bun.nix"
+  },
+  "devDependencies": {
+    "orval": "^7.13.0",
+    "typescript": "^5.9.0"
+  },
+  "dependencies": {
+    "effect": "^3.17.0",
+    "zod": "^4.1.0"
+  }
+}
