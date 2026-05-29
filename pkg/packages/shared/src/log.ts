@@ -1,4 +1,4 @@
-import { Context, Effect, Layer } from "effect";
+import { Context, Effect, Layer, Option } from "effect";
 
 export type CloudEvent = {
   readonly level: "debug" | "info" | "warn";
@@ -30,6 +30,17 @@ export class CloudLog extends Context.Tag("@cardelli/shared/CloudLog")<
           .filter(Boolean)
           .join(" ");
         console.error(prefix ? `${prefix}: ${event.message}` : event.message);
-      }),
+    }),
   });
 }
+
+export const emitCloudEvent = (
+  event: CloudEvent,
+): Effect.Effect<void> =>
+  Effect.gen(function* () {
+    const logger = yield* Effect.serviceOption(CloudLog);
+    return yield* Option.match(logger, {
+      onNone: () => Effect.void,
+      onSome: (log) => log.emit(event),
+    });
+  });

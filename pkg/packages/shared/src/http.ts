@@ -3,42 +3,34 @@ import { Effect } from "effect";
 import { OperationFailed } from "./errors.js";
 import type { CloudError } from "./errors.js";
 
-export type AuthorizedRequest = {
-  readonly options: RequestInit;
-};
-
 export type HttpResponse = {
   readonly status: number;
   readonly data: unknown;
   readonly headers: Headers;
 };
 
-export type HttpSuccessStatus =
-  | 200
-  | 201
-  | 202
-  | 203
-  | 204
-  | 205
-  | 206
-  | 207;
+const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+  value !== null && typeof value === "object";
 
-export type HttpSuccessResponse<A extends HttpResponse> = Extract<
-  A,
-  { readonly status: HttpSuccessStatus }
->;
-
-const isHttpSuccessResponse = <A extends HttpResponse>(
-  response: A,
-): response is HttpSuccessResponse<A> =>
-  response.status >= 200 && response.status < 300;
+const messageField = (
+  value: Readonly<Record<string, unknown>>,
+): string | undefined => {
+  const message = value.message;
+  return typeof message === "string" && message.length > 0
+    ? message
+    : undefined;
+};
 
 const httpMessage = (response: HttpResponse) => {
   const data = response.data;
-  if (data && typeof data === "object" && "message" in data) {
-    const message = data.message;
-    if (typeof message === "string" && message.length > 0) {
-      return message;
+  if (isRecord(data)) {
+    const message = messageField(data);
+    if (message) return message;
+
+    const nested = data.error;
+    if (isRecord(nested)) {
+      const nestedMessage = messageField(nested);
+      if (nestedMessage) return nestedMessage;
     }
   }
   return `HTTP ${response.status}`;
@@ -58,13 +50,53 @@ export const invokeHttp = <A>(
       }),
   });
 
-export const expectHttpSuccess = <A extends HttpResponse>(
+export const invokeJsonHttp = (
+  operation: string,
+  request: () => Promise<Response>,
+): Effect.Effect<HttpResponse, OperationFailed> =>
+  Effect.gen(function* () {
+    const response = yield* invokeHttp(operation, request);
+    const body = [204, 205, 304].includes(response.status)
+      ? ""
+      : yield* invokeHttp(operation, () => response.text());
+    const data =
+      body.length === 0
+        ? {}
+        : yield* invokeHttp(operation, () => Promise.resolve(JSON.parse(body)));
+
+    return {
+      status: response.status,
+      data,
+      headers: response.headers,
+    };
+  });
+
+const hasHttpStatus = <
+  A extends HttpResponse,
+  Status extends A["status"] & number,
+>(
+  response: A,
+  statuses: readonly Status[],
+): response is Extract<A, { readonly status: Status }> =>
+  statuses.some((status) => status === response.status);
+
+export const expectHttpStatus = <
+  A extends HttpResponse,
+  Status extends A["status"] & number,
+>(
   operation: string,
   response: A,
-): Effect.Effect<HttpSuccessResponse<A>, OperationFailed> =>
-  isHttpSuccessResponse(response)
+  statuses: readonly Status[],
+): Effect.Effect<Extract<A, { readonly status: Status }>, OperationFailed> =>
+  hasHttpStatus(response, statuses)
     ? Effect.succeed(response)
-    : failHttpResponse(operation, response);
+    : Effect.fail(
+        new OperationFailed({
+          operation,
+          message: `${httpMessage(response)}; expected ${statuses.join(" or ")}`,
+          cause: response.data,
+        }),
+      );
 
 export const failHttpResponse = (
   operation: string,
@@ -80,8 +112,8 @@ export const failHttpResponse = (
 
 export const sendAuthorizedHttp = <A extends HttpResponse>(
   operation: string,
-  request: (authorized: AuthorizedRequest) => Promise<A>,
-  authorized: Effect.Effect<AuthorizedRequest, CloudError>,
+  request: (authorized: RequestInit) => Promise<A>,
+  authorized: Effect.Effect<RequestInit, CloudError>,
 ): Effect.Effect<A, CloudError> =>
   Effect.gen(function* () {
     const requestAuth = yield* authorized;

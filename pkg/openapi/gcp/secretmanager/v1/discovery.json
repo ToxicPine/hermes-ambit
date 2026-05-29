@@ -76,7 +76,7 @@
       "location": "query"
     }
   },
-  "mtlsRootUrl": "https://secretmanager.mtls.googleapis.com/",
+  "documentationLink": "https://cloud.google.com/secret-manager/",
   "auth": {
     "oauth2": {
       "scopes": {
@@ -86,6 +86,8 @@
       }
     }
   },
+  "protocol": "rest",
+  "discoveryVersion": "v1",
   "schemas": {
     "ListLocationsResponse": {
       "id": "ListLocationsResponse",
@@ -887,279 +889,10 @@
       }
     }
   },
-  "endpoints": [
-    {
-      "endpointUrl": "https://secretmanager.me-central2.rep.googleapis.com/",
-      "location": "me-central2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.africa-south1.rep.googleapis.com/",
-      "location": "africa-south1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-east1.rep.googleapis.com/",
-      "location": "asia-east1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-east2.rep.googleapis.com/",
-      "location": "asia-east2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-northeast1.rep.googleapis.com/",
-      "location": "asia-northeast1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-northeast2.rep.googleapis.com/",
-      "location": "asia-northeast2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-northeast3.rep.googleapis.com/",
-      "location": "asia-northeast3",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-south1.rep.googleapis.com/",
-      "location": "asia-south1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-south2.rep.googleapis.com/",
-      "location": "asia-south2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-southeast1.rep.googleapis.com/",
-      "location": "asia-southeast1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-southeast2.rep.googleapis.com/",
-      "location": "asia-southeast2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.asia-southeast3.rep.googleapis.com/",
-      "location": "asia-southeast3",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.australia-southeast1.rep.googleapis.com/",
-      "location": "australia-southeast1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.australia-southeast2.rep.googleapis.com/",
-      "location": "australia-southeast2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-central2.rep.googleapis.com/",
-      "location": "europe-central2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-north1.rep.googleapis.com/",
-      "location": "europe-north1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-north2.rep.googleapis.com/",
-      "location": "europe-north2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-southwest1.rep.googleapis.com/",
-      "location": "europe-southwest1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west1.rep.googleapis.com/",
-      "location": "europe-west1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west10.rep.googleapis.com/",
-      "location": "europe-west10",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west12.rep.googleapis.com/",
-      "location": "europe-west12",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west15.rep.googleapis.com/",
-      "location": "europe-west15",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west2.rep.googleapis.com/",
-      "location": "europe-west2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west3.rep.googleapis.com/",
-      "location": "europe-west3",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west4.rep.googleapis.com/",
-      "location": "europe-west4",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west6.rep.googleapis.com/",
-      "location": "europe-west6",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west8.rep.googleapis.com/",
-      "location": "europe-west8",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.europe-west9.rep.googleapis.com/",
-      "location": "europe-west9",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.me-central1.rep.googleapis.com/",
-      "location": "me-central1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.me-west1.rep.googleapis.com/",
-      "location": "me-west1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.northamerica-northeast1.rep.googleapis.com/",
-      "location": "northamerica-northeast1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.northamerica-northeast2.rep.googleapis.com/",
-      "location": "northamerica-northeast2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.northamerica-south1.rep.googleapis.com/",
-      "location": "northamerica-south1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.southamerica-east1.rep.googleapis.com/",
-      "location": "southamerica-east1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.southamerica-west1.rep.googleapis.com/",
-      "location": "southamerica-west1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-central1.rep.googleapis.com/",
-      "location": "us-central1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-central2.rep.googleapis.com/",
-      "location": "us-central2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-east1.rep.googleapis.com/",
-      "location": "us-east1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-east4.rep.googleapis.com/",
-      "location": "us-east4",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-east5.rep.googleapis.com/",
-      "location": "us-east5",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-east7.rep.googleapis.com/",
-      "location": "us-east7",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-south1.rep.googleapis.com/",
-      "location": "us-south1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-west1.rep.googleapis.com/",
-      "location": "us-west1",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-west2.rep.googleapis.com/",
-      "location": "us-west2",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-west3.rep.googleapis.com/",
-      "location": "us-west3",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us-west4.rep.googleapis.com/",
-      "location": "us-west4",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.us.rep.googleapis.com/",
-      "location": "us",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.eu.rep.googleapis.com/",
-      "location": "eu",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.ca.rep.googleapis.com/",
-      "location": "ca",
-      "description": "Regional Endpoint"
-    },
-    {
-      "endpointUrl": "https://secretmanager.in.rep.googleapis.com/",
-      "location": "in",
-      "description": "Regional Endpoint"
-    }
-  ],
-  "ownerDomain": "google.com",
-  "documentationLink": "https://cloud.google.com/secret-manager/",
-  "revision": "20260518",
-  "baseUrl": "https://secretmanager.googleapis.com/",
-  "icons": {
-    "x16": "http://www.google.com/images/icons/product/search-16.gif",
-    "x32": "http://www.google.com/images/icons/product/search-32.gif"
-  },
-  "rootUrl": "https://secretmanager.googleapis.com/",
-  "protocol": "rest",
-  "version": "v1",
-  "title": "Secret Manager API",
-  "description": "Stores sensitive data such as API keys, passwords, and certificates. Provides convenience while improving security. ",
-  "servicePath": "",
   "version_module": true,
+  "id": "secretmanager:v1",
   "fullyEncodeReservedExpansion": true,
-  "batchPath": "batch",
-  "discoveryVersion": "v1",
-  "ownerName": "Google",
-  "basePath": "",
-  "kind": "discovery#restDescription",
+  "title": "Secret Manager API",
   "resources": {
     "projects": {
       "resources": {
@@ -2170,7 +1903,274 @@
       }
     }
   },
+  "basePath": "",
+  "icons": {
+    "x16": "http://www.google.com/images/icons/product/search-16.gif",
+    "x32": "http://www.google.com/images/icons/product/search-32.gif"
+  },
+  "revision": "20260518",
+  "baseUrl": "https://secretmanager.googleapis.com/",
+  "description": "Stores sensitive data such as API keys, passwords, and certificates. Provides convenience while improving security. ",
+  "ownerDomain": "google.com",
+  "batchPath": "batch",
+  "rootUrl": "https://secretmanager.googleapis.com/",
+  "endpoints": [
+    {
+      "endpointUrl": "https://secretmanager.me-central2.rep.googleapis.com/",
+      "location": "me-central2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.africa-south1.rep.googleapis.com/",
+      "location": "africa-south1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-east1.rep.googleapis.com/",
+      "location": "asia-east1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-east2.rep.googleapis.com/",
+      "location": "asia-east2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-northeast1.rep.googleapis.com/",
+      "location": "asia-northeast1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-northeast2.rep.googleapis.com/",
+      "location": "asia-northeast2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-northeast3.rep.googleapis.com/",
+      "location": "asia-northeast3",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-south1.rep.googleapis.com/",
+      "location": "asia-south1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-south2.rep.googleapis.com/",
+      "location": "asia-south2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-southeast1.rep.googleapis.com/",
+      "location": "asia-southeast1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-southeast2.rep.googleapis.com/",
+      "location": "asia-southeast2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.asia-southeast3.rep.googleapis.com/",
+      "location": "asia-southeast3",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.australia-southeast1.rep.googleapis.com/",
+      "location": "australia-southeast1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.australia-southeast2.rep.googleapis.com/",
+      "location": "australia-southeast2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-central2.rep.googleapis.com/",
+      "location": "europe-central2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-north1.rep.googleapis.com/",
+      "location": "europe-north1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-north2.rep.googleapis.com/",
+      "location": "europe-north2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-southwest1.rep.googleapis.com/",
+      "location": "europe-southwest1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west1.rep.googleapis.com/",
+      "location": "europe-west1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west10.rep.googleapis.com/",
+      "location": "europe-west10",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west12.rep.googleapis.com/",
+      "location": "europe-west12",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west15.rep.googleapis.com/",
+      "location": "europe-west15",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west2.rep.googleapis.com/",
+      "location": "europe-west2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west3.rep.googleapis.com/",
+      "location": "europe-west3",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west4.rep.googleapis.com/",
+      "location": "europe-west4",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west6.rep.googleapis.com/",
+      "location": "europe-west6",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west8.rep.googleapis.com/",
+      "location": "europe-west8",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.europe-west9.rep.googleapis.com/",
+      "location": "europe-west9",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.me-central1.rep.googleapis.com/",
+      "location": "me-central1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.me-west1.rep.googleapis.com/",
+      "location": "me-west1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.northamerica-northeast1.rep.googleapis.com/",
+      "location": "northamerica-northeast1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.northamerica-northeast2.rep.googleapis.com/",
+      "location": "northamerica-northeast2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.northamerica-south1.rep.googleapis.com/",
+      "location": "northamerica-south1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.southamerica-east1.rep.googleapis.com/",
+      "location": "southamerica-east1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.southamerica-west1.rep.googleapis.com/",
+      "location": "southamerica-west1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-central1.rep.googleapis.com/",
+      "location": "us-central1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-central2.rep.googleapis.com/",
+      "location": "us-central2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-east1.rep.googleapis.com/",
+      "location": "us-east1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-east4.rep.googleapis.com/",
+      "location": "us-east4",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-east5.rep.googleapis.com/",
+      "location": "us-east5",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-east7.rep.googleapis.com/",
+      "location": "us-east7",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-south1.rep.googleapis.com/",
+      "location": "us-south1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-west1.rep.googleapis.com/",
+      "location": "us-west1",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-west2.rep.googleapis.com/",
+      "location": "us-west2",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-west3.rep.googleapis.com/",
+      "location": "us-west3",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us-west4.rep.googleapis.com/",
+      "location": "us-west4",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.us.rep.googleapis.com/",
+      "location": "us",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.eu.rep.googleapis.com/",
+      "location": "eu",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.ca.rep.googleapis.com/",
+      "location": "ca",
+      "description": "Regional Endpoint"
+    },
+    {
+      "endpointUrl": "https://secretmanager.in.rep.googleapis.com/",
+      "location": "in",
+      "description": "Regional Endpoint"
+    }
+  ],
+  "ownerName": "Google",
+  "kind": "discovery#restDescription",
+  "mtlsRootUrl": "https://secretmanager.mtls.googleapis.com/",
+  "version": "v1",
   "canonicalName": "Secret Manager",
-  "name": "secretmanager",
-  "id": "secretmanager:v1"
+  "servicePath": "",
+  "name": "secretmanager"
 }

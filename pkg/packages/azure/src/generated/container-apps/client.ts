@@ -47,7 +47,7 @@ export type containerAppsListBySubscriptionResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type containerAppsListBySubscriptionResponseSuccess = (containerAppsListBySubscriptionResponse200) & {
   headers: Headers;
 };
@@ -62,7 +62,7 @@ export const getContainerAppsListBySubscriptionUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -75,18 +75,18 @@ export const getContainerAppsListBySubscriptionUrl = (subscriptionId: string,
 
 export const containerAppsListBySubscription = async (subscriptionId: string,
     params: ContainerAppsListBySubscriptionParams, options?: RequestInit): Promise<containerAppsListBySubscriptionResponse> => {
-  
+
   const res = await fetch(getContainerAppsListBySubscriptionUrl(subscriptionId,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsListBySubscriptionResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsListBySubscriptionResponse
 }
@@ -105,7 +105,7 @@ export type containerAppsListByResourceGroupResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type containerAppsListByResourceGroupResponseSuccess = (containerAppsListByResourceGroupResponse200) & {
   headers: Headers;
 };
@@ -121,7 +121,7 @@ export const getContainerAppsListByResourceGroupUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -135,18 +135,18 @@ export const getContainerAppsListByResourceGroupUrl = (subscriptionId: string,
 export const containerAppsListByResourceGroup = async (subscriptionId: string,
     resourceGroupName: string,
     params: ContainerAppsListByResourceGroupParams, options?: RequestInit): Promise<containerAppsListByResourceGroupResponse> => {
-  
+
   const res = await fetch(getContainerAppsListByResourceGroupUrl(subscriptionId,resourceGroupName,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsListByResourceGroupResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsListByResourceGroupResponse
 }
@@ -170,7 +170,7 @@ export type containerAppsGetResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 404>
 }
-    
+
 export type containerAppsGetResponseSuccess = (containerAppsGetResponse200) & {
   headers: Headers;
 };
@@ -187,7 +187,7 @@ export const getContainerAppsGetUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -202,18 +202,18 @@ export const containerAppsGet = async (subscriptionId: string,
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsGetParams, options?: RequestInit): Promise<containerAppsGetResponse> => {
-  
+
   const res = await fetch(getContainerAppsGetUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsGetResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsGetResponse
 }
@@ -238,7 +238,7 @@ export type containerAppsCreateOrUpdateResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 201>
 }
-    
+
 export type containerAppsCreateOrUpdateResponseSuccess = (containerAppsCreateOrUpdateResponse200 | containerAppsCreateOrUpdateResponse201) & {
   headers: Headers;
 };
@@ -255,7 +255,7 @@ export const getContainerAppsCreateOrUpdateUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -271,9 +271,9 @@ export const containerAppsCreateOrUpdate = async (subscriptionId: string,
     containerAppName: string,
     containerApp: ContainerApp,
     params: ContainerAppsCreateOrUpdateParams, options?: RequestInit): Promise<containerAppsCreateOrUpdateResponse> => {
-  
+
   const res = await fetch(getContainerAppsCreateOrUpdateUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -283,7 +283,7 @@ export const containerAppsCreateOrUpdate = async (subscriptionId: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsCreateOrUpdateResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsCreateOrUpdateResponse
 }
@@ -313,7 +313,7 @@ export type containerAppsDeleteResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 202 | 204>
 }
-    
+
 export type containerAppsDeleteResponseSuccess = (containerAppsDeleteResponse200 | containerAppsDeleteResponse202 | containerAppsDeleteResponse204) & {
   headers: Headers;
 };
@@ -330,7 +330,7 @@ export const getContainerAppsDeleteUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -345,18 +345,18 @@ export const containerAppsDelete = async (subscriptionId: string,
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsDeleteParams, options?: RequestInit): Promise<containerAppsDeleteResponse> => {
-  
+
   const res = await fetch(getContainerAppsDeleteUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'DELETE'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsDeleteResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsDeleteResponse
 }
@@ -381,7 +381,7 @@ export type containerAppsUpdateResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 202>
 }
-    
+
 export type containerAppsUpdateResponseSuccess = (containerAppsUpdateResponse200 | containerAppsUpdateResponse202) & {
   headers: Headers;
 };
@@ -398,7 +398,7 @@ export const getContainerAppsUpdateUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -414,9 +414,9 @@ export const containerAppsUpdate = async (subscriptionId: string,
     containerAppName: string,
     containerApp: ContainerApp,
     params: ContainerAppsUpdateParams, options?: RequestInit): Promise<containerAppsUpdateResponse> => {
-  
+
   const res = await fetch(getContainerAppsUpdateUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -426,7 +426,7 @@ export const containerAppsUpdate = async (subscriptionId: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsUpdateResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsUpdateResponse
 }
@@ -445,7 +445,7 @@ export type containerAppsListCustomHostNameAnalysisResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type containerAppsListCustomHostNameAnalysisResponseSuccess = (containerAppsListCustomHostNameAnalysisResponse200) & {
   headers: Headers;
 };
@@ -462,7 +462,7 @@ export const getContainerAppsListCustomHostNameAnalysisUrl = (subscriptionId: st
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -477,18 +477,18 @@ export const containerAppsListCustomHostNameAnalysis = async (subscriptionId: st
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsListCustomHostNameAnalysisParams, options?: RequestInit): Promise<containerAppsListCustomHostNameAnalysisResponse> => {
-  
+
   const res = await fetch(getContainerAppsListCustomHostNameAnalysisUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'POST'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsListCustomHostNameAnalysisResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsListCustomHostNameAnalysisResponse
 }
@@ -507,7 +507,7 @@ export type containerAppsListSecretsResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type containerAppsListSecretsResponseSuccess = (containerAppsListSecretsResponse200) & {
   headers: Headers;
 };
@@ -524,7 +524,7 @@ export const getContainerAppsListSecretsUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -539,18 +539,18 @@ export const containerAppsListSecrets = async (subscriptionId: string,
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsListSecretsParams, options?: RequestInit): Promise<containerAppsListSecretsResponse> => {
-  
+
   const res = await fetch(getContainerAppsListSecretsUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'POST'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsListSecretsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsListSecretsResponse
 }
@@ -574,7 +574,7 @@ export type containerAppsGetAuthTokenResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 404>
 }
-    
+
 export type containerAppsGetAuthTokenResponseSuccess = (containerAppsGetAuthTokenResponse200) & {
   headers: Headers;
 };
@@ -591,7 +591,7 @@ export const getContainerAppsGetAuthTokenUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -606,18 +606,18 @@ export const containerAppsGetAuthToken = async (subscriptionId: string,
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsGetAuthTokenParams, options?: RequestInit): Promise<containerAppsGetAuthTokenResponse> => {
-  
+
   const res = await fetch(getContainerAppsGetAuthTokenUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'POST'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsGetAuthTokenResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsGetAuthTokenResponse
 }
@@ -641,7 +641,7 @@ export type containerAppsStartResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 202>
 }
-    
+
 export type containerAppsStartResponseSuccess = (containerAppsStartResponse200 | containerAppsStartResponse202) & {
   headers: Headers;
 };
@@ -658,7 +658,7 @@ export const getContainerAppsStartUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -673,18 +673,18 @@ export const containerAppsStart = async (subscriptionId: string,
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsStartParams, options?: RequestInit): Promise<containerAppsStartResponse> => {
-  
+
   const res = await fetch(getContainerAppsStartUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'POST'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsStartResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsStartResponse
 }
@@ -708,7 +708,7 @@ export type containerAppsStopResponseDefault = {
   data: ErrorResponse
   status: Exclude<HTTPStatusCodes, 200 | 202>
 }
-    
+
 export type containerAppsStopResponseSuccess = (containerAppsStopResponse200 | containerAppsStopResponse202) & {
   headers: Headers;
 };
@@ -725,7 +725,7 @@ export const getContainerAppsStopUrl = (subscriptionId: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -740,21 +740,18 @@ export const containerAppsStop = async (subscriptionId: string,
     resourceGroupName: string,
     containerAppName: string,
     params: ContainerAppsStopParams, options?: RequestInit): Promise<containerAppsStopResponse> => {
-  
+
   const res = await fetch(getContainerAppsStopUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {      
+  {
     ...options,
     method: 'POST'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: containerAppsStopResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as containerAppsStopResponse
 }
-
-
-

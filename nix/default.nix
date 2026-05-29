@@ -18,7 +18,7 @@ let
   hmPolicy = {
     buildProfiles = true;
     activateOnBoot = true;
-    rebuildOnBoot = false;
+    rebuildOnBoot = true;
   };
 
   hm = import ../lib/hm.nix {

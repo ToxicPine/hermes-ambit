@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
     systems.url = "github:nix-systems/default";
 
     bun2nix.url = "github:nix-community/bun2nix?ref=2.1.0";
@@ -31,33 +30,9 @@
       );
     in
     {
-      packages = eachSystem (
-        system:
-        let
-          pkgs = pkgsFor.${system};
-        in
-        {
-          default = pkgs.bun2nix.writeBunApplication {
-            packageJson = ./package.json;
-            src = ./.;
-
-            dontUseBunBuild = true;
-            dontUseBunCheck = false;
-
-            buildPhase = ''
-              bun run check
-            '';
-
-            startScript = ''
-              bun run check "$@"
-            '';
-
-            bunDeps = pkgs.bun2nix.fetchBunDeps {
-              bunNix = ./bun.nix;
-            };
-          };
-        }
-      );
+      packages = eachSystem (system: {
+        default = pkgsFor.${system}.callPackage ./default.nix { };
+      });
 
       devShells = eachSystem (system: {
         default = pkgsFor.${system}.mkShell {

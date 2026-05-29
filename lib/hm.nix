@@ -49,6 +49,7 @@ let
       extraSpecialArgs = hmExtraSpecialArgs;
       modules = [
         ../fs/hm-user/${name}/home.nix
+        ../fs/hm-user/${name}/managed.nix
         {
           home.username = name;
           home.homeDirectory = "/home/${name}";

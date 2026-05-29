@@ -2,29 +2,28 @@
 
 let
   sources = import ./npins;
-
-  unstable = import sources.nixpkgs-unstable {
+  pkgsUnstable = import sources.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
   };
-
-  flake-compat = import sources.flake-compat;
-  hermes-agent = (flake-compat { src = sources.hermes-agent; }).defaultNix;
 in
 {
   imports = [ (import ../../hm-base { inherit sources; }) ];
 
-  home.packages = [
-    unstable.codex
-  ];
+  home.packages = [ pkgsUnstable.codex ];
 
   programs.hermes-agent = {
     enable = true;
 
-    package = hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-      extraDependencyGroups = [
+    packageOverrides = {
+      ffmpeg = pkgs.ffmpeg-headless;
+      dependencyGroups = [
+        "cli"
+        "pty"
+        "mcp"
+        "acp"
+        "web"
         "messaging"
-        "voice"
       ];
     };
 
@@ -38,12 +37,7 @@ in
         default = "gpt-5.5";
         provider = "openai-codex";
         base_url = "https://chatgpt.com/backend-api/codex";
-        openai_runtime = "codex_app_server";
-      };
-
-      stt = {
-        provider = "local";
-        local.model = "base";
+        openai_runtime = "auto";
       };
 
       approvals.mode = "off";

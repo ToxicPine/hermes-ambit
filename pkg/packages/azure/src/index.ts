@@ -1,11 +1,31 @@
+export type { AzureAccessToken, AzureAuthContext } from "./client.js";
+export { makeAzureDeployer } from "./deployer.js";
 export type {
-  HomeManagerUpdate,
-} from "@cardelli/shared";
-
-export * from "./client.js";
-export * from "./container-apps.js";
-export * from "./deployment.js";
-export * from "./secrets.js";
-export * as containerApps from "./generated/container-apps/client";
-export * as containerAppsZod from "./generated/container-apps/client/containerAppsAPIClient.zod";
-export type * from "./generated/container-apps/model/index";
+  AzureBoundary,
+  AzureDeployer,
+  AzureDeployPreview,
+  AzureDeployment,
+  AzureDeploymentRef,
+  AzureDiscoveredDeployment,
+  AzureFileState,
+  AzureResourceGroupRef,
+  AzureStatus,
+  AzureSubscriptionRef,
+} from "./deployment-types.js";
+export {
+  purgeAzureDeploymentState,
+  readAzureHomeManagerConfig,
+  updateAzureHomeManager,
+} from "./home-manager.js";
+export {
+  listAzureFoundryOpenAICompatibleModels,
+} from "./models.js";
+export type {
+  AzureFoundryOpenAICompatibleAuthContext,
+  AzureFoundryOpenAICompatibleModels,
+} from "./models.js";
+export {
+  deleteAzureRuntimeSecret,
+  listAzureRuntimeSecrets,
+  putAzureRuntimeSecret,
+} from "./runtime-secrets.js";

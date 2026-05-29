@@ -71,8 +71,7 @@ should live in `pkg/` and remain separate from the runtime image build.
 Current shape to respect:
 
 - Root `flake.nix` currently points at `path:./pkg`.
-- `pkg/` is a placeholder shell app today; it should become the Bun workspace
-  for the local deployer tools.
+- `pkg/` is the Bun workspace for the local deployer tools.
 - `nix/default.nix` accepts an `app` only for packages intentionally included in
   the runtime image. The deployer packages should not be threaded into that
   image path.
@@ -118,8 +117,10 @@ The packaging work should:
 
 - Convert `pkg/` into a Bun workspace.
 - Generate and commit the bun2nix output from the Bun lockfile.
-- Expose local provider binaries from the GCP and Azure packages, and keep the
-  OpenTUI app in the public TUI package.
+- Expose local provider-scoped binaries alongside the main OpenTUI executable
+  from the public TUI package, while keeping provider mechanics in the GCP and
+  Azure packages. This avoids making provider packages depend back on the TUI
+  command/profile/auth layer or duplicating the command grammar.
 - Keep deployer outputs separate from Docker image contents.
 - Keep the root/container flake outputs clear: one path builds the Hermes image,
   another path builds the local deployer tools. The deployer tools should refer
@@ -196,9 +197,11 @@ There should be public provider packages and a public TUI package:
 - `@cardelli/azure`
 - `@cardelli/tui`
 
-The GCP and Azure packages should expose provider-specific deployment mechanics
-and small scriptable CLIs. The TUI package should compose either provider
-implementation and be the primary path for uninitiated users.
+The GCP and Azure packages should expose provider-specific deployment mechanics.
+The TUI package should compose either provider implementation, own the local
+command/profile/auth layer, and expose the main executable plus provider-scoped
+scriptable binaries for advanced automation. This keeps one command grammar and
+JSON envelope instead of adding provider-package CLI forks.
 
 The TUI should use OpenTUI's SolidJS integration (`@opentui/solid`) and be built
 as a normal component-driven app, not a custom terminal framework.
@@ -209,7 +212,6 @@ The provider packages own:
 - Provider-specific deployment orchestration over the shared library.
 - Provider-specific user-volume mutation implementation for the mounted Hermes
   Home Manager state.
-- Scriptable commands useful for automation.
 
 The TUI owns:
 
@@ -220,7 +222,7 @@ The TUI owns:
 - Secret collection and update flows.
 - Calling the shared Home Manager reconciliation utility through the selected
   provider implementation.
-- Plan previews and confirmation.
+- Deploy/restart/destroy mutation previews and confirmation.
 - Progress/status rendering with operation IDs and resource refs where useful.
 - Destruction flows and retention choices.
 
@@ -252,24 +254,27 @@ At a high level:
 - Secrets/config should go through provider-managed secret/config surfaces.
 - Durable state should use an idiomatic mounted file share that behaves like a
   disk from the container's perspective.
-- The plan output should clearly explain what will be created, reused, updated,
-  retained, or destroyed.
+- The internal preview shown by deploy/restart/destroy should clearly explain
+  what will be created, reused, updated, retained, or destroyed. This is not a
+  separate public `plan` command.
 - Repeated runs with the same deployment identity should converge on the same
   provider resources. If an expected resource is missing, the library should try
   to create it. If creation is blocked by permissions, billing, provider setup,
   or a manual console step, the error should include the remediation URL rather
   than silently switching to a different resource.
 
-Avoid hardcoding speculative cloud-case taxonomies in the plan. During
+Avoid hardcoding speculative cloud-case taxonomies in the planning model. During
 implementation, use provider APIs and docs to determine the exact capabilities,
 resource shapes, and error variants.
 
 ## Hermes Configuration Surface
 
 The TUI should determine the configuration surface provider by provider. Google
-Vertex/Gemini and Azure AI/Azure OpenAI do not expose the same model catalog,
+Vertex/Gemini and Azure Foundry do not expose the same model catalog,
 parameters, auth shape, or deployment assumptions, so the TUI should render
-provider-specific forms backed by provider discovery.
+provider-specific forms backed by provider discovery. Azure's OpenAI-compatible
+routes should be treated as one Foundry route family, not as proof that every
+supported Azure-hosted model is an OpenAI model.
 
 For v1, those provider-specific forms should assume the model provider matches
 the deployment provider. The TUI should not present a generic cross-cloud model
@@ -284,19 +289,22 @@ flow through the container's existing Home Manager model rather than through a
 second ad hoc config system. The image already seeds a per-user
 `~/.nixcfg/home.nix` into persistent `/data/homes/<user>/nixcfg` on first boot,
 symlinks that persistent config back into `/opt/app/hm-user/<user>`, and uses
-`/opt/app/bin/rebuild` to activate Home Manager from the persistent user config.
+`/opt/app/bin/refresh-system` to activate Home Manager from the persistent user config.
 
 The likely desired model is:
 
-- Put stable Hermes defaults in `hm-base`.
-- Keep deployment/user-specific overrides in the persistent user Home Manager
-  config.
+- Put stable Hermes defaults and the managed patch import point in `hm-base`,
+  which every user Home Manager config inherits.
+- Keep deployment/user-specific overrides in the persistent user nixcfg as
+  `managed.nix`; the image-time and runtime Home Manager evaluators always
+  include that fixed managed module, so update tools do not rewrite a user's
+  `home.nix` imports.
 - Let the provider libraries expose a common user-volume capability for reading
   and mutating that persistent config, even though the underlying storage
   mechanics differ by cloud.
 - Let a shared Home Manager reconciliation utility use that capability to read
-  the current desired Hermes options, apply provider-specific changes, and write
-  the updated desired state back, given some implementation of the user-volume 
+  the current managed patch, apply provider-specific changes, and write the
+  updated desired state back, given some implementation of the user-volume
   capability.
 - Let the TUI call the shared reconciliation utility as needed, without knowing
   whether the backing implementation is GCP or Azure.
@@ -308,18 +316,19 @@ Config and secret updates should follow this cycle:
 1. The TUI validates provider-specific model/runtime inputs.
 2. The library updates provider-managed secrets for sensitive values.
 3. The shared reconciliation utility updates non-secret Hermes desired state and
-   secret references in the persistent Home Manager config through the selected
-   provider's user-volume implementation.
+   secret references in the fixed `managed.nix` module through the
+   selected provider's user-volume implementation.
 4. The runtime is restarted or rolled so boot/activation sees the new persistent
    config. If live in-container reconciliation becomes necessary later, use the
-   existing `rebuild` path rather than inventing a separate config mechanism.
+   existing `refresh-system` path rather than inventing a separate config mechanism.
 5. Status reports the active image, config generation/hash, revision/restart
    result, and any provider operation IDs.
 
-The plan should verify whether reboot/revision-roll is enough for the first
-version or whether the cloud runtime needs an explicit management hook to run
-`rebuild` before restarting Hermes. Either way, normal user configuration
-changes should not rebuild the Docker image.
+For the first version, container boot rebuilds Home Manager from the persistent
+user config, so a runtime restart/revision roll is enough to apply provider-
+written config without rebuilding the Docker image. If live in-container
+reconciliation becomes necessary later, it should call the same `refresh-system` path
+rather than adding a separate config mechanism.
 
 ## Implementation Sequence
 

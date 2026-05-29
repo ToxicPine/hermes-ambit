@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@cardelli/shared": "workspace:*",
-    "effect": "^3.17.0"
+    "effect": "^3.17.0",
+    "zod": "^4.1.0"
   },
   "devDependencies": {
     "typescript": "^5.9.0"

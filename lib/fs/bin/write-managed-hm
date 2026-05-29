@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+command_name="write-managed-hm"
+user="${HERMES_AMBIT_USER:?HERMES_AMBIT_USER must be set}"
+reset=0
+original_args=("$@")
+
+usage() {
+  cat >&2 <<EOF
+Usage: ${command_name} [--reset]
+
+Write the current user's managed Home Manager module.
+EOF
+}
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+  --reset)
+    reset=1
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+  esac
+  shift
+done
+
+if [[ "${HERMES_AMBIT_WRITE_MANAGED_USER_MODE:-}" != "1" ]]; then
+  uid="$(jq -r --arg u "${user}" '.[] | select(.name == $u) | .uid' /etc/users.json)"
+  if [[ -z "${uid}" ]] || [[ "${uid}" = "null" ]]; then
+    echo "${command_name}: unknown user ${user}" >&2
+    exit 1
+  fi
+
+  exec setpriv --reuid="${uid}" --regid="${uid}" --init-groups \
+    env HOME="/data/homes/${user}" USER="${user}" PATH="${PATH}" HERMES_AMBIT_USER="${user}" \
+    HERMES_AMBIT_WRITE_MANAGED_USER_MODE=1 "$0" "${original_args[@]}"
+fi
+
+nixcfg="/data/homes/${user}/nixcfg"
+managed_file="${nixcfg}/managed.nix"
+empty_module='{ ... }:
+{
+}
+'
+
+mkdir -p "${nixcfg}"
+
+if [[ "${reset}" = "1" ]]; then
+  printf '%s' "${empty_module}" >"${managed_file}"
+  exit 0
+fi
+
+block_b64="${HERMES_AMBIT_MANAGED_BLOCK_B64:?HERMES_AMBIT_MANAGED_BLOCK_B64 must be set}"
+marker_start="${HERMES_AMBIT_MARKER_START:?HERMES_AMBIT_MARKER_START must be set}"
+marker_end="${HERMES_AMBIT_MARKER_END:?HERMES_AMBIT_MARKER_END must be set}"
+
+block_file="$(mktemp)"
+managed_tmp="$(mktemp)"
+paths_file="$(mktemp)"
+trap 'rm -f "$block_file" "$managed_tmp" "$paths_file"' EXIT
+
+printf '%s' "${block_b64}" | base64 -d >"${block_file}"
+
+awk '
+  {
+    line = $0
+    sub(/^[[:space:]]+/, "", line)
+    if (line ~ /^[A-Za-z0-9_.-]+[[:space:]]*=/) {
+      sub(/[[:space:]]*=.*/, "", line)
+      print line
+    }
+  }
+' "${block_file}" | sort -u >"${paths_file}"
+
+if [[ ! -f "${managed_file}" ]]; then
+  printf '%s' "${empty_module}" >"${managed_file}"
+fi
+
+replace_managed_block() {
+  awk -v start="${marker_start}" -v end="${marker_end}" -v block_file="${block_file}" '
+    function printBlock() {
+      while ((getline line < block_file) > 0) {
+        print line
+      }
+      close(block_file)
+    }
+    $0 == start {
+      if (inBlock) {
+        exit 71
+      }
+      printBlock()
+      inBlock = 1
+      replaced = 1
+      next
+    }
+    inBlock && $0 == end {
+      inBlock = 0
+      next
+    }
+    !inBlock {
+      print
+    }
+    END {
+      if (inBlock) {
+        exit 72
+      }
+      if (!replaced) {
+        exit 42
+      }
+    }
+  ' "${managed_file}" >"${managed_tmp}"
+}
+
+append_managed_block() {
+  awk -v block_file="${block_file}" '
+    { lines[NR] = $0 }
+    END {
+      insertAt = 0
+      for (i = NR; i >= 1; i--) {
+        if (lines[i] ~ /^[[:space:]]*}[[:space:]]*$/) {
+          insertAt = i
+          break
+        }
+      }
+      if (insertAt == 0) {
+        exit 73
+      }
+      for (i = 1; i < insertAt; i++) {
+        print lines[i]
+      }
+      print ""
+      while ((getline line < block_file) > 0) {
+        print line
+      }
+      for (i = insertAt; i <= NR; i++) {
+        print lines[i]
+      }
+    }
+  ' "${managed_file}" >"${managed_tmp}" || {
+    echo "${command_name}: managed Home Manager module is not an attrset" >&2
+    exit 1
+  }
+}
+
+remove_assigned_paths() {
+  if [[ ! -s "${paths_file}" ]]; then
+    return
+  fi
+
+  awk '
+    FNR == NR {
+      paths[$0] = 1
+      next
+    }
+    {
+      line = $0
+      sub(/^[[:space:]]+/, "", line)
+      if (line ~ /^[A-Za-z0-9_.-]+[[:space:]]*=/) {
+        path = line
+        sub(/[[:space:]]*=.*/, "", path)
+        if (path in paths) {
+          next
+        }
+      }
+      print
+    }
+  ' "${paths_file}" "${managed_file}" >"${managed_tmp}"
+
+  mv "${managed_tmp}" "${managed_file}"
+}
+
+remove_assigned_paths
+
+set +e
+replace_managed_block
+status=$?
+set -e
+
+if [[ "${status}" -eq 0 ]]; then
+  mv "${managed_tmp}" "${managed_file}"
+else
+  if [[ "${status}" -eq 42 ]]; then
+    append_managed_block
+    mv "${managed_tmp}" "${managed_file}"
+  else
+    echo "${command_name}: managed marker block is malformed" >&2
+    exit 1
+  fi
+fi

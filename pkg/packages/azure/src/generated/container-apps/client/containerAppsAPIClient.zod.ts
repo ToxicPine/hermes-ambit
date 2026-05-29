@@ -331,5 +331,3 @@ export const containerAppsStopQueryParams = zod.object({
 export const containerAppsStop200Response = zod.unknown().describe('Container App.')
 
 export const containerAppsStopDefaultResponse = zod.unknown()
-
-

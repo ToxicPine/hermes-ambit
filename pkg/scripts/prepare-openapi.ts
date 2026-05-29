@@ -2,6 +2,8 @@ const azureSpecsRev = "03635f9c9be65a2d2ca84f07b187173660d541e3";
 const gcpRunDiscoveryUrl = "https://run.googleapis.com/$discovery/rest?version=v2";
 const gcpSecretManagerDiscoveryUrl =
   "https://secretmanager.googleapis.com/$discovery/rest?version=v1";
+const gcpAiplatformDiscoveryUrl =
+  "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1";
 
 const containerAppsPath =
   "specification/app/resource-manager/Microsoft.App/ContainerApps/stable/2025-07-01";
@@ -24,12 +26,22 @@ const containerAppExamples = [
   "ContainerApps_Start.json",
   "ContainerApps_Stop.json",
   "ContainerApps_TcpApp_CreateOrUpdate.json",
-] as const;
+  "ManagedEnvironmentsStorages_CreateOrUpdate.json",
+  "ManagedEnvironmentsStorages_CreateOrUpdate_NfsAzureFile.json",
+  "ManagedEnvironmentsStorages_Delete.json",
+  "ManagedEnvironmentsStorages_Get.json",
+  "ManagedEnvironmentsStorages_Get_NfsAzureFile.json",
+  "ManagedEnvironmentsStorages_List.json",
+];
 
 const specs = [
   {
     source: `${containerAppsPath}/ContainerApps.json`,
     output: `openapi/azure/${containerAppsPath}/ContainerApps.json`,
+  },
+  {
+    source: `${containerAppsPath}/ManagedEnvironmentsStorages.json`,
+    output: `openapi/azure/${containerAppsPath}/ManagedEnvironmentsStorages.json`,
   },
   {
     source: `${containerAppsPath}/CommonDefinitions.json`,
@@ -48,7 +60,7 @@ const specs = [
     source: "specification/common-types/resource-management/v5/types.json",
     output: "openapi/azure/specification/common-types/resource-management/v5/types.json",
   },
-] as const;
+];
 
 for (const spec of specs) {
   const response = await fetch(`${azureSpecsBase}/${spec.source}`);
@@ -250,10 +262,22 @@ const openApiOperation = (method: DiscoveryMethod, errorSchemaName: string) => {
   };
 };
 
+const gcpRunJobMethodIds = new Set([
+  "run.projects.locations.jobs.create",
+  "run.projects.locations.jobs.delete",
+  "run.projects.locations.jobs.get",
+  "run.projects.locations.jobs.list",
+  "run.projects.locations.jobs.patch",
+  "run.projects.locations.jobs.run",
+]);
+
 const shouldGenerateGcpRunMethod = (method: DiscoveryMethod) =>
   method.id.startsWith("run.projects.locations.operations.") ||
   (method.id.startsWith("run.projects.locations.services.") &&
     !method.id.startsWith("run.projects.locations.services.revisions."));
+
+const shouldGenerateGcpRunJobMethod = (method: DiscoveryMethod) =>
+  gcpRunJobMethodIds.has(method.id);
 
 const shouldGenerateGcpSecretManagerMethod = (method: DiscoveryMethod) =>
   method.id === "secretmanager.projects.secrets.create" ||
@@ -261,6 +285,9 @@ const shouldGenerateGcpSecretManagerMethod = (method: DiscoveryMethod) =>
   method.id === "secretmanager.projects.secrets.delete" ||
   method.id === "secretmanager.projects.secrets.list" ||
   method.id === "secretmanager.projects.secrets.versions.access";
+
+const shouldGenerateGcpAiplatformMethod = (method: DiscoveryMethod) =>
+  method.id === "aiplatform.publishers.models.list";
 
 const schemaRefs = (schema: DiscoverySchema | undefined, refs: Set<string>) => {
   if (!schema) {
@@ -329,7 +356,7 @@ const transitiveSchemas = (
 
 const collectMethods = (
   resource: DiscoveryResource,
-  paths: Record<string, unknown>,
+  paths: Record<string, Record<string, unknown>>,
   refs: Set<string>,
   shouldGenerate: (method: DiscoveryMethod) => boolean,
   errorSchemaName: string,
@@ -340,7 +367,7 @@ const collectMethods = (
     }
 
     const path = openApiPath(method.path);
-    const pathItem = (paths[path] ?? {}) as Record<string, unknown>;
+    const pathItem = paths[path] ?? {};
     pathItem[method.httpMethod.toLowerCase()] = openApiOperation(
       method,
       errorSchemaName,
@@ -368,7 +395,7 @@ const discoveryToOpenApi = (
   discovery: DiscoveryDocument,
   shouldGenerate: (method: DiscoveryMethod) => boolean,
 ) => {
-  const paths: Record<string, unknown> = {};
+  const paths: Record<string, Record<string, unknown>> = {};
   const refs = new Set<string>();
   const errorSchemaName = discoveryErrorSchemaName(discovery);
   refs.add(errorSchemaName);
@@ -402,15 +429,221 @@ const discoveryToOpenApi = (
   };
 };
 
-const gcpRunDiscoveryResponse = await fetch(gcpRunDiscoveryUrl);
-if (!gcpRunDiscoveryResponse.ok) {
-  throw new Error(
-    `failed to fetch Cloud Run discovery document: ${gcpRunDiscoveryResponse.status}`,
-  );
-}
+const isDiscoveryDocument = (value: unknown): value is DiscoveryDocument =>
+  value !== null &&
+  typeof value === "object" &&
+  "version" in value &&
+  typeof value.version === "string";
 
-const gcpRunDiscovery =
-  (await gcpRunDiscoveryResponse.json()) as DiscoveryDocument;
+const fetchDiscovery = async (name: string, url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(
+      `failed to fetch ${name} discovery document: ${response.status}`,
+    );
+  }
+  const discovery: unknown = await response.json();
+  if (!isDiscoveryDocument(discovery)) {
+    throw new Error(`failed to parse ${name} discovery document`);
+  }
+  return discovery;
+};
+
+const azureOpenAICompatibleModelsOpenApi = {
+  openapi: "3.0.3",
+  info: {
+    title: "Azure Foundry OpenAI-Compatible Models API",
+    version: "2024-10-21",
+  },
+  servers: [
+    {
+      url: "",
+    },
+  ],
+  paths: {
+    "/openai/models": {
+      get: {
+        operationId: "azureFoundryOpenAICompatibleModelsList",
+        description:
+          "Gets a list of models exposed through an Azure Foundry OpenAI-compatible route.",
+        parameters: [
+          {
+            name: "api-version",
+            in: "query",
+            required: true,
+            schema: {
+              type: "string",
+              default: "2024-10-21",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/ModelList",
+                },
+              },
+            },
+          },
+          default: {
+            description: "An error occurred.",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/ErrorResponse",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  components: {
+    schemas: {
+      Capabilities: {
+        type: "object",
+        properties: {
+          fine_tune: { type: "boolean" },
+          inference: { type: "boolean" },
+          completion: { type: "boolean" },
+          chat_completion: { type: "boolean" },
+          embeddings: { type: "boolean" },
+        },
+      },
+      Deprecation: {
+        type: "object",
+        properties: {
+          fine_tune: {
+            type: "integer",
+            format: "unixtime",
+            nullable: true,
+          },
+          inference: {
+            type: "integer",
+            format: "unixtime",
+          },
+        },
+      },
+      Model: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          object: { $ref: "#/components/schemas/TypeDiscriminator" },
+          created_at: {
+            type: "integer",
+            format: "unixtime",
+          },
+          status: { $ref: "#/components/schemas/FineTuningState" },
+          model: {
+            type: "string",
+            nullable: true,
+          },
+          fine_tune: {
+            type: "string",
+            nullable: true,
+          },
+          capabilities: { $ref: "#/components/schemas/Capabilities" },
+          lifecycle_status: { $ref: "#/components/schemas/LifeCycleStatus" },
+          deprecation: { $ref: "#/components/schemas/Deprecation" },
+        },
+      },
+      ModelList: {
+        type: "object",
+        properties: {
+          object: { $ref: "#/components/schemas/TypeDiscriminator" },
+          data: {
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/Model",
+            },
+          },
+        },
+      },
+      Error: {
+        type: "object",
+        properties: {
+          code: { $ref: "#/components/schemas/ErrorCode" },
+          message: {
+            type: "string",
+            minLength: 1,
+          },
+          target: { type: "string" },
+          details: {
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/Error",
+            },
+          },
+          innererror: { $ref: "#/components/schemas/InnerError" },
+        },
+      },
+      ErrorResponse: {
+        type: "object",
+        properties: {
+          error: { $ref: "#/components/schemas/Error" },
+        },
+      },
+      InnerError: {
+        type: "object",
+        properties: {
+          code: { $ref: "#/components/schemas/InnerErrorCode" },
+          innererror: { $ref: "#/components/schemas/InnerError" },
+        },
+      },
+      ErrorCode: {
+        type: "string",
+        enum: [
+          "conflict",
+          "invalidPayload",
+          "forbidden",
+          "notFound",
+          "unexpectedEntityState",
+          "itemDoesAlreadyExist",
+          "serviceUnavailable",
+          "internalFailure",
+          "quotaExceeded",
+          "jsonlValidationFailed",
+          "fileImportFailed",
+          "tooManyRequests",
+          "unauthorized",
+          "contentFilter",
+        ],
+      },
+      InnerErrorCode: {
+        type: "string",
+        enum: ["invalidPayload"],
+      },
+      FineTuningState: {
+        type: "string",
+        enum: ["created", "pending", "running", "succeeded", "cancelled", "failed"],
+      },
+      LifeCycleStatus: {
+        type: "string",
+        enum: ["preview", "generally-available"],
+      },
+      TypeDiscriminator: {
+        type: "string",
+        enum: [
+          "list",
+          "fine_tuning.job",
+          "file",
+          "fine_tuning.job.event",
+          "fine_tuning.job.checkpoint",
+          "model",
+          "batch",
+          "upload",
+          "upload.part",
+        ],
+      },
+    },
+  },
+};
+
+const gcpRunDiscovery = await fetchDiscovery("Cloud Run", gcpRunDiscoveryUrl);
 
 await Bun.write(
   "openapi/gcp/run/v2/discovery.json",
@@ -426,17 +659,19 @@ await Bun.write(
   )}\n`,
 );
 
-const gcpSecretManagerDiscoveryResponse = await fetch(
+await Bun.write(
+  "openapi/gcp/run/v2/jobs.openapi.json",
+  `${JSON.stringify(
+    discoveryToOpenApi(gcpRunDiscovery, shouldGenerateGcpRunJobMethod),
+    null,
+    2,
+  )}\n`,
+);
+
+const gcpSecretManagerDiscovery = await fetchDiscovery(
+  "Secret Manager",
   gcpSecretManagerDiscoveryUrl,
 );
-if (!gcpSecretManagerDiscoveryResponse.ok) {
-  throw new Error(
-    `failed to fetch Secret Manager discovery document: ${gcpSecretManagerDiscoveryResponse.status}`,
-  );
-}
-
-const gcpSecretManagerDiscovery =
-  (await gcpSecretManagerDiscoveryResponse.json()) as DiscoveryDocument;
 
 await Bun.write(
   "openapi/gcp/secretmanager/v1/discovery.json",
@@ -453,4 +688,28 @@ await Bun.write(
     null,
     2,
   )}\n`,
+);
+
+const gcpAiplatformDiscovery = await fetchDiscovery(
+  "Vertex AI",
+  gcpAiplatformDiscoveryUrl,
+);
+
+await Bun.write(
+  "openapi/gcp/aiplatform/v1beta1/discovery.json",
+  `${JSON.stringify(gcpAiplatformDiscovery, null, 2)}\n`,
+);
+
+await Bun.write(
+  "openapi/gcp/aiplatform/v1beta1/openapi.json",
+  `${JSON.stringify(
+    discoveryToOpenApi(gcpAiplatformDiscovery, shouldGenerateGcpAiplatformMethod),
+    null,
+    2,
+  )}\n`,
+);
+
+await Bun.write(
+  "openapi/azure/openai/2024-10-21/models.json",
+  `${JSON.stringify(azureOpenAICompatibleModelsOpenApi, null, 2)}\n`,
 );

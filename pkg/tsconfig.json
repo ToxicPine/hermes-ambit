@@ -9,6 +9,9 @@
     },
     {
       "path": "./packages/azure"
+    },
+    {
+      "path": "./packages/tui"
     }
   ]
 }

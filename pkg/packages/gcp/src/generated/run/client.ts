@@ -71,7 +71,7 @@ export type runProjectsLocationsOperationsListResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsOperationsListResponseSuccess = (runProjectsLocationsOperationsListResponse200) & {
   headers: Headers;
 };
@@ -86,7 +86,7 @@ export const getRunProjectsLocationsOperationsListUrl = (name: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -99,18 +99,18 @@ export const getRunProjectsLocationsOperationsListUrl = (name: string,
 
 export const runProjectsLocationsOperationsList = async (name: string,
     params?: RunProjectsLocationsOperationsListParams, options?: RequestInit): Promise<runProjectsLocationsOperationsListResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsOperationsListUrl(name,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsOperationsListResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsOperationsListResponse
 }
@@ -129,7 +129,7 @@ export type runProjectsLocationsServicesGetResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesGetResponseSuccess = (runProjectsLocationsServicesGetResponse200) & {
   headers: Headers;
 };
@@ -142,24 +142,24 @@ export type runProjectsLocationsServicesGetResponse = (runProjectsLocationsServi
 export const getRunProjectsLocationsServicesGetUrl = (name: string,) => {
 
 
-  
+
 
   return `https://run.googleapis.com/v2/${name}`
 }
 
 export const runProjectsLocationsServicesGet = async (name: string, options?: RequestInit): Promise<runProjectsLocationsServicesGetResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesGetUrl(name),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesGetResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesGetResponse
 }
@@ -178,7 +178,7 @@ export type runProjectsLocationsServicesDeleteResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesDeleteResponseSuccess = (runProjectsLocationsServicesDeleteResponse200) & {
   headers: Headers;
 };
@@ -193,7 +193,7 @@ export const getRunProjectsLocationsServicesDeleteUrl = (name: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -206,18 +206,18 @@ export const getRunProjectsLocationsServicesDeleteUrl = (name: string,
 
 export const runProjectsLocationsServicesDelete = async (name: string,
     params?: RunProjectsLocationsServicesDeleteParams, options?: RequestInit): Promise<runProjectsLocationsServicesDeleteResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesDeleteUrl(name,params),
-  {      
+  {
     ...options,
     method: 'DELETE'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesDeleteResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesDeleteResponse
 }
@@ -236,7 +236,7 @@ export type runProjectsLocationsServicesPatchResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesPatchResponseSuccess = (runProjectsLocationsServicesPatchResponse200) & {
   headers: Headers;
 };
@@ -251,7 +251,7 @@ export const getRunProjectsLocationsServicesPatchUrl = (name: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -265,9 +265,9 @@ export const getRunProjectsLocationsServicesPatchUrl = (name: string,
 export const runProjectsLocationsServicesPatch = async (name: string,
     googleCloudRunV2Service: NonReadonly<GoogleCloudRunV2Service>,
     params?: RunProjectsLocationsServicesPatchParams, options?: RequestInit): Promise<runProjectsLocationsServicesPatchResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesPatchUrl(name,params),
-  {      
+  {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -277,7 +277,7 @@ export const runProjectsLocationsServicesPatch = async (name: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesPatchResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesPatchResponse
 }
@@ -296,7 +296,7 @@ export type runProjectsLocationsOperationsWaitResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsOperationsWaitResponseSuccess = (runProjectsLocationsOperationsWaitResponse200) & {
   headers: Headers;
 };
@@ -309,16 +309,16 @@ export type runProjectsLocationsOperationsWaitResponse = (runProjectsLocationsOp
 export const getRunProjectsLocationsOperationsWaitUrl = (name: string,) => {
 
 
-  
+
 
   return `https://run.googleapis.com/v2/${name}:wait`
 }
 
 export const runProjectsLocationsOperationsWait = async (name: string,
     googleLongrunningWaitOperationRequest: GoogleLongrunningWaitOperationRequest, options?: RequestInit): Promise<runProjectsLocationsOperationsWaitResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsOperationsWaitUrl(name),
-  {      
+  {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -328,7 +328,7 @@ export const runProjectsLocationsOperationsWait = async (name: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsOperationsWaitResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsOperationsWaitResponse
 }
@@ -347,7 +347,7 @@ export type runProjectsLocationsServicesCreateResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesCreateResponseSuccess = (runProjectsLocationsServicesCreateResponse200) & {
   headers: Headers;
 };
@@ -362,7 +362,7 @@ export const getRunProjectsLocationsServicesCreateUrl = (parent: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -376,9 +376,9 @@ export const getRunProjectsLocationsServicesCreateUrl = (parent: string,
 export const runProjectsLocationsServicesCreate = async (parent: string,
     googleCloudRunV2Service: NonReadonly<GoogleCloudRunV2Service>,
     params?: RunProjectsLocationsServicesCreateParams, options?: RequestInit): Promise<runProjectsLocationsServicesCreateResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesCreateUrl(parent,params),
-  {      
+  {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -388,7 +388,7 @@ export const runProjectsLocationsServicesCreate = async (parent: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesCreateResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesCreateResponse
 }
@@ -407,7 +407,7 @@ export type runProjectsLocationsServicesListResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesListResponseSuccess = (runProjectsLocationsServicesListResponse200) & {
   headers: Headers;
 };
@@ -422,7 +422,7 @@ export const getRunProjectsLocationsServicesListUrl = (parent: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -435,18 +435,18 @@ export const getRunProjectsLocationsServicesListUrl = (parent: string,
 
 export const runProjectsLocationsServicesList = async (parent: string,
     params?: RunProjectsLocationsServicesListParams, options?: RequestInit): Promise<runProjectsLocationsServicesListResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesListUrl(parent,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesListResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesListResponse
 }
@@ -465,7 +465,7 @@ export type runProjectsLocationsServicesGetIamPolicyResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesGetIamPolicyResponseSuccess = (runProjectsLocationsServicesGetIamPolicyResponse200) & {
   headers: Headers;
 };
@@ -480,7 +480,7 @@ export const getRunProjectsLocationsServicesGetIamPolicyUrl = (resource: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -493,18 +493,18 @@ export const getRunProjectsLocationsServicesGetIamPolicyUrl = (resource: string,
 
 export const runProjectsLocationsServicesGetIamPolicy = async (resource: string,
     params?: RunProjectsLocationsServicesGetIamPolicyParams, options?: RequestInit): Promise<runProjectsLocationsServicesGetIamPolicyResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesGetIamPolicyUrl(resource,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesGetIamPolicyResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesGetIamPolicyResponse
 }
@@ -523,7 +523,7 @@ export type runProjectsLocationsServicesSetIamPolicyResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesSetIamPolicyResponseSuccess = (runProjectsLocationsServicesSetIamPolicyResponse200) & {
   headers: Headers;
 };
@@ -536,16 +536,16 @@ export type runProjectsLocationsServicesSetIamPolicyResponse = (runProjectsLocat
 export const getRunProjectsLocationsServicesSetIamPolicyUrl = (resource: string,) => {
 
 
-  
+
 
   return `https://run.googleapis.com/v2/${resource}:setIamPolicy`
 }
 
 export const runProjectsLocationsServicesSetIamPolicy = async (resource: string,
     googleIamV1SetIamPolicyRequest: GoogleIamV1SetIamPolicyRequest, options?: RequestInit): Promise<runProjectsLocationsServicesSetIamPolicyResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesSetIamPolicyUrl(resource),
-  {      
+  {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -555,7 +555,7 @@ export const runProjectsLocationsServicesSetIamPolicy = async (resource: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesSetIamPolicyResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesSetIamPolicyResponse
 }
@@ -574,7 +574,7 @@ export type runProjectsLocationsServicesTestIamPermissionsResponseDefault = {
   data: GoogleRpcStatus
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type runProjectsLocationsServicesTestIamPermissionsResponseSuccess = (runProjectsLocationsServicesTestIamPermissionsResponse200) & {
   headers: Headers;
 };
@@ -587,16 +587,16 @@ export type runProjectsLocationsServicesTestIamPermissionsResponse = (runProject
 export const getRunProjectsLocationsServicesTestIamPermissionsUrl = (resource: string,) => {
 
 
-  
+
 
   return `https://run.googleapis.com/v2/${resource}:testIamPermissions`
 }
 
 export const runProjectsLocationsServicesTestIamPermissions = async (resource: string,
     googleIamV1TestIamPermissionsRequest: GoogleIamV1TestIamPermissionsRequest, options?: RequestInit): Promise<runProjectsLocationsServicesTestIamPermissionsResponse> => {
-  
+
   const res = await fetch(getRunProjectsLocationsServicesTestIamPermissionsUrl(resource),
-  {      
+  {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -606,10 +606,7 @@ export const runProjectsLocationsServicesTestIamPermissions = async (resource: s
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: runProjectsLocationsServicesTestIamPermissionsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as runProjectsLocationsServicesTestIamPermissionsResponse
 }
-
-
-

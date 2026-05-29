@@ -40,10 +40,10 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "v2026.5.16",
-      "revision": "8487dfb57d2f2f7b310a2b3eb692b32674af22cd",
-      "url": "https://api.github.com/repos/NousResearch/hermes-agent/tarball/v2026.5.16",
-      "hash": "0rrfkc1x6ndg6qy33xqix1xvsn1r0yisdnk8n9a0xrdq7jns3nkp"
+      "version": "v2026.5.29.2",
+      "revision": "51f432685e4bc73379abe70367f196400dd44054",
+      "url": "https://api.github.com/repos/NousResearch/hermes-agent/tarball/v2026.5.29.2",
+      "hash": "08q431978n1bfqadriix9qs12vqn4iwxds6c0807p3pxrqgqsafh"
     },
     "home-manager": {
       "type": "Git",

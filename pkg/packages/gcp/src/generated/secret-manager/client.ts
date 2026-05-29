@@ -65,7 +65,7 @@ export type secretmanagerProjectsSecretsListResponseDefault = {
   data: Status
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type secretmanagerProjectsSecretsListResponseSuccess = (secretmanagerProjectsSecretsListResponse200) & {
   headers: Headers;
 };
@@ -80,7 +80,7 @@ export const getSecretmanagerProjectsSecretsListUrl = (parent: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -93,18 +93,18 @@ export const getSecretmanagerProjectsSecretsListUrl = (parent: string,
 
 export const secretmanagerProjectsSecretsList = async (parent: string,
     params?: SecretmanagerProjectsSecretsListParams, options?: RequestInit): Promise<secretmanagerProjectsSecretsListResponse> => {
-  
+
   const res = await fetch(getSecretmanagerProjectsSecretsListUrl(parent,params),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: secretmanagerProjectsSecretsListResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as secretmanagerProjectsSecretsListResponse
 }
@@ -123,7 +123,7 @@ export type secretmanagerProjectsSecretsCreateResponseDefault = {
   data: Status
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type secretmanagerProjectsSecretsCreateResponseSuccess = (secretmanagerProjectsSecretsCreateResponse200) & {
   headers: Headers;
 };
@@ -138,7 +138,7 @@ export const getSecretmanagerProjectsSecretsCreateUrl = (parent: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -152,9 +152,9 @@ export const getSecretmanagerProjectsSecretsCreateUrl = (parent: string,
 export const secretmanagerProjectsSecretsCreate = async (parent: string,
     secret: NonReadonly<Secret>,
     params?: SecretmanagerProjectsSecretsCreateParams, options?: RequestInit): Promise<secretmanagerProjectsSecretsCreateResponse> => {
-  
+
   const res = await fetch(getSecretmanagerProjectsSecretsCreateUrl(parent,params),
-  {      
+  {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -164,7 +164,7 @@ export const secretmanagerProjectsSecretsCreate = async (parent: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: secretmanagerProjectsSecretsCreateResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as secretmanagerProjectsSecretsCreateResponse
 }
@@ -183,7 +183,7 @@ export type secretmanagerProjectsSecretsAddVersionResponseDefault = {
   data: Status
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type secretmanagerProjectsSecretsAddVersionResponseSuccess = (secretmanagerProjectsSecretsAddVersionResponse200) & {
   headers: Headers;
 };
@@ -196,16 +196,16 @@ export type secretmanagerProjectsSecretsAddVersionResponse = (secretmanagerProje
 export const getSecretmanagerProjectsSecretsAddVersionUrl = (parent: string,) => {
 
 
-  
+
 
   return `https://secretmanager.googleapis.com/v1/${parent}:addVersion`
 }
 
 export const secretmanagerProjectsSecretsAddVersion = async (parent: string,
     addSecretVersionRequest: AddSecretVersionRequest, options?: RequestInit): Promise<secretmanagerProjectsSecretsAddVersionResponse> => {
-  
+
   const res = await fetch(getSecretmanagerProjectsSecretsAddVersionUrl(parent),
-  {      
+  {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -215,7 +215,7 @@ export const secretmanagerProjectsSecretsAddVersion = async (parent: string,
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: secretmanagerProjectsSecretsAddVersionResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as secretmanagerProjectsSecretsAddVersionResponse
 }
@@ -234,7 +234,7 @@ export type secretmanagerProjectsSecretsDeleteResponseDefault = {
   data: Status
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type secretmanagerProjectsSecretsDeleteResponseSuccess = (secretmanagerProjectsSecretsDeleteResponse200) & {
   headers: Headers;
 };
@@ -249,7 +249,7 @@ export const getSecretmanagerProjectsSecretsDeleteUrl = (name: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
+
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
@@ -262,18 +262,18 @@ export const getSecretmanagerProjectsSecretsDeleteUrl = (name: string,
 
 export const secretmanagerProjectsSecretsDelete = async (name: string,
     params?: SecretmanagerProjectsSecretsDeleteParams, options?: RequestInit): Promise<secretmanagerProjectsSecretsDeleteResponse> => {
-  
+
   const res = await fetch(getSecretmanagerProjectsSecretsDeleteUrl(name,params),
-  {      
+  {
     ...options,
     method: 'DELETE'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: secretmanagerProjectsSecretsDeleteResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as secretmanagerProjectsSecretsDeleteResponse
 }
@@ -292,7 +292,7 @@ export type secretmanagerProjectsSecretsVersionsAccessResponseDefault = {
   data: Status
   status: Exclude<HTTPStatusCodes, 200>
 }
-    
+
 export type secretmanagerProjectsSecretsVersionsAccessResponseSuccess = (secretmanagerProjectsSecretsVersionsAccessResponse200) & {
   headers: Headers;
 };
@@ -305,27 +305,24 @@ export type secretmanagerProjectsSecretsVersionsAccessResponse = (secretmanagerP
 export const getSecretmanagerProjectsSecretsVersionsAccessUrl = (name: string,) => {
 
 
-  
+
 
   return `https://secretmanager.googleapis.com/v1/${name}:access`
 }
 
 export const secretmanagerProjectsSecretsVersionsAccess = async (name: string, options?: RequestInit): Promise<secretmanagerProjectsSecretsVersionsAccessResponse> => {
-  
+
   const res = await fetch(getSecretmanagerProjectsSecretsVersionsAccessUrl(name),
-  {      
+  {
     ...options,
     method: 'GET'
-    
-    
+
+
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+
   const data: secretmanagerProjectsSecretsVersionsAccessResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as secretmanagerProjectsSecretsVersionsAccessResponse
 }
-
-
-

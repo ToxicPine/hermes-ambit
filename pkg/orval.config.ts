@@ -1,143 +1,163 @@
 import { defineConfig } from "orval";
 
+const splitMode = "split";
+const fetchClient = "fetch";
+const zodClient = "zod";
+
+const fetchOutput = (target: string, schemas: string, baseUrl: string) => ({
+  target,
+  schemas,
+  baseUrl,
+  client: fetchClient,
+  mode: splitMode,
+  clean: true,
+  override: {
+    fetch: {
+      includeHttpResponseReturnType: true,
+    },
+  },
+});
+
+const zodOutput = (target: string) => ({
+  target,
+  client: zodClient,
+  mode: splitMode,
+  fileExtension: ".zod.ts",
+  override: {
+    zod: {
+      generate: {
+        body: true,
+        header: true,
+        param: true,
+        query: true,
+        response: true,
+      },
+      generateEachHttpStatus: true,
+    },
+  },
+});
+
 const azureContainerAppsInput = {
   target:
     "./openapi/azure/specification/app/resource-manager/Microsoft.App/ContainerApps/stable/2025-07-01/ContainerApps.json",
   override: {
     transformer: "./orval.transformer.ts",
   },
-} as const;
+};
+
+const azureManagedEnvironmentStoragesInput = {
+  target:
+    "./openapi/azure/specification/app/resource-manager/Microsoft.App/ContainerApps/stable/2025-07-01/ManagedEnvironmentsStorages.json",
+  override: {
+    transformer: "./orval.transformer.ts",
+  },
+};
 
 const gcpRunInput = {
   target: "./openapi/gcp/run/v2/openapi.json",
-} as const;
+};
+
+const gcpRunJobsInput = {
+  target: "./openapi/gcp/run/v2/jobs.openapi.json",
+};
 
 const gcpSecretManagerInput = {
   target: "./openapi/gcp/secretmanager/v1/openapi.json",
-} as const;
+};
+
+const gcpAiplatformInput = {
+  target: "./openapi/gcp/aiplatform/v1beta1/openapi.json",
+};
+
+const azureOpenAICompatibleInput = {
+  target: "./openapi/azure/openai/2024-10-21/models.json",
+};
 
 export default defineConfig({
   azureContainerApps: {
-    input: {
-      ...azureContainerAppsInput,
-    },
-    output: {
-      target: "./packages/azure/src/generated/container-apps/client.ts",
-      schemas: "./packages/azure/src/generated/container-apps/model",
-      baseUrl: "https://management.azure.com",
-      client: "fetch",
-      mode: "split",
-      clean: true,
-      override: {
-        fetch: {
-          includeHttpResponseReturnType: true,
-        },
-      },
-    },
+    input: azureContainerAppsInput,
+    output: fetchOutput(
+      "./packages/azure/src/generated/container-apps/client.ts",
+      "./packages/azure/src/generated/container-apps/model",
+      "https://management.azure.com",
+    ),
   },
   azureContainerAppsZod: {
-    input: {
-      ...azureContainerAppsInput,
-    },
-    output: {
-      target: "./packages/azure/src/generated/container-apps/client",
-      client: "zod",
-      mode: "split",
-      fileExtension: ".zod.ts",
-      override: {
-        zod: {
-          generate: {
-            body: true,
-            header: true,
-            param: true,
-            query: true,
-            response: true,
-          },
-          generateEachHttpStatus: true,
-        },
-      },
-    },
+    input: azureContainerAppsInput,
+    output: zodOutput("./packages/azure/src/generated/container-apps/client"),
+  },
+  azureManagedEnvironmentStorages: {
+    input: azureManagedEnvironmentStoragesInput,
+    output: fetchOutput(
+      "./packages/azure/src/generated/managed-environment-storages/client.ts",
+      "./packages/azure/src/generated/managed-environment-storages/model",
+      "https://management.azure.com",
+    ),
+  },
+  azureManagedEnvironmentStoragesZod: {
+    input: azureManagedEnvironmentStoragesInput,
+    output: zodOutput(
+      "./packages/azure/src/generated/managed-environment-storages/client",
+    ),
   },
   gcpRun: {
-    input: {
-      ...gcpRunInput,
-    },
-    output: {
-      target: "./packages/gcp/src/generated/run/client.ts",
-      schemas: "./packages/gcp/src/generated/run/model",
-      baseUrl: "https://run.googleapis.com",
-      client: "fetch",
-      mode: "split",
-      clean: true,
-      override: {
-        fetch: {
-          includeHttpResponseReturnType: true,
-        },
-      },
-    },
+    input: gcpRunInput,
+    output: fetchOutput(
+      "./packages/gcp/src/generated/run/client.ts",
+      "./packages/gcp/src/generated/run/model",
+      "https://run.googleapis.com",
+    ),
   },
   gcpRunZod: {
-    input: {
-      ...gcpRunInput,
-    },
-    output: {
-      target: "./packages/gcp/src/generated/run/client",
-      client: "zod",
-      mode: "split",
-      fileExtension: ".zod.ts",
-      override: {
-        zod: {
-          generate: {
-            body: true,
-            header: true,
-            param: true,
-            query: true,
-            response: true,
-          },
-          generateEachHttpStatus: true,
-        },
-      },
-    },
+    input: gcpRunInput,
+    output: zodOutput("./packages/gcp/src/generated/run/client"),
+  },
+  gcpRunJobs: {
+    input: gcpRunJobsInput,
+    output: fetchOutput(
+      "./packages/gcp/src/generated/run-jobs/client.ts",
+      "./packages/gcp/src/generated/run-jobs/model",
+      "https://run.googleapis.com",
+    ),
+  },
+  gcpRunJobsZod: {
+    input: gcpRunJobsInput,
+    output: zodOutput("./packages/gcp/src/generated/run-jobs/client"),
   },
   gcpSecretManager: {
-    input: {
-      ...gcpSecretManagerInput,
-    },
-    output: {
-      target: "./packages/gcp/src/generated/secret-manager/client.ts",
-      schemas: "./packages/gcp/src/generated/secret-manager/model",
-      baseUrl: "https://secretmanager.googleapis.com",
-      client: "fetch",
-      mode: "split",
-      clean: true,
-      override: {
-        fetch: {
-          includeHttpResponseReturnType: true,
-        },
-      },
-    },
+    input: gcpSecretManagerInput,
+    output: fetchOutput(
+      "./packages/gcp/src/generated/secret-manager/client.ts",
+      "./packages/gcp/src/generated/secret-manager/model",
+      "https://secretmanager.googleapis.com",
+    ),
   },
   gcpSecretManagerZod: {
-    input: {
-      ...gcpSecretManagerInput,
-    },
-    output: {
-      target: "./packages/gcp/src/generated/secret-manager/client",
-      client: "zod",
-      mode: "split",
-      fileExtension: ".zod.ts",
-      override: {
-        zod: {
-          generate: {
-            body: true,
-            header: true,
-            param: true,
-            query: true,
-            response: true,
-          },
-          generateEachHttpStatus: true,
-        },
-      },
-    },
+    input: gcpSecretManagerInput,
+    output: zodOutput("./packages/gcp/src/generated/secret-manager/client"),
+  },
+  gcpAiplatform: {
+    input: gcpAiplatformInput,
+    output: fetchOutput(
+      "./packages/gcp/src/generated/aiplatform/client.ts",
+      "./packages/gcp/src/generated/aiplatform/model",
+      "https://aiplatform.googleapis.com",
+    ),
+  },
+  gcpAiplatformZod: {
+    input: gcpAiplatformInput,
+    output: zodOutput("./packages/gcp/src/generated/aiplatform/client"),
+  },
+  azureOpenAICompatible: {
+    input: azureOpenAICompatibleInput,
+    output: fetchOutput(
+      "./packages/azure/src/generated/openai/client.ts",
+      "./packages/azure/src/generated/openai/model",
+      "",
+    ),
+  },
+  azureOpenAICompatibleZod: {
+    input: azureOpenAICompatibleInput,
+    output: zodOutput("./packages/azure/src/generated/openai/client"),
   },
 });

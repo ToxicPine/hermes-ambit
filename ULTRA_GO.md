@@ -1,0 +1,1 @@
+Read the PLAN.md, progress the implementation, with keen eye towards elegance of implementation and leanness of datatypes, without excess, in a focused manner, according to the inferred intentions and first-principles common-sense correctness engineering, no extra defensive code or unit tests, just thought implementation.

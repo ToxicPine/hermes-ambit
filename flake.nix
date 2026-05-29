@@ -5,11 +5,13 @@
     main.url = "path:./pkg";
   };
 
-  outputs = { self, main }:
+  outputs =
+    { self, main }:
     let
       systems = [ "x86_64-linux" ];
 
-      forAllSystems = f:
+      forAllSystems =
+        f:
         builtins.listToAttrs (
           map (system: {
             name = system;
@@ -27,11 +29,15 @@
         };
 
       mkDevShells =
-        system: let pkgs = pkgsFor system; in {
+        system:
+        let
+          pkgs = pkgsFor system;
+        in
+        {
           default = pkgs.mkShell {
             packages = with pkgs; [
               bun
-              nixfmt-rfc-style
+              nixfmt
               nil
               nodejs
               npins
@@ -40,15 +46,15 @@
             ];
           };
         };
-      
-      mkMainPackages =
-        system: {
-          default = self.packages.${system}.container;
-          container = container system;
-          deployer = main.packages.${system}.default;
-        };
 
-    in {
+      mkMainPackages = system: {
+        default = container system;
+        container = container system;
+        deployer = main.packages.${system}.default;
+      };
+
+    in
+    {
       packages = forAllSystems mkMainPackages;
       devShells = forAllSystems mkDevShells;
     };
