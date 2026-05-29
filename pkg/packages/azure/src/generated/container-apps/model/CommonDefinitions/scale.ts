@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ScaleRule } from './scaleRule';
+import type { ScaleRule } from "./scaleRule";
 
 /**
  * Container App scaling configurations.

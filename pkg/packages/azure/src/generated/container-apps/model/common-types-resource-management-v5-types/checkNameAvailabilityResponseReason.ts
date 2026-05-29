@@ -8,11 +8,11 @@
 /**
  * The reason why the given name is not available.
  */
-export type CheckNameAvailabilityResponseReason = typeof CheckNameAvailabilityResponseReason[keyof typeof CheckNameAvailabilityResponseReason];
-
+export type CheckNameAvailabilityResponseReason =
+  (typeof CheckNameAvailabilityResponseReason)[keyof typeof CheckNameAvailabilityResponseReason];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CheckNameAvailabilityResponseReason = {
-  Invalid: 'Invalid',
-  AlreadyExists: 'AlreadyExists',
+  Invalid: "Invalid",
+  AlreadyExists: "AlreadyExists",
 } as const;

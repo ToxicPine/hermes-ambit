@@ -5,15 +5,9 @@
     "title": "ContainerApps API Client"
   },
   "host": "management.azure.com",
-  "schemes": [
-    "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {},
   "definitions": {
     "EnvironmentVar": {
@@ -74,9 +68,7 @@
           "items": {
             "$ref": "#/definitions/EnvironmentVar"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "resources": {
           "$ref": "#/definitions/ContainerResources",
@@ -88,9 +80,7 @@
           "items": {
             "$ref": "#/definitions/VolumeMount"
           },
-          "x-ms-identifiers": [
-            "volumeName"
-          ]
+          "x-ms-identifiers": ["volumeName"]
         }
       }
     },
@@ -118,9 +108,7 @@
           "items": {
             "$ref": "#/definitions/ContainerAppProbe"
           },
-          "x-ms-identifiers": [
-            "type"
-          ]
+          "x-ms-identifiers": ["type"]
         }
       }
     },
@@ -156,9 +144,7 @@
         "httpGet": {
           "description": "HTTPGet specifies the http request to perform.",
           "type": "object",
-          "required": [
-            "port"
-          ],
+          "required": ["port"],
           "properties": {
             "host": {
               "description": "Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead.",
@@ -170,10 +156,7 @@
               "items": {
                 "description": "HTTPHeader describes a custom header to be used in HTTP probes",
                 "type": "object",
-                "required": [
-                  "name",
-                  "value"
-                ],
+                "required": ["name", "value"],
                 "properties": {
                   "name": {
                     "description": "The header field name",
@@ -185,9 +168,7 @@
                   }
                 }
               },
-              "x-ms-identifiers": [
-                "name"
-              ]
+              "x-ms-identifiers": ["name"]
             },
             "path": {
               "description": "Path to access on the HTTP server.",
@@ -200,10 +181,7 @@
             },
             "scheme": {
               "description": "Scheme to use for connecting to the host. Defaults to HTTP.",
-              "enum": [
-                "HTTP",
-                "HTTPS"
-              ],
+              "enum": ["HTTP", "HTTPS"],
               "type": "string",
               "x-ms-enum": {
                 "name": "Scheme",
@@ -230,9 +208,7 @@
         "tcpSocket": {
           "description": "TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.",
           "type": "object",
-          "required": [
-            "port"
-          ],
+          "required": ["port"],
           "properties": {
             "host": {
               "description": "Optional: Host name to connect to, defaults to the pod IP.",
@@ -257,11 +233,7 @@
         },
         "type": {
           "description": "The type of probe.",
-          "enum": [
-            "Liveness",
-            "Readiness",
-            "Startup"
-          ],
+          "enum": ["Liveness", "Readiness", "Startup"],
           "type": "string",
           "x-ms-enum": {
             "name": "Type",
@@ -291,9 +263,7 @@
           "items": {
             "$ref": "#/definitions/ScaleRuleAuth"
           },
-          "x-ms-identifiers": [
-            "triggerParameter"
-          ]
+          "x-ms-identifiers": ["triggerParameter"]
         },
         "identity": {
           "description": "The resource ID of a user-assigned managed identity that is assigned to the Container App, or 'system' for system-assigned identity.",
@@ -304,9 +274,7 @@
     "CustomDomain": {
       "description": "Custom Domain of a Container App",
       "type": "object",
-      "required": [
-        "name"
-      ],
+      "required": ["name"],
       "properties": {
         "name": {
           "description": "Hostname.",
@@ -314,11 +282,7 @@
         },
         "bindingType": {
           "description": "Custom Domain binding type.",
-          "enum": [
-            "Disabled",
-            "SniEnabled",
-            "Auto"
-          ],
+          "enum": ["Disabled", "SniEnabled", "Auto"],
           "type": "string",
           "x-ms-enum": {
             "name": "bindingType",
@@ -343,10 +307,7 @@
         "dnsSuffix": {
           "type": "string",
           "description": "Dns suffix for the environment domain",
-          "x-ms-mutability": [
-            "create",
-            "read"
-          ]
+          "x-ms-mutability": ["create", "read"]
         },
         "certificateKeyVaultProperties": {
           "description": "Certificate stored in Azure Key Vault.",
@@ -429,9 +390,7 @@
                 },
                 "readOnly": true
               },
-              "x-ms-identifiers": [
-                "code"
-              ]
+              "x-ms-identifiers": ["code"]
             },
             "innererror": {
               "description": "More information to debug error.",
@@ -460,9 +419,7 @@
           "items": {
             "$ref": "#/definitions/ScaleRuleAuth"
           },
-          "x-ms-identifiers": [
-            "triggerParameter"
-          ]
+          "x-ms-identifiers": ["triggerParameter"]
         },
         "identity": {
           "description": "The resource ID of a user-assigned managed identity that is assigned to the Container App, or 'system' for system-assigned identity.",
@@ -487,9 +444,7 @@
           "items": {
             "$ref": "#/definitions/ScaleRuleAuth"
           },
-          "x-ms-identifiers": [
-            "triggerParameter"
-          ]
+          "x-ms-identifiers": ["triggerParameter"]
         },
         "identity": {
           "description": "The resource ID of a user-assigned managed identity that is assigned to the Container App, or 'system' for system-assigned identity.",
@@ -520,9 +475,7 @@
           "items": {
             "$ref": "#/definitions/ScaleRuleAuth"
           },
-          "x-ms-identifiers": [
-            "triggerParameter"
-          ]
+          "x-ms-identifiers": ["triggerParameter"]
         },
         "identity": {
           "description": "The resource ID of a user-assigned managed identity that is assigned to the Container App, or 'system' for system-assigned identity.",
@@ -561,9 +514,7 @@
           "items": {
             "$ref": "#/definitions/ScaleRule"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         }
       }
     },
@@ -618,10 +569,7 @@
         "value": {
           "description": "Secret Value.",
           "type": "string",
-          "x-ms-mutability": [
-            "create",
-            "update"
-          ],
+          "x-ms-mutability": ["create", "update"],
           "x-ms-secret": true
         },
         "identity": {
@@ -653,9 +601,7 @@
           "items": {
             "$ref": "#/definitions/InitContainer"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "containers": {
           "description": "List of container definitions for the Container App.",
@@ -663,9 +609,7 @@
           "items": {
             "$ref": "#/definitions/Container"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "scale": {
           "$ref": "#/definitions/Scale",
@@ -677,9 +621,7 @@
           "items": {
             "$ref": "#/definitions/Volume"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "serviceBinds": {
           "description": "List of container app services bound to the app",
@@ -687,9 +629,7 @@
           "items": {
             "$ref": "#/definitions/ServiceBind"
           },
-          "x-ms-identifier": [
-            "name"
-          ]
+          "x-ms-identifier": ["name"]
         }
       }
     },
@@ -703,12 +643,7 @@
         },
         "storageType": {
           "description": "Storage type for the volume. If not provided, use EmptyDir.",
-          "enum": [
-            "AzureFile",
-            "EmptyDir",
-            "Secret",
-            "NfsAzureFile"
-          ],
+          "enum": ["AzureFile", "EmptyDir", "Secret", "NfsAzureFile"],
           "type": "string",
           "x-ms-enum": {
             "name": "StorageType",
@@ -725,9 +660,7 @@
           "items": {
             "$ref": "#/definitions/SecretVolumeItem"
           },
-          "x-ms-identifiers": [
-            "secretRef"
-          ]
+          "x-ms-identifiers": ["secretRef"]
         },
         "mountOptions": {
           "description": "Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.",
@@ -769,9 +702,7 @@
     },
     "DaprComponentsCollection": {
       "description": "Dapr Components ARM resource.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -824,9 +755,7 @@
               "items": {
                 "$ref": "./CommonDefinitions.json#/definitions/Secret"
               },
-              "x-ms-identifiers": [
-                "name"
-              ]
+              "x-ms-identifiers": ["name"]
             },
             "secretStoreComponent": {
               "description": "Name of a Dapr component to retrieve component secrets from",
@@ -838,9 +767,7 @@
               "items": {
                 "$ref": "#/definitions/DaprMetadata"
               },
-              "x-ms-identifiers": [
-                "name"
-              ]
+              "x-ms-identifiers": ["name"]
             },
             "scopes": {
               "description": "Names of container apps that can use this Dapr component",
@@ -895,9 +822,7 @@
     },
     "DaprSecretsCollection": {
       "description": "Dapr component Secrets Collection for ListSecrets Action.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -906,9 +831,7 @@
           "items": {
             "$ref": "./CommonDefinitions.json#/definitions/DaprSecret"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         }
       }
     },
@@ -946,9 +869,7 @@
     "ExtendedLocationType": {
       "type": "string",
       "description": "The type of extendedLocation.",
-      "enum": [
-        "CustomLocation"
-      ],
+      "enum": ["CustomLocation"],
       "x-ms-enum": {
         "name": "ExtendedLocationTypes",
         "modelAsString": true
@@ -973,10 +894,7 @@
         },
         "accessMode": {
           "description": "Access mode for storage",
-          "enum": [
-            "ReadOnly",
-            "ReadWrite"
-          ],
+          "enum": ["ReadOnly", "ReadWrite"],
           "type": "string",
           "x-ms-enum": {
             "name": "AccessMode",
@@ -999,10 +917,7 @@
         },
         "accessMode": {
           "description": "Access mode for storage",
-          "enum": [
-            "ReadOnly",
-            "ReadWrite"
-          ],
+          "enum": ["ReadOnly", "ReadWrite"],
           "type": "string",
           "x-ms-enum": {
             "name": "AccessMode",
@@ -1086,9 +1001,7 @@
             "password": {
               "description": "Certificate password.",
               "type": "string",
-              "x-ms-mutability": [
-                "create"
-              ],
+              "x-ms-mutability": ["create"],
               "x-ms-secret": true
             },
             "subjectName": {
@@ -1108,9 +1021,7 @@
               "format": "byte",
               "description": "PFX or PEM blob",
               "type": "string",
-              "x-ms-mutability": [
-                "create"
-              ],
+              "x-ms-mutability": ["create"],
               "x-ms-secret": true
             },
             "issuer": {
@@ -1152,9 +1063,7 @@
     },
     "CertificateCollection": {
       "description": "Collection of Certificates.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -1225,11 +1134,7 @@
             },
             "domainControlValidation": {
               "description": "Selected type of domain control validation for managed certificates.",
-              "enum": [
-                "CNAME",
-                "HTTP",
-                "TXT"
-              ],
+              "enum": ["CNAME", "HTTP", "TXT"],
               "type": "string",
               "x-ms-enum": {
                 "name": "ManagedCertificateDomainControlValidation",
@@ -1261,9 +1166,7 @@
     },
     "ManagedCertificateCollection": {
       "description": "Collection of Managed Certificates.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -1290,9 +1193,7 @@
           "items": {
             "$ref": "#/definitions/InitContainer"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "containers": {
           "description": "List of container definitions for the Container App.",
@@ -1300,9 +1201,7 @@
           "items": {
             "$ref": "#/definitions/Container"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "volumes": {
           "description": "List of volume definitions for the Container App.",
@@ -1310,9 +1209,7 @@
           "items": {
             "$ref": "#/definitions/Volume"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         }
       }
     },
@@ -1382,9 +1279,7 @@
           "description": "The provisioning state of the private endpoint connection resource."
         }
       },
-      "required": [
-        "privateLinkServiceConnectionState"
-      ],
+      "required": ["privateLinkServiceConnectionState"],
       "description": "Properties of the private endpoint connection."
     },
     "PrivateLinkServiceConnectionState": {
@@ -1408,12 +1303,7 @@
     "PrivateEndpointServiceConnectionStatus": {
       "type": "string",
       "description": "The private endpoint connection status.",
-      "enum": [
-        "Pending",
-        "Approved",
-        "Rejected",
-        "Disconnected"
-      ],
+      "enum": ["Pending", "Approved", "Rejected", "Disconnected"],
       "x-ms-enum": {
         "name": "PrivateEndpointServiceConnectionStatus",
         "modelAsString": true
@@ -1520,9 +1410,7 @@
     "IdentitySettings": {
       "description": "Optional settings for a Managed Identity that is assigned to the Container App.",
       "type": "object",
-      "required": [
-        "identity"
-      ],
+      "required": ["identity"],
       "properties": {
         "identity": {
           "description": "The resource ID of a user-assigned managed identity that is assigned to the Container App, or 'system' for system-assigned identity.",
@@ -1530,12 +1418,7 @@
         },
         "lifecycle": {
           "description": "Use to select the lifecycle stages of a Container App during which the Managed Identity should be available.",
-          "enum": [
-            "Init",
-            "Main",
-            "None",
-            "All"
-          ],
+          "enum": ["Init", "Main", "None", "All"],
           "type": "string",
           "default": "All",
           "x-ms-enum": {
@@ -1554,11 +1437,7 @@
           "additionalProperties": {
             "type": "string"
           },
-          "x-ms-mutability": [
-            "read",
-            "create",
-            "update"
-          ],
+          "x-ms-mutability": ["read", "create", "update"],
           "description": "Resource tags."
         }
       }
@@ -1588,9 +1467,7 @@
   },
   "security": [
     {
-      "azure_auth": [
-        "user_impersonation"
-      ]
+      "azure_auth": ["user_impersonation"]
     }
   ]
 }

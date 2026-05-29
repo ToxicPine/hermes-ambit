@@ -8,4 +8,6 @@
 /**
  * Optional. User-provided build-time environment variables for the function
  */
-export type GoogleCloudRunV2BuildConfigEnvironmentVariables = {[key: string]: string};
+export type GoogleCloudRunV2BuildConfigEnvironmentVariables = {
+  [key: string]: string;
+};

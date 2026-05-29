@@ -4,54 +4,117 @@
  * Azure Foundry OpenAI-Compatible Models API
  * OpenAPI spec version: 2024-10-21
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * Gets a list of models exposed through an Azure Foundry OpenAI-compatible route.
  */
-export const azureFoundryOpenAICompatibleModelsListQueryApiVersionDefault = "2024-10-21";
+export const azureFoundryOpenAICompatibleModelsListQueryApiVersionDefault =
+  "2024-10-21";
 
 export const azureFoundryOpenAICompatibleModelsListQueryParams = zod.object({
-  "api-version": zod.string()
-})
+  "api-version": zod.string(),
+});
 
 export const azureFoundryOpenAICompatibleModelsList200Response = zod.object({
-  "object": zod.enum(['list', 'fine_tuning.job', 'file', 'fine_tuning.job.event', 'fine_tuning.job.checkpoint', 'model', 'batch', 'upload', 'upload.part']).optional(),
-  "data": zod.array(zod.object({
-  "id": zod.string().optional(),
-  "object": zod.enum(['list', 'fine_tuning.job', 'file', 'fine_tuning.job.event', 'fine_tuning.job.checkpoint', 'model', 'batch', 'upload', 'upload.part']).optional(),
-  "created_at": zod.number().optional(),
-  "status": zod.enum(['created', 'pending', 'running', 'succeeded', 'cancelled', 'failed']).optional(),
-  "model": zod.string().nullish(),
-  "fine_tune": zod.string().nullish(),
-  "capabilities": zod.object({
-  "fine_tune": zod.boolean().optional(),
-  "inference": zod.boolean().optional(),
-  "completion": zod.boolean().optional(),
-  "chat_completion": zod.boolean().optional(),
-  "embeddings": zod.boolean().optional()
-}).optional(),
-  "lifecycle_status": zod.enum(['preview', 'generally-available']).optional(),
-  "deprecation": zod.object({
-  "fine_tune": zod.number().nullish(),
-  "inference": zod.number().optional()
-}).optional()
-})).optional()
-})
+  object: zod
+    .enum([
+      "list",
+      "fine_tuning.job",
+      "file",
+      "fine_tuning.job.event",
+      "fine_tuning.job.checkpoint",
+      "model",
+      "batch",
+      "upload",
+      "upload.part",
+    ])
+    .optional(),
+  data: zod
+    .array(
+      zod.object({
+        id: zod.string().optional(),
+        object: zod
+          .enum([
+            "list",
+            "fine_tuning.job",
+            "file",
+            "fine_tuning.job.event",
+            "fine_tuning.job.checkpoint",
+            "model",
+            "batch",
+            "upload",
+            "upload.part",
+          ])
+          .optional(),
+        created_at: zod.number().optional(),
+        status: zod
+          .enum([
+            "created",
+            "pending",
+            "running",
+            "succeeded",
+            "cancelled",
+            "failed",
+          ])
+          .optional(),
+        model: zod.string().nullish(),
+        fine_tune: zod.string().nullish(),
+        capabilities: zod
+          .object({
+            fine_tune: zod.boolean().optional(),
+            inference: zod.boolean().optional(),
+            completion: zod.boolean().optional(),
+            chat_completion: zod.boolean().optional(),
+            embeddings: zod.boolean().optional(),
+          })
+          .optional(),
+        lifecycle_status: zod
+          .enum(["preview", "generally-available"])
+          .optional(),
+        deprecation: zod
+          .object({
+            fine_tune: zod.number().nullish(),
+            inference: zod.number().optional(),
+          })
+          .optional(),
+      }),
+    )
+    .optional(),
+});
 
-
-
-
-export const azureFoundryOpenAICompatibleModelsListDefaultResponse = zod.object({
-  "error": zod.object({
-  "code": zod.enum(['conflict', 'invalidPayload', 'forbidden', 'notFound', 'unexpectedEntityState', 'itemDoesAlreadyExist', 'serviceUnavailable', 'internalFailure', 'quotaExceeded', 'jsonlValidationFailed', 'fileImportFailed', 'tooManyRequests', 'unauthorized', 'contentFilter']).optional(),
-  "message": zod.string().min(1).optional(),
-  "target": zod.string().optional(),
-  "details": zod.array(zod.unknown()).optional(),
-  "innererror": zod.object({
-  "code": zod.enum(['invalidPayload']).optional(),
-  "innererror": zod.unknown().optional()
-}).optional()
-}).optional()
-})
+export const azureFoundryOpenAICompatibleModelsListDefaultResponse = zod.object(
+  {
+    error: zod
+      .object({
+        code: zod
+          .enum([
+            "conflict",
+            "invalidPayload",
+            "forbidden",
+            "notFound",
+            "unexpectedEntityState",
+            "itemDoesAlreadyExist",
+            "serviceUnavailable",
+            "internalFailure",
+            "quotaExceeded",
+            "jsonlValidationFailed",
+            "fileImportFailed",
+            "tooManyRequests",
+            "unauthorized",
+            "contentFilter",
+          ])
+          .optional(),
+        message: zod.string().min(1).optional(),
+        target: zod.string().optional(),
+        details: zod.array(zod.unknown()).optional(),
+        innererror: zod
+          .object({
+            code: zod.enum(["invalidPayload"]).optional(),
+            innererror: zod.unknown().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
+  },
+);

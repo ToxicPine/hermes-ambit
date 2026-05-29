@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ResourceRequirementsLimits } from './googleCloudRunV2ResourceRequirementsLimits';
+import type { GoogleCloudRunV2ResourceRequirementsLimits } from "./googleCloudRunV2ResourceRequirementsLimits";
 
 /**
  * ResourceRequirements describes the compute resource requirements.

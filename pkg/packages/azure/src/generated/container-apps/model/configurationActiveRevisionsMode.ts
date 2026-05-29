@@ -9,11 +9,11 @@
  * ActiveRevisionsMode controls how active revisions are handled for the Container app:
 <list><item>Multiple: multiple revisions can be active.</item><item>Single: Only one revision can be active at a time. Revision weights can not be used in this mode. If no value if provided, this is the default.</item></list>
  */
-export type ConfigurationActiveRevisionsMode = typeof ConfigurationActiveRevisionsMode[keyof typeof ConfigurationActiveRevisionsMode];
-
+export type ConfigurationActiveRevisionsMode =
+  (typeof ConfigurationActiveRevisionsMode)[keyof typeof ConfigurationActiveRevisionsMode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConfigurationActiveRevisionsMode = {
-  Multiple: 'Multiple',
-  Single: 'Single',
+  Multiple: "Multiple",
+  Single: "Single",
 } as const;

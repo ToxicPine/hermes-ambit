@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { RuntimeJava } from './runtimeJava';
+import type { RuntimeJava } from "./runtimeJava";
 
 /**
  * Container App Runtime configuration.

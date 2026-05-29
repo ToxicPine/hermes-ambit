@@ -8,12 +8,12 @@
 /**
  * The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit logs UX. Default value is "user,system"
  */
-export type OperationOrigin = typeof OperationOrigin[keyof typeof OperationOrigin];
-
+export type OperationOrigin =
+  (typeof OperationOrigin)[keyof typeof OperationOrigin];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const OperationOrigin = {
-  user: 'user',
-  system: 'system',
-  'user,system': 'user,system',
+  user: "user",
+  system: "system",
+  "user,system": "user,system",
 } as const;

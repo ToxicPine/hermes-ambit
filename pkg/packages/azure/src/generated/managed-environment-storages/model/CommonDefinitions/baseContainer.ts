@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { EnvironmentVar } from './environmentVar';
-import type { ContainerResources } from './containerResources';
-import type { VolumeMount } from './volumeMount';
+import type { EnvironmentVar } from "./environmentVar";
+import type { ContainerResources } from "./containerResources";
+import type { VolumeMount } from "./volumeMount";
 
 /**
  * Container App base container definition.

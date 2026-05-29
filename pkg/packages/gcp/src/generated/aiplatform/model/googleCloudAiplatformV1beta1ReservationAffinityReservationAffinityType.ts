@@ -8,13 +8,14 @@
 /**
  * Required. Specifies the reservation affinity type.
  */
-export type GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType = typeof GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType[keyof typeof GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType];
-
+export type GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType =
+  (typeof GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType)[keyof typeof GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType = {
-  TYPE_UNSPECIFIED: 'TYPE_UNSPECIFIED',
-  NO_RESERVATION: 'NO_RESERVATION',
-  ANY_RESERVATION: 'ANY_RESERVATION',
-  SPECIFIC_RESERVATION: 'SPECIFIC_RESERVATION',
-} as const;
+export const GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType =
+  {
+    TYPE_UNSPECIFIED: "TYPE_UNSPECIFIED",
+    NO_RESERVATION: "NO_RESERVATION",
+    ANY_RESERVATION: "ANY_RESERVATION",
+    SPECIFIC_RESERVATION: "SPECIFIC_RESERVATION",
+  } as const;

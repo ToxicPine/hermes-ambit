@@ -562,12 +562,7 @@
           "state": {
             "type": "string",
             "description": "Output only. The current state of the SecretVersion.",
-            "enum": [
-              "STATE_UNSPECIFIED",
-              "ENABLED",
-              "DISABLED",
-              "DESTROYED"
-            ],
+            "enum": ["STATE_UNSPECIFIED", "ENABLED", "DISABLED", "DESTROYED"],
             "readOnly": true
           },
           "replicationStatus": {

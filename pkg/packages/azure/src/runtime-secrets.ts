@@ -8,10 +8,7 @@ import {
 } from "@cardelli/shared";
 
 import type { AzureAuthContext } from "./client.js";
-import {
-  azureContainerAppRef,
-  makeAzureDriver,
-} from "./deployment.js";
+import { azureContainerAppRef, makeAzureDriver } from "./deployment.js";
 import type { AzureDeploymentRef, AzureStatus } from "./deployment-types.js";
 import {
   azureSecretNameForRuntimeName,

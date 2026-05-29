@@ -5,21 +5,13 @@
     "title": "ContainerApps API Client"
   },
   "host": "management.azure.com",
-  "schemes": [
-    "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/subscriptions/{subscriptionId}/providers/Microsoft.App/containerApps": {
       "get": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Get the Container Apps in a given subscription.",
         "operationId": "ContainerApps_ListBySubscription",
         "parameters": [
@@ -56,9 +48,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps": {
       "get": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Get the Container Apps in a given resource group.",
         "operationId": "ContainerApps_ListByResourceGroup",
         "parameters": [
@@ -98,9 +88,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps/{containerAppName}": {
       "get": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Get the properties of a Container App.",
         "operationId": "ContainerApps_Get",
         "parameters": [
@@ -146,9 +134,7 @@
         }
       },
       "put": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Create or update a Container App.",
         "description": "Create or update a Container App.",
         "operationId": "ContainerApps_CreateOrUpdate",
@@ -222,9 +208,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Delete a Container App.",
         "description": "Delete a Container App.",
         "operationId": "ContainerApps_Delete",
@@ -279,9 +263,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Update properties of a Container App",
         "description": "Patches a Container App using JSON Merge Patch",
         "operationId": "ContainerApps_Update",
@@ -344,9 +326,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps/{containerAppName}/listCustomHostNameAnalysis": {
       "post": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Analyzes a custom hostname for a Container App",
         "operationId": "ContainerApps_ListCustomHostNameAnalysis",
         "parameters": [
@@ -396,9 +376,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps/{containerAppName}/listSecrets": {
       "post": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "List secrets for a container app",
         "operationId": "ContainerApps_ListSecrets",
         "parameters": [
@@ -442,9 +420,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps/{containerAppName}/getAuthtoken": {
       "post": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Get auth token for a container app",
         "operationId": "ContainerApps_GetAuthToken",
         "parameters": [
@@ -492,9 +468,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps/{containerAppName}/start": {
       "post": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Start a container app",
         "operationId": "ContainerApps_Start",
         "parameters": [
@@ -551,9 +525,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/containerApps/{containerAppName}/stop": {
       "post": {
-        "tags": [
-          "ContainerApps"
-        ],
+        "tags": ["ContainerApps"],
         "summary": "Stop a container app",
         "operationId": "ContainerApps_Stop",
         "parameters": [
@@ -620,16 +592,11 @@
           "items": {
             "$ref": "./CommonDefinitions.json#/definitions/Secret"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "activeRevisionsMode": {
           "description": "ActiveRevisionsMode controls how active revisions are handled for the Container app:\n<list><item>Multiple: multiple revisions can be active.</item><item>Single: Only one revision can be active at a time. Revision weights can not be used in this mode. If no value if provided, this is the default.</item></list>",
-          "enum": [
-            "Multiple",
-            "Single"
-          ],
+          "enum": ["Multiple", "Single"],
           "type": "string",
           "default": "Single",
           "x-ms-enum": {
@@ -647,9 +614,7 @@
           "items": {
             "$ref": "#/definitions/RegistryCredentials"
           },
-          "x-ms-identifiers": [
-            "server"
-          ]
+          "x-ms-identifiers": ["server"]
         },
         "dapr": {
           "$ref": "#/definitions/Dapr",
@@ -674,9 +639,7 @@
           "items": {
             "$ref": "./CommonDefinitions.json#/definitions/IdentitySettings"
           },
-          "x-ms-identifiers": [
-            "identity"
-          ]
+          "x-ms-identifiers": ["identity"]
         }
       }
     },
@@ -698,23 +661,13 @@
         },
         "managedBy": {
           "type": "string",
-          "x-ms-mutability": [
-            "read",
-            "create",
-            "update"
-          ],
+          "x-ms-mutability": ["read", "create", "update"],
           "description": "The fully qualified resource ID of the resource that manages this resource. Indicates if this resource is managed by another Azure resource. If this is present, complete mode deployment will not delete the resource if it is removed from the template since it is managed by another resource."
         },
         "kind": {
           "type": "string",
-          "enum": [
-            "workflowapp",
-            "functionapp"
-          ],
-          "x-ms-mutability": [
-            "read",
-            "create"
-          ],
+          "enum": ["workflowapp", "functionapp"],
+          "x-ms-mutability": ["read", "create"],
           "x-ms-enum": {
             "name": "kind",
             "modelAsString": true
@@ -782,18 +735,12 @@
             "managedEnvironmentId": {
               "description": "Deprecated. Resource ID of the Container App's environment.",
               "type": "string",
-              "x-ms-mutability": [
-                "create",
-                "read"
-              ]
+              "x-ms-mutability": ["create", "read"]
             },
             "environmentId": {
               "description": "Resource ID of environment.",
               "type": "string",
-              "x-ms-mutability": [
-                "create",
-                "read"
-              ]
+              "x-ms-mutability": ["create", "read"]
             },
             "workloadProfileName": {
               "$ref": "./CommonDefinitions.json#/definitions/WorkloadProfileName",
@@ -847,9 +794,7 @@
     },
     "ContainerAppCollection": {
       "description": "Container App collection ARM resource.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -881,10 +826,7 @@
         },
         "appProtocol": {
           "description": "Tells Dapr which protocol your application is using. Valid options are http and grpc. Default is http",
-          "enum": [
-            "http",
-            "grpc"
-          ],
+          "enum": ["http", "grpc"],
           "type": "string",
           "default": "http",
           "x-ms-enum": {
@@ -909,12 +851,7 @@
         },
         "logLevel": {
           "description": "Sets the log level for the Dapr sidecar. Allowed values are debug, info, warn, error. Default is info.",
-          "enum": [
-            "info",
-            "debug",
-            "warn",
-            "error"
-          ],
+          "enum": ["info", "debug", "warn", "error"],
           "type": "string",
           "x-ms-enum": {
             "name": "logLevel",
@@ -1006,12 +943,7 @@
         },
         "transport": {
           "description": "Ingress transport protocol",
-          "enum": [
-            "auto",
-            "http",
-            "http2",
-            "tcp"
-          ],
+          "enum": ["auto", "http", "http2", "tcp"],
           "type": "string",
           "default": "auto",
           "x-ms-enum": {
@@ -1025,9 +957,7 @@
           "items": {
             "$ref": "#/definitions/TrafficWeight"
           },
-          "x-ms-identifiers": [
-            "revisionName"
-          ]
+          "x-ms-identifiers": ["revisionName"]
         },
         "customDomains": {
           "description": "custom domain bindings for Container Apps' hostnames.",
@@ -1035,9 +965,7 @@
           "items": {
             "$ref": "./CommonDefinitions.json#/definitions/CustomDomain"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "allowInsecure": {
           "description": "Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections",
@@ -1050,9 +978,7 @@
           "items": {
             "$ref": "#/definitions/IpSecurityRestrictionRule"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "stickySessions": {
           "description": "Sticky Sessions for Single Revision Mode",
@@ -1060,10 +986,7 @@
           "properties": {
             "affinity": {
               "description": "Sticky Session Affinity",
-              "enum": [
-                "sticky",
-                "none"
-              ],
+              "enum": ["sticky", "none"],
               "type": "string",
               "x-ms-enum": {
                 "name": "affinity",
@@ -1074,11 +997,7 @@
         },
         "clientCertificateMode": {
           "description": "Client certificate mode for mTLS authentication. Ignore indicates server drops client certificate on forwarding. Accept indicates server forwards client certificate but does not require a client certificate. Require indicates server requires a client certificate.",
-          "enum": [
-            "ignore",
-            "accept",
-            "require"
-          ],
+          "enum": ["ignore", "accept", "require"],
           "type": "string",
           "x-ms-enum": {
             "name": "IngressClientCertificateMode",
@@ -1095,9 +1014,7 @@
           "items": {
             "$ref": "#/definitions/IngressPortMapping"
           },
-          "x-ms-identifiers": [
-            "targetPort"
-          ]
+          "x-ms-identifiers": ["targetPort"]
         }
       }
     },
@@ -1125,9 +1042,7 @@
     },
     "SecretsCollection": {
       "description": "Container App Secrets Collection ARM resource.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -1136,9 +1051,7 @@
           "items": {
             "$ref": "#/definitions/ContainerAppSecret"
           },
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         }
       }
     },
@@ -1196,11 +1109,7 @@
     "IpSecurityRestrictionRule": {
       "description": "Rule to restrict incoming IP address.",
       "type": "object",
-      "required": [
-        "name",
-        "ipAddressRange",
-        "action"
-      ],
+      "required": ["name", "ipAddressRange", "action"],
       "properties": {
         "name": {
           "description": "Name for the IP restriction rule.",
@@ -1216,10 +1125,7 @@
         },
         "action": {
           "description": "Allow or Deny rules to determine for incoming IP. Note: Rules can only consist of ALL Allow or ALL Deny",
-          "enum": [
-            "Allow",
-            "Deny"
-          ],
+          "enum": ["Allow", "Deny"],
           "type": "string",
           "x-ms-enum": {
             "name": "action",
@@ -1231,9 +1137,7 @@
     "CorsPolicy": {
       "description": "Cross-Origin-Resource-Sharing policy",
       "type": "object",
-      "required": [
-        "allowedOrigins"
-      ],
+      "required": ["allowedOrigins"],
       "properties": {
         "allowedOrigins": {
           "description": "Specifies the content for the access-control-allow-origins header",
@@ -1277,10 +1181,7 @@
     "IngressPortMapping": {
       "description": "Port mappings of container app ingress",
       "type": "object",
-      "required": [
-        "external",
-        "targetPort"
-      ],
+      "required": ["external", "targetPort"],
       "properties": {
         "external": {
           "description": "Specifies whether the app port is accessible outside of the environment",
@@ -1314,11 +1215,7 @@
         },
         "customDomainVerificationTest": {
           "description": "DNS verification test result.",
-          "enum": [
-            "Passed",
-            "Failed",
-            "Skipped"
-          ],
+          "enum": ["Passed", "Failed", "Skipped"],
           "type": "string",
           "readOnly": true,
           "x-ms-enum": {
@@ -1370,9 +1267,7 @@
                 },
                 "readOnly": true
               },
-              "x-ms-identifiers": [
-                "code"
-              ]
+              "x-ms-identifiers": ["code"]
             }
           },
           "readOnly": true
@@ -1463,9 +1358,7 @@
     "Service": {
       "description": "Container App to be a dev service",
       "type": "object",
-      "required": [
-        "type"
-      ],
+      "required": ["type"],
       "properties": {
         "type": {
           "description": "Dev ContainerApp service type",
@@ -1487,9 +1380,7 @@
   },
   "security": [
     {
-      "azure_auth": [
-        "user_impersonation"
-      ]
+      "azure_auth": ["user_impersonation"]
     }
   ]
 }

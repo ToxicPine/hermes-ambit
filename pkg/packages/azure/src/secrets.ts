@@ -14,7 +14,10 @@ import {
 import type { Secret } from "./generated/container-apps/model/CommonDefinitions/secret";
 import type { ContainerApp } from "./generated/container-apps/model/containerApp";
 import { AZURE_OWNERSHIP_SCOPE } from "./constants.js";
-import { waitAzureLongRunningOperation, type AzureAuthContext } from "./client.js";
+import {
+  waitAzureLongRunningOperation,
+  type AzureAuthContext,
+} from "./client.js";
 import {
   createOrUpdateContainerApp,
   findContainerApp,
@@ -164,7 +167,8 @@ const withoutContainerAppSecrets = (
       configuration: {
         ...configuration,
         secrets: (configuration.secrets ?? []).filter(
-          (secret) => secret.name === undefined || !removeNames.has(secret.name),
+          (secret) =>
+            secret.name === undefined || !removeNames.has(secret.name),
         ),
       },
     },

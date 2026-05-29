@@ -15,7 +15,10 @@ import {
 } from "@cardelli/shared";
 
 import type { ContainerApp } from "./generated/container-apps/model/containerApp";
-import { waitAzureLongRunningOperation, type AzureAuthContext } from "./client.js";
+import {
+  waitAzureLongRunningOperation,
+  type AzureAuthContext,
+} from "./client.js";
 import { AZURE_OWNERSHIP_SCOPE } from "./constants.js";
 import type {
   AzureBoundary,
@@ -105,7 +108,7 @@ const requireUniversalImage = (): Effect.Effect<void, OperationFailed> =>
         new OperationFailed({
           operation: "azure.deployment.image",
           message:
-            "UNIVERSAL_HERMES_IMAGE must be set to the published Hermes Ambit runtime image before deploy can create or update Container Apps.",
+            "UNIVERSAL_HERMES_IMAGE must be a published Hermes Ambit runtime image before deploy can create or update Container Apps.",
         }),
       );
 
@@ -126,8 +129,7 @@ const statusFromContainerApp = (
     ...(image ? { image } : {}),
     ...(containerApp.properties?.latestReadyRevisionName
       ? {
-          latestReadyRevision:
-            containerApp.properties.latestReadyRevisionName,
+          latestReadyRevision: containerApp.properties.latestReadyRevisionName,
         }
       : {}),
     ...(containerApp.properties?.latestRevisionName
@@ -145,16 +147,16 @@ const statusFromContainerApp = (
 const discoveredStatusFromContainerApp = (
   containerApp: ContainerApp,
 ): AzureDiscoveredDeployment => {
-  const { deployed: _deployed, ...status } = statusFromContainerApp(containerApp);
+  const { deployed: _deployed, ...status } =
+    statusFromContainerApp(containerApp);
   return {
     ...status,
     ...(containerApp.name ? { resourceName: containerApp.name } : {}),
   };
 };
 
-const isAzureOwnedContainerApp = (
-  containerApp: ContainerApp,
-): boolean => containerApp.tags?.[OWNERSHIP_SCOPE_KEY] === AZURE_OWNERSHIP_SCOPE;
+const isAzureOwnedContainerApp = (containerApp: ContainerApp): boolean =>
+  containerApp.tags?.[OWNERSHIP_SCOPE_KEY] === AZURE_OWNERSHIP_SCOPE;
 
 const isAzureDeploymentContainerApp = (
   identity: DeploymentIdentity,
@@ -207,15 +209,23 @@ export const listAzureDeploymentStatuses = (
   );
 
 export const makeAzureDriver = (auth: AzureAuthContext): AzureOperations => {
-  const plan = (identity: AzureDeployment): Effect.Effect<AzurePlan, CloudError> =>
+  const plan = (
+    identity: AzureDeployment,
+  ): Effect.Effect<AzurePlan, CloudError> =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("azure.deployment.plan", identity);
+      yield* validateHermesDeploymentIdentity(
+        "azure.deployment.plan",
+        identity,
+      );
       const storageRef =
         yield* azureManagedEnvironmentStorageRefFromDeployment(identity);
       yield* requireUniversalImage();
       yield* requireManagedEnvironmentStorage(auth, storageRef);
       const containerAppRef = azureContainerAppRef(identity);
-      const existingContainerApp = yield* findContainerApp(auth, containerAppRef);
+      const existingContainerApp = yield* findContainerApp(
+        auth,
+        containerAppRef,
+      );
       yield* assertOwnedContainerApp(identity, existingContainerApp);
       const desiredApp = desiredContainerApp({
         identity,
@@ -237,7 +247,10 @@ export const makeAzureDriver = (auth: AzureAuthContext): AzureOperations => {
         return { ...base, action: "create", containerApp: desiredApp };
       }
 
-      const containerApp = mergeContainerAppInput(desiredApp, existingContainerApp);
+      const containerApp = mergeContainerAppInput(
+        desiredApp,
+        existingContainerApp,
+      );
       return containerAppMatchesInput(existingContainerApp, desiredApp)
         ? { ...base, action: "ready", existingContainerApp }
         : { ...base, action: "update", containerApp, existingContainerApp };
@@ -245,7 +258,10 @@ export const makeAzureDriver = (auth: AzureAuthContext): AzureOperations => {
 
   const status = (identity: AzureDeploymentRef) =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("azure.deployment.status", identity);
+      yield* validateHermesDeploymentIdentity(
+        "azure.deployment.status",
+        identity,
+      );
       const containerApp = yield* findContainerApp(
         auth,
         azureContainerAppRef(identity),
@@ -270,13 +286,19 @@ export const makeAzureDriver = (auth: AzureAuthContext): AzureOperations => {
         "azure.containerApps.createOrUpdate",
         result,
       );
-      const containerApp = yield* findContainerApp(auth, planned.containerAppRef);
+      const containerApp = yield* findContainerApp(
+        auth,
+        planned.containerAppRef,
+      );
       return statusFromContainerApp(containerApp ?? result.data);
     });
 
   const restart = (identity: AzureDeploymentRef) =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("azure.deployment.restart", identity);
+      yield* validateHermesDeploymentIdentity(
+        "azure.deployment.restart",
+        identity,
+      );
       const ref = azureContainerAppRef(identity);
       const existing = yield* findContainerApp(auth, ref);
       yield* assertOwnedContainerApp(identity, existing);
@@ -291,16 +313,27 @@ export const makeAzureDriver = (auth: AzureAuthContext): AzureOperations => {
       }
 
       const stopped = yield* stopContainerApp(auth, ref);
-      yield* waitAzureLongRunningOperation(auth, "azure.containerApps.stop", stopped);
+      yield* waitAzureLongRunningOperation(
+        auth,
+        "azure.containerApps.stop",
+        stopped,
+      );
       const started = yield* startContainerApp(auth, ref);
-      yield* waitAzureLongRunningOperation(auth, "azure.containerApps.start", started);
+      yield* waitAzureLongRunningOperation(
+        auth,
+        "azure.containerApps.start",
+        started,
+      );
       const containerApp = yield* findContainerApp(auth, ref);
       return statusFromContainerApp(containerApp);
     });
 
   const destroy = (identity: AzureDeploymentRef) =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("azure.deployment.destroy", identity);
+      yield* validateHermesDeploymentIdentity(
+        "azure.deployment.destroy",
+        identity,
+      );
       const ref = azureContainerAppRef(identity);
       const existing = yield* findContainerApp(auth, ref);
       yield* assertOwnedContainerApp(identity, existing);
@@ -309,7 +342,11 @@ export const makeAzureDriver = (auth: AzureAuthContext): AzureOperations => {
       }
 
       const deleted = yield* deleteContainerApp(auth, ref);
-      yield* waitAzureLongRunningOperation(auth, "azure.containerApps.delete", deleted);
+      yield* waitAzureLongRunningOperation(
+        auth,
+        "azure.containerApps.delete",
+        deleted,
+      );
       const containerApp = yield* findContainerApp(auth, ref);
       return statusFromContainerApp(containerApp);
     });

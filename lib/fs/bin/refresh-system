@@ -25,7 +25,6 @@ result=$(nix-build --no-out-link -E "
     inherit pkgs;
     modules = [
       ${home_nix}
-      ${managed_nix}
       { home.username = \"${user}\"; home.homeDirectory = \"/home/${user}\"; }
     ];
   }).activationPackage

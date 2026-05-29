@@ -4,11 +4,11 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1DedicatedResources } from './googleCloudAiplatformV1beta1DedicatedResources';
-import type { GoogleCloudAiplatformV1beta1AutomaticResources } from './googleCloudAiplatformV1beta1AutomaticResources';
-import type { GoogleCloudAiplatformV1beta1LargeModelReference } from './googleCloudAiplatformV1beta1LargeModelReference';
-import type { GoogleCloudAiplatformV1beta1ModelContainerSpec } from './googleCloudAiplatformV1beta1ModelContainerSpec';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadata } from './googleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadata';
+import type { GoogleCloudAiplatformV1beta1DedicatedResources } from "./googleCloudAiplatformV1beta1DedicatedResources";
+import type { GoogleCloudAiplatformV1beta1AutomaticResources } from "./googleCloudAiplatformV1beta1AutomaticResources";
+import type { GoogleCloudAiplatformV1beta1LargeModelReference } from "./googleCloudAiplatformV1beta1LargeModelReference";
+import type { GoogleCloudAiplatformV1beta1ModelContainerSpec } from "./googleCloudAiplatformV1beta1ModelContainerSpec";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadata } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadata";
 
 /**
  * Model metadata that is needed for UploadModel or DeployModel/CreateEndpoint requests.

@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2TrafficTargetStatusType } from './googleCloudRunV2TrafficTargetStatusType';
+import type { GoogleCloudRunV2TrafficTargetStatusType } from "./googleCloudRunV2TrafficTargetStatusType";
 
 /**
  * Represents the observed state of a single `TrafficTarget` entry.

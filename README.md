@@ -23,10 +23,8 @@ Build the local image:
 ```sh
 nix build .#container
 docker load < result
-docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 hermes-gateway:latest
+docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 container-agent:latest
 ```
-
-You can edit the default Hermes Agent settings via `fs/hm-user/user/home.nix`.
 
 ## Cloud Deployer
 
@@ -49,10 +47,14 @@ The public command surface is `setup`, `auth check`, `discover`, `models`,
 `tui`. There is no public `plan` command; `deploy`, `restart`, and `destroy`
 compute their preview internally before mutating cloud resources.
 
-Cloud deploys are currently gated on the universal runtime image URL in
-`pkg/packages/shared/src/constants.ts`. Until that placeholder is replaced with
-the published image URL, provider planning fails before any cloud mutation. See
-`DEPLOYMENT.md` for the supported GCP and Azure setup shapes.
+Profiles include provider-specific model selection: GCP uses `--model`, and
+Azure uses `--endpoint` plus `--model`. `deploy` applies that model config after
+creating or updating the runtime; secrets remain explicit `secrets` commands.
+
+Cloud deploys use the fixed universal runtime image URL in
+`pkg/packages/shared/src/constants.ts`. The publish workflow builds the Nix
+container and pushes the image to GHCR; the local deployer never depends on the
+local image build output.
 
 ## Features
 
@@ -60,12 +62,12 @@ the published image URL, provider planning fails before any cloud mutation. See
 - The agent has a config file it can edit from inside the container: `~/.nixcfg/home.nix`. After editing it, `refresh-system` applies the new tools and settings.
 - The default tools are already in the image, so the container can start without waiting for a big install step.
 - When `refresh-system` finishes, its results are saved in `/data/nix-cache`. If the agent asks for the same tools again, they can be reused from that cache.
-- `hmPolicy` decides what happens on startup: use the ready-cached environment, rebuild from the saved config, or leave the user environment alone.
+- By default, startup rebuilds Home Manager from the saved config, so provider-written `managed.nix` changes take effect when the runtime is rolled.
 - Each agent can run as a separate Linux user with its own home directory, configuration, installed tools, and unique uid.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `nix/system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `nix/default.nix` declares which users exist and builds the image. The root `flake.nix` exposes `container` for the runtime image and `deployer` for the local cloud deployer tools. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `nix/system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `nix/default.nix` declares which users exist and builds the image. The root `flake.nix` exposes `container` for the runtime image and `deployer` for the local cloud deployer tools. Shared Home Manager defaults live in `fs/hm-base/default.nix`. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and can add user-specific tools, shell settings, and Hermes overrides.
 
 In `nix/system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
 
@@ -96,7 +98,10 @@ Inside the running container, that user's config appears at `~/.nixcfg`. The age
 ```nix
 { pkgs, ... }:
 {
-  imports = [ ../../hm-base ];
+  imports = [
+    (import ../../hm-base { })
+    ./managed.nix
+  ];
   home.packages = with pkgs; [ ffmpeg jq ];
   programs.bash.shellAliases.ll = "ls -la";
   programs.hermes-agent.settings.gateway.port = 8080;

@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ManagedCertificate } from './managedCertificate';
+import type { ManagedCertificate } from "./managedCertificate";
 
 /**
  * Collection of Managed Certificates.

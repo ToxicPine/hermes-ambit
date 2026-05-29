@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { SkuTier } from './skuTier';
+import type { SkuTier } from "./skuTier";
 
 /**
  * The resource model definition representing SKU

@@ -1,0 +1,48 @@
+name: Publish runtime image
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-runtime-image-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Build Runtime Image
+        run: nix build .#container -o runtime-image
+
+      - name: Publish Runtime Image
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER}/container-agent"
+
+          docker load --input runtime-image
+          docker tag container-agent:latest "$image:latest"
+          docker tag container-agent:latest "$image:${GITHUB_SHA}"
+
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
+            --username "$GITHUB_ACTOR" \
+            --password-stdin
+
+          docker push "$image:latest"
+          docker push "$image:${GITHUB_SHA}"

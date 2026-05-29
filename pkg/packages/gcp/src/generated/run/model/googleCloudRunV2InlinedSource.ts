@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2SourceFile } from './googleCloudRunV2SourceFile';
+import type { GoogleCloudRunV2SourceFile } from "./googleCloudRunV2SourceFile";
 
 /**
  * Inlined source.

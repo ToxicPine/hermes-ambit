@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1AutoscalingMetricSpecMonitoredResourceLabels } from './googleCloudAiplatformV1beta1AutoscalingMetricSpecMonitoredResourceLabels';
+import type { GoogleCloudAiplatformV1beta1AutoscalingMetricSpecMonitoredResourceLabels } from "./googleCloudAiplatformV1beta1AutoscalingMetricSpecMonitoredResourceLabels";
 
 /**
  * The metric specification that defines the target resource utilization (CPU utilization, accelerator's duty cycle, and so on) for calculating the desired replica count.

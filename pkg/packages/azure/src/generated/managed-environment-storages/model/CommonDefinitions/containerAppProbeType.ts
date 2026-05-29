@@ -8,12 +8,12 @@
 /**
  * The type of probe.
  */
-export type ContainerAppProbeType = typeof ContainerAppProbeType[keyof typeof ContainerAppProbeType];
-
+export type ContainerAppProbeType =
+  (typeof ContainerAppProbeType)[keyof typeof ContainerAppProbeType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ContainerAppProbeType = {
-  Liveness: 'Liveness',
-  Readiness: 'Readiness',
-  Startup: 'Startup',
+  Liveness: "Liveness",
+  Readiness: "Readiness",
+  Startup: "Startup",
 } as const;

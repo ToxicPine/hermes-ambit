@@ -4,8 +4,8 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { Automatic } from './automatic';
-import type { UserManaged } from './userManaged';
+import type { Automatic } from "./automatic";
+import type { UserManaged } from "./userManaged";
 
 /**
  * A policy that defines the replication and encryption configuration of data.

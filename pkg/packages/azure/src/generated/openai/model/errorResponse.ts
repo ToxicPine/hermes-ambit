@@ -4,7 +4,7 @@
  * Azure Foundry OpenAI-Compatible Models API
  * OpenAPI spec version: 2024-10-21
  */
-import type { Error } from './error';
+import type { Error } from "./error";
 
 export interface ErrorResponse {
   error?: Error;

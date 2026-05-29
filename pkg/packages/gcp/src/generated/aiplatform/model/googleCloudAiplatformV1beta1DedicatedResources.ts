@@ -4,10 +4,10 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1MachineSpec } from './googleCloudAiplatformV1beta1MachineSpec';
-import type { GoogleCloudAiplatformV1beta1AutoscalingMetricSpec } from './googleCloudAiplatformV1beta1AutoscalingMetricSpec';
-import type { GoogleCloudAiplatformV1beta1FlexStart } from './googleCloudAiplatformV1beta1FlexStart';
-import type { GoogleCloudAiplatformV1beta1DedicatedResourcesScaleToZeroSpec } from './googleCloudAiplatformV1beta1DedicatedResourcesScaleToZeroSpec';
+import type { GoogleCloudAiplatformV1beta1MachineSpec } from "./googleCloudAiplatformV1beta1MachineSpec";
+import type { GoogleCloudAiplatformV1beta1AutoscalingMetricSpec } from "./googleCloudAiplatformV1beta1AutoscalingMetricSpec";
+import type { GoogleCloudAiplatformV1beta1FlexStart } from "./googleCloudAiplatformV1beta1FlexStart";
+import type { GoogleCloudAiplatformV1beta1DedicatedResourcesScaleToZeroSpec } from "./googleCloudAiplatformV1beta1DedicatedResourcesScaleToZeroSpec";
 
 /**
  * A description of resources that are dedicated to a DeployedModel or DeployedIndex, and that need a higher degree of manual configuration.

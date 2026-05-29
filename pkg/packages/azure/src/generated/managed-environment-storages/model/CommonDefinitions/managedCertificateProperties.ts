@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ManagedCertificatePropertiesProvisioningState } from './managedCertificatePropertiesProvisioningState';
-import type { ManagedCertificatePropertiesDomainControlValidation } from './managedCertificatePropertiesDomainControlValidation';
+import type { ManagedCertificatePropertiesProvisioningState } from "./managedCertificatePropertiesProvisioningState";
+import type { ManagedCertificatePropertiesDomainControlValidation } from "./managedCertificatePropertiesDomainControlValidation";
 
 /**
  * Certificate resource specific properties

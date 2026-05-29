@@ -8,15 +8,15 @@
 /**
  * Provisioning state of the certificate.
  */
-export type CertificatePropertiesProvisioningState = typeof CertificatePropertiesProvisioningState[keyof typeof CertificatePropertiesProvisioningState];
-
+export type CertificatePropertiesProvisioningState =
+  (typeof CertificatePropertiesProvisioningState)[keyof typeof CertificatePropertiesProvisioningState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CertificatePropertiesProvisioningState = {
-  Succeeded: 'Succeeded',
-  Failed: 'Failed',
-  Canceled: 'Canceled',
-  DeleteFailed: 'DeleteFailed',
-  Pending: 'Pending',
-  Deleting: 'Deleting',
+  Succeeded: "Succeeded",
+  Failed: "Failed",
+  Canceled: "Canceled",
+  DeleteFailed: "DeleteFailed",
+  Pending: "Pending",
+  Deleting: "Deleting",
 } as const;

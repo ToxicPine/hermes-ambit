@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1ProbeHttpHeader } from './googleCloudAiplatformV1beta1ProbeHttpHeader';
+import type { GoogleCloudAiplatformV1beta1ProbeHttpHeader } from "./googleCloudAiplatformV1beta1ProbeHttpHeader";
 
 /**
  * HttpGetAction describes an action based on HTTP Get requests.

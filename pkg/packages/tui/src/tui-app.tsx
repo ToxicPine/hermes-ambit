@@ -64,7 +64,8 @@ const setupCommand: TuiCommand = {
   name: "Setup",
   command: "setup",
   scope: "profile",
-  detail: "Create or update a local deployer profile from provider-specific inputs.",
+  detail:
+    "Create or update a local deployer profile from provider-specific inputs.",
   example: "hermes-ambit setup --provider gcp --deployment personal-agent",
   form: "setup",
   buildIntent: (globals) => ({
@@ -82,7 +83,8 @@ const commands: readonly TuiCommand[] = [
     name: "Auth Check",
     command: "auth check",
     scope: "credentials",
-    detail: "Verify the local provider credential flow for the selected account boundary.",
+    detail:
+      "Verify the local provider credential flow for the selected account boundary.",
     example: "hermes-ambit auth check --profile default",
     buildIntent: (globals) => ({ command: "auth.check", globals }),
   },
@@ -90,7 +92,8 @@ const commands: readonly TuiCommand[] = [
     name: "Discover",
     command: "discover",
     scope: "provider",
-    detail: "List existing provider deployments in the selected cloud boundary.",
+    detail:
+      "List existing provider deployments in the selected cloud boundary.",
     example: "hermes-ambit discover --profile default",
     buildIntent: (globals) => ({ command: "discover", globals }),
   },
@@ -98,7 +101,8 @@ const commands: readonly TuiCommand[] = [
     name: "Models",
     command: "models",
     scope: "runtime",
-    detail: "List model catalog entries exposed by the selected provider surface.",
+    detail:
+      "List model catalog entries exposed by the selected provider surface.",
     example: "hermes-ambit models --profile default",
     buildIntent: (globals) => ({ command: "models.list", globals }),
   },
@@ -106,7 +110,8 @@ const commands: readonly TuiCommand[] = [
     name: "Deploy",
     command: "deploy",
     scope: "deployment",
-    detail: "Deploy the selected cloud target after showing the mutation preview.",
+    detail:
+      "Deploy the selected cloud target after showing the mutation preview.",
     example: "hermes-ambit deploy --profile default",
     buildIntent: (globals) => ({ command: "deploy", globals, yes: false }),
   },
@@ -122,8 +127,10 @@ const commands: readonly TuiCommand[] = [
     name: "Config",
     command: "config",
     scope: "Hermes",
-    detail: "Show or update Hermes runtime settings through the provider user-volume path.",
-    example: "hermes-ambit config set model.default gemini-3-flash-preview --profile default",
+    detail:
+      "Show or update Hermes runtime settings through the provider user-volume path.",
+    example:
+      "hermes-ambit config set model.default gemini-model-id --profile default",
     form: "config",
     buildIntent: (globals) => ({ command: "config.show", globals }),
   },
@@ -148,7 +155,8 @@ const commands: readonly TuiCommand[] = [
     name: "Destroy",
     command: "destroy",
     scope: "deployment",
-    detail: "Delete the provider deployment with an explicit state retention choice.",
+    detail:
+      "Delete the provider deployment with an explicit state retention choice.",
     example: "hermes-ambit destroy --profile default --retain-state",
     form: "destroy",
     buildIntent: (globals) => ({
@@ -162,7 +170,8 @@ const commands: readonly TuiCommand[] = [
     name: "Doctor",
     command: "doctor",
     scope: "diagnostics",
-    detail: "Run profile, runtime image, config, auth, provider setup, discovery, and model access checks.",
+    detail:
+      "Run profile, runtime image, config, auth, provider setup, discovery, and model access checks.",
     example: "hermes-ambit doctor --profile default",
     buildIntent: (globals) => ({ command: "doctor", globals }),
   },
@@ -188,8 +197,7 @@ const cliFlag = (name: string, value: string | undefined): readonly string[] =>
 const fieldCliArgs = (
   fields: Readonly<Record<string, string>>,
   keys: readonly string[],
-): readonly string[] =>
-  keys.flatMap((key) => cliFlag(key, fields[key]));
+): readonly string[] => keys.flatMap((key) => cliFlag(key, fields[key]));
 
 const draftTargetArgs = (draft: SetupDraft): string => {
   const providerKeys = setupDraftFields(draft)
@@ -238,7 +246,7 @@ const modelDefaultExample = (
   targetArgs: string,
 ): string => {
   if (provider === "gcp") {
-    return `hermes-ambit config set model.default gemini-3-flash-preview ${targetArgs}`.trim();
+    return `hermes-ambit config set model.default gemini-model-id ${targetArgs}`.trim();
   }
   if (provider === "azure") {
     return `hermes-ambit config set model.default my-gpt-deployment ${targetArgs}`.trim();
@@ -332,6 +340,7 @@ const targetFieldsFromProfile = (profile: AppProfile): readonly TuiField[] => {
       field("project", profile.gcp.projectId),
       field("region", profile.gcp.region),
       field("service account", profile.gcp.serviceAccount),
+      field("model", profile.gcp.model),
       field("user", profile.user),
       field("quota project", profile.quotaProjectId),
       field("state server", profile.gcp.state.server),
@@ -351,13 +360,12 @@ const targetFieldsFromProfile = (profile: AppProfile): readonly TuiField[] => {
     field("environment", profile.azure.environmentId),
     field("storage", profile.azure.state.storageName),
     field("model endpoint", profile.azure.openaiCompatibleEndpoint),
+    field("model deployment", profile.azure.modelDeployment),
     field("user", profile.user),
   ];
 };
 
-const targetFieldsFromDraft = (
-  draft: SetupDraft,
-): readonly TuiField[] => {
+const targetFieldsFromDraft = (draft: SetupDraft): readonly TuiField[] => {
   const fields = draft.fields;
   const base = [
     field("profile", draft.profileName),
@@ -371,6 +379,7 @@ const targetFieldsFromDraft = (
       field("region", fields["region"]),
       field("service account", fields["service-account"]),
       field("quota project", fields["quota-project"]),
+      field("model", fields["model"]),
       field("user", draft.user),
       field("state server", fields["state-server"]),
       field("state path", fields["state-path"]),
@@ -388,17 +397,17 @@ const targetFieldsFromDraft = (
       field("environment", fields["environment-id"]),
       field("storage", fields["storage-name"]),
       field("model endpoint", fields["endpoint"]),
+      field("model deployment", fields["model"]),
       field("user", draft.user),
       field("state data subpath", fields["state-data-path"]),
       field("state nix subpath", fields["state-nix-path"]),
     ];
   }
-  return [
-    ...base,
-  ];
+  return [...base];
 };
 
-const commandAt = (index: number): TuiCommand => commands[index] ?? setupCommand;
+const commandAt = (index: number): TuiCommand =>
+  commands[index] ?? setupCommand;
 
 const setupDraftStatusText = (draft: SetupDraft): string => {
   const missing = setupDraftMissingFields(draft);
@@ -474,7 +483,9 @@ const TuiApp = (props: {
   const [setupDraft, setSetupDraft] = createSignal(props.context.setupDraft);
   const [commandGlobals, setCommandGlobals] = createSignal(initialGlobals);
   const [activeProfile, setActiveProfile] = createSignal(props.context.profile);
-  const [profileError, setProfileError] = createSignal(props.context.profileError);
+  const [profileError, setProfileError] = createSignal(
+    props.context.profileError,
+  );
   const [setupFieldIndex, setSetupFieldIndex] = createSignal(0);
   const [configKeyIndex, setConfigKeyIndex] = createSignal(0);
   const [configValue, setConfigValue] = createSignal("");
@@ -491,8 +502,8 @@ const TuiApp = (props: {
   const launchTarget = props.context.setupDraft;
   const selectedCommand = createMemo(() => commandAt(selectedIndex()));
   const setupFields = createMemo(() => setupDraftFields(setupDraft()));
-  const selectedSetupField = createMemo(() =>
-    setupFields()[setupFieldIndex()] ?? setupFields()[0],
+  const selectedSetupField = createMemo(
+    () => setupFields()[setupFieldIndex()] ?? setupFields()[0],
   );
   const setupFieldOptions = createMemo(() =>
     setupFields().map((field, index) => ({
@@ -503,33 +514,43 @@ const TuiApp = (props: {
   );
   const setupSelected = createMemo(() => selectedCommand().form === "setup");
   const configSelected = createMemo(() => selectedCommand().form === "config");
-  const secretsSelected = createMemo(() => selectedCommand().form === "secrets");
-  const destroySelected = createMemo(() => selectedCommand().form === "destroy");
+  const secretsSelected = createMemo(
+    () => selectedCommand().form === "secrets",
+  );
+  const destroySelected = createMemo(
+    () => selectedCommand().form === "destroy",
+  );
   const draftBackedTarget = createMemo(
     () => !activeProfile() && !commandGlobals().profile,
   );
-  const activeProvider = createMemo(() =>
-    activeProfile()?.provider ??
-    (draftBackedTarget() ? setupDraft().provider : undefined) ??
-    commandGlobals().provider ??
-    props.context.provider ??
-    launchTarget.provider,
+  const activeProvider = createMemo(
+    () =>
+      activeProfile()?.provider ??
+      (draftBackedTarget() ? setupDraft().provider : undefined) ??
+      commandGlobals().provider ??
+      props.context.provider ??
+      launchTarget.provider,
   );
-  const activeProfileName = createMemo(() =>
-    activeProfile()?.name ?? commandGlobals().profile ?? props.context.profileName,
+  const activeProfileName = createMemo(
+    () =>
+      activeProfile()?.name ??
+      commandGlobals().profile ??
+      props.context.profileName,
   );
-  const activeDeploymentLabel = createMemo(() =>
-    activeProfile()?.deployment ??
-    (draftBackedTarget() ? setupDraft().deployment : undefined) ??
-    commandGlobals().deployment ??
-    launchTarget.deployment ??
-    "not selected",
+  const activeDeploymentLabel = createMemo(
+    () =>
+      activeProfile()?.deployment ??
+      (draftBackedTarget() ? setupDraft().deployment : undefined) ??
+      commandGlobals().deployment ??
+      launchTarget.deployment ??
+      "not selected",
   );
-  const activeDeploymentName = createMemo(() =>
-    activeProfile()?.deployment ??
-    (draftBackedTarget() ? setupDraft().deployment : undefined) ??
-    commandGlobals().deployment ??
-    launchTarget.deployment,
+  const activeDeploymentName = createMemo(
+    () =>
+      activeProfile()?.deployment ??
+      (draftBackedTarget() ? setupDraft().deployment : undefined) ??
+      commandGlobals().deployment ??
+      launchTarget.deployment,
   );
   const commandExampleProvider = createMemo(() =>
     setupSelected() ? setupDraft().provider : activeProvider(),
@@ -593,7 +614,8 @@ const TuiApp = (props: {
     return fields["endpoint"] ?? props.context.setupDraft.fields["endpoint"];
   });
   const configEndpointSelected = createMemo(
-    () => activeProvider() === "azure" && selectedConfigKey() === "model.default",
+    () =>
+      activeProvider() === "azure" && selectedConfigKey() === "model.default",
   );
   const configEndpointValue = createMemo(() => {
     const endpoint = configEndpoint().trim();
@@ -778,7 +800,9 @@ const TuiApp = (props: {
           value,
         };
   };
-  const runtimeForIntent = (intent: ExecutableCommandIntent): CommandRuntime => {
+  const runtimeForIntent = (
+    intent: ExecutableCommandIntent,
+  ): CommandRuntime => {
     const runtime: CommandRuntime = {
       ...props.runtime,
       deviceCodePrompt: (message) => setOutput(message),
@@ -803,7 +827,9 @@ const TuiApp = (props: {
           : commandGlobals();
     const intent = commandIntent(command, globals);
     const effectiveIntent =
-      pending && pending.index === index ? confirmedIntent(pending.intent) : intent;
+      pending && pending.index === index
+        ? confirmedIntent(pending.intent)
+        : intent;
 
     if (
       effectiveIntent.command === "destroy" &&
@@ -836,7 +862,10 @@ const TuiApp = (props: {
       return;
     }
 
-    if (effectiveIntent.command === "secrets.set" && secretValue().length === 0) {
+    if (
+      effectiveIntent.command === "secrets.set" &&
+      secretValue().length === 0
+    ) {
       setOutput("Enter a secret value before saving.");
       setFocusPane("secretValue");
       return;
@@ -959,7 +988,11 @@ const TuiApp = (props: {
       setFocusPane("commands");
       return;
     }
-    if ((key.ctrl && key.name === "c") || key.name === "q" || key.name === "escape") {
+    if (
+      (key.ctrl && key.name === "c") ||
+      key.name === "q" ||
+      key.name === "escape"
+    ) {
       key.preventDefault();
       renderer.destroy();
     }
@@ -1049,13 +1082,19 @@ const TuiApp = (props: {
         >
           <text style={{ fg: "#e5edf6" }}>{selectedCommand().command}</text>
           <text style={{ fg: "#9fb3c8" }}>{selectedCommand().scope}</text>
-          <text style={{ fg: "#d4dde8", marginTop: 1 }}>{selectedCommand().detail}</text>
-          <text style={{ fg: "#fbbf24", marginTop: 1 }}>{selectedCommandExample()}</text>
+          <text style={{ fg: "#d4dde8", marginTop: 1 }}>
+            {selectedCommand().detail}
+          </text>
+          <text style={{ fg: "#fbbf24", marginTop: 1 }}>
+            {selectedCommandExample()}
+          </text>
 
           <text style={{ fg: "#7dd3fc", marginTop: 2 }}>Target</text>
           <text style={{ fg: "#d4dde8" }}>{selectedTargetText()}</text>
           {profileError() ? (
-            <text style={{ fg: "#f87171", marginTop: 1 }}>{profileError()?.message}</text>
+            <text style={{ fg: "#f87171", marginTop: 1 }}>
+              {profileError()?.message}
+            </text>
           ) : null}
 
           {setupSelected() ? (
@@ -1174,7 +1213,9 @@ const TuiApp = (props: {
                   onChange={setConfigValue}
                   onSubmit={() => {
                     setFocusPane(
-                      configEndpointSelected() ? "configEndpoint" : "configKeys",
+                      configEndpointSelected()
+                        ? "configEndpoint"
+                        : "configKeys",
                     );
                   }}
                   style={{
@@ -1272,7 +1313,9 @@ const TuiApp = (props: {
                     <input
                       focused={focusPane() === "secretName"}
                       value={secretName()}
-                      placeholder={runtimeSecretNamePlaceholder(activeProvider())}
+                      placeholder={runtimeSecretNamePlaceholder(
+                        activeProvider(),
+                      )}
                       onChange={setSecretName}
                       onSubmit={() => {
                         setFocusPane(
@@ -1307,7 +1350,9 @@ const TuiApp = (props: {
                           <text
                             style={{
                               fg:
-                                secretValue().length > 0 ? "#f8fafc" : "#8aa0b4",
+                                secretValue().length > 0
+                                  ? "#f8fafc"
+                                  : "#8aa0b4",
                             }}
                           >
                             {secretValueText()}
@@ -1347,7 +1392,9 @@ const TuiApp = (props: {
                     setDestroyConfirmation("");
                     setPendingConfirmation(undefined);
                   }
-                  setFocusPane(state === "purge" ? "destroyConfirm" : "commands");
+                  setFocusPane(
+                    state === "purge" ? "destroyConfirm" : "commands",
+                  );
                 }}
                 showScrollIndicator={false}
                 wrapSelection

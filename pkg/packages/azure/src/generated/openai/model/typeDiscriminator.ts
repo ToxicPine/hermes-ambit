@@ -5,18 +5,18 @@
  * OpenAPI spec version: 2024-10-21
  */
 
-export type TypeDiscriminator = typeof TypeDiscriminator[keyof typeof TypeDiscriminator];
-
+export type TypeDiscriminator =
+  (typeof TypeDiscriminator)[keyof typeof TypeDiscriminator];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TypeDiscriminator = {
-  list: 'list',
-  fine_tuningjob: 'fine_tuning.job',
-  file: 'file',
-  fine_tuningjobevent: 'fine_tuning.job.event',
-  fine_tuningjobcheckpoint: 'fine_tuning.job.checkpoint',
-  model: 'model',
-  batch: 'batch',
-  upload: 'upload',
-  uploadpart: 'upload.part',
+  list: "list",
+  fine_tuningjob: "fine_tuning.job",
+  file: "file",
+  fine_tuningjobevent: "fine_tuning.job.event",
+  fine_tuningjobcheckpoint: "fine_tuning.job.checkpoint",
+  model: "model",
+  batch: "batch",
+  upload: "upload",
+  uploadpart: "upload.part",
 } as const;

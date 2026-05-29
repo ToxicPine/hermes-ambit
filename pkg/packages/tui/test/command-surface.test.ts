@@ -3,14 +3,21 @@ import { describe, expect, test } from "bun:test";
 import {
   RemediationRequired,
   emitCloudEvent,
-  type HomeManagerPatch,
+  type HomeManagerModule,
 } from "@cardelli/shared";
 import { Effect } from "effect";
 
 import type { AppProfile } from "../src/app-profile.js";
 import { parseArgs } from "../src/args.js";
-import { applyActiveProfileDefault, helpRequested } from "../src/cli-runtime.js";
-import { runIntent, validateRuntime, type CommandRuntime } from "../src/command.js";
+import {
+  applyActiveProfileDefault,
+  helpRequested,
+} from "../src/cli-runtime.js";
+import {
+  runIntent,
+  validateRuntime,
+  type CommandRuntime,
+} from "../src/command.js";
 import { mergeConfigIntoIntent } from "../src/config-file.js";
 import type {
   ProviderAuthSummary,
@@ -67,9 +74,8 @@ const operationResult = <T>(
   raw,
 });
 
-const emptyDiscoveryResult = (
-  boundary: ProviderDiscoveryTarget["boundary"],
-) => operationResult({ boundary, deployments: [] }, []);
+const emptyDiscoveryResult = (boundary: ProviderDiscoveryTarget["boundary"]) =>
+  operationResult({ boundary, deployments: [] }, []);
 
 const emptyModelsResult = () => operationResult([], []);
 
@@ -99,8 +105,8 @@ const profileStoreFor = (profile: AppProfile): ProfileStore => ({
   deleteProfile: () => ({ deleted: false }),
 });
 
-const gcpRunnerCapturingPatch = (
-  capture: (patch: HomeManagerPatch) => void,
+const gcpRunnerCapturingModule = (
+  capture: (module: HomeManagerModule) => void,
 ): ProviderRunner => {
   const status: ProviderOperationResult<ProviderStatusSummary> = {
     summary: {
@@ -147,15 +153,15 @@ const gcpRunnerCapturingPatch = (
     deleteSecret: () => Effect.succeed(status),
     restart: () => Effect.succeed(status),
     destroy: () => Effect.succeed(status),
-    applyHomeManagerPatch: (patch) => {
-      capture(patch);
+    writeHomeManagerModule: (module) => {
+      capture(module);
       return Effect.succeed(status);
     },
   };
 };
 
-const azureRunnerCapturingPatch = (
-  capture: (patch: HomeManagerPatch) => void,
+const azureRunnerCapturingModule = (
+  capture: (module: HomeManagerModule) => void,
 ): ProviderRunner => {
   const status: ProviderOperationResult<ProviderStatusSummary> = {
     summary: {
@@ -184,15 +190,15 @@ const azureRunnerCapturingPatch = (
     deleteSecret: () => Effect.succeed(status),
     restart: () => Effect.succeed(status),
     destroy: () => Effect.succeed(status),
-    applyHomeManagerPatch: (patch) => {
-      capture(patch);
+    writeHomeManagerModule: (module) => {
+      capture(module);
       return Effect.succeed(status);
     },
   };
 };
 
 const azureRunnerWithStatePurge = (onPurge: () => void): ProviderRunner => {
-  const runner = azureRunnerCapturingPatch(() => undefined);
+  const runner = azureRunnerCapturingModule(() => undefined);
   return {
     ...runner,
     destroyWithStatePurge: () => {
@@ -220,7 +226,8 @@ const azureDestroyPurgeIntent = (
       subscription: "subscription",
       "resource-group": "hermes",
       location: "eastus",
-      "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+      "environment-id":
+        "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
       "storage-name": "hermes",
     },
   },
@@ -259,7 +266,9 @@ describe("command surface validation", () => {
         stdoutIsTty: false,
         stderrIsTty: false,
       });
-      expect(error?.message).toContain("TUI mode requires stdin, stdout, and stderr");
+      expect(error?.message).toContain(
+        "TUI mode requires stdin, stdout, and stderr",
+      );
     }
   });
 
@@ -343,7 +352,8 @@ describe("command surface validation", () => {
           subscription: "subscription",
           "resource-group": "hermes",
           location: "eastus",
-          "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+          "environment-id":
+            "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
           "storage-name": "hermes",
         },
       },
@@ -673,13 +683,7 @@ describe("command surface validation", () => {
         message: "--tenant is only valid with --provider azure",
       },
       {
-        argv: [
-          "status",
-          "--provider",
-          "gcp",
-          "--resource-group",
-          "hermes",
-        ],
+        argv: ["status", "--provider", "gcp", "--resource-group", "hermes"],
         message: "--resource-group is only valid with --provider azure",
       },
       {
@@ -740,7 +744,7 @@ describe("command surface validation", () => {
         deviceCodePrompt: () => undefined,
         runners: (_target, request) => {
           capturedRequest = request;
-          return azureRunnerCapturingPatch(() => undefined);
+          return azureRunnerCapturingModule(() => undefined);
         },
       },
     );
@@ -853,6 +857,8 @@ describe("command surface validation", () => {
       "project",
       "--region",
       "us-central1",
+      "--model",
+      "gemini-model-id",
       "--service-account",
       "hermes-runtime@project.iam.gserviceaccount.com",
       "--state-server",
@@ -973,10 +979,7 @@ describe("command surface validation", () => {
         modelRunners: () => ({
           listModels: () =>
             Effect.succeed(
-              operationResult(
-                supportedModels,
-                [{ providerName: "raw-model" }],
-              ),
+              operationResult(supportedModels, [{ providerName: "raw-model" }]),
             ),
         }),
       },
@@ -1043,15 +1046,15 @@ describe("command surface validation", () => {
 
     expect(result.ok).toBe(true);
     expect(result.summary).toBe(
-      "Doctor checked gcp profile default: 5 passed, 1 failed, 1 skipped.",
+      "Doctor checked gcp profile default: 5 passed, 0 failed, 2 skipped.",
     );
     if (result.ok) {
       expect(result.data).toMatchObject({
         checks: [
           { name: "profile", status: "skipped" },
           { name: "runtime", status: "passed" },
-          { name: "config", status: "passed" },
-          { name: "image", status: "failed" },
+          { name: "config", status: "skipped" },
+          { name: "image", status: "passed" },
           { name: "auth", status: "passed" },
           { name: "discovery", status: "passed" },
           { name: "models", status: "passed" },
@@ -1080,6 +1083,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1096,7 +1100,7 @@ describe("command surface validation", () => {
           listModels: () => Effect.succeed(emptyModelsResult()),
         }),
         runners: () => ({
-          ...gcpRunnerCapturingPatch(() => undefined),
+          ...gcpRunnerCapturingModule(() => undefined),
           validateSetup: () => {
             setupValidated = true;
             return Effect.void;
@@ -1107,7 +1111,7 @@ describe("command surface validation", () => {
 
     expect(result.ok).toBe(true);
     expect(result.summary).toBe(
-      "Doctor checked gcp profile default: 6 passed, 1 failed, 1 skipped.",
+      "Doctor checked gcp profile default: 7 passed, 0 failed, 1 skipped.",
     );
     if (result.ok) {
       expect(result.data).toMatchObject({
@@ -1115,7 +1119,7 @@ describe("command surface validation", () => {
           { name: "profile", status: "skipped" },
           { name: "runtime", status: "passed" },
           { name: "config", status: "passed" },
-          { name: "image", status: "failed" },
+          { name: "image", status: "passed" },
           { name: "auth", status: "passed" },
           { name: "state", status: "passed" },
           { name: "discovery", status: "passed" },
@@ -1155,14 +1159,14 @@ describe("command surface validation", () => {
 
     expect(result.ok).toBe(true);
     expect(result.summary).toBe(
-      "Doctor checked profile default: 1 passed, 2 failed, 0 skipped.",
+      "Doctor checked profile default: 2 passed, 1 failed, 0 skipped.",
     );
     if (result.ok) {
       expect(result.data).toMatchObject({
         checks: [
           { name: "profile", status: "failed" },
           { name: "runtime", status: "passed" },
-          { name: "image", status: "failed" },
+          { name: "image", status: "passed" },
         ],
       });
     }
@@ -1220,6 +1224,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1277,6 +1282,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1338,6 +1344,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1378,7 +1385,7 @@ describe("command surface validation", () => {
     }
   });
 
-  test("prompts for the optional Azure Foundry endpoint in full setup", async () => {
+  test("prompts for required Azure Foundry model settings in full setup", async () => {
     let wroteProfile: AppProfile | undefined;
     const promptLabels: string[] = [];
     const result = await runIntent(
@@ -1411,7 +1418,9 @@ describe("command surface validation", () => {
         ...successfulSetupValidationRunners,
         promptText: async (label) => {
           promptLabels.push(label);
-          return "https://hermes.openai.azure.com";
+          return label === "Foundry OpenAI-compatible endpoint"
+            ? "https://hermes.openai.azure.com"
+            : "gpt-deployment";
         },
         profiles: {
           readActiveProfileName: () => undefined,
@@ -1427,19 +1436,23 @@ describe("command surface validation", () => {
           deleteProfile: () => ({ deleted: false }),
         },
         runners: () => ({
-          ...azureRunnerCapturingPatch(() => undefined),
+          ...azureRunnerCapturingModule(() => undefined),
           validateSetup: () => Effect.void,
         }),
       },
     );
 
     expect(result.ok).toBe(true);
-    expect(promptLabels).toEqual(["Foundry OpenAI-compatible endpoint"]);
+    expect(promptLabels).toEqual([
+      "Foundry OpenAI-compatible endpoint",
+      "Foundry deployment name",
+    ]);
     expect(wroteProfile?.provider).toBe("azure");
     if (wroteProfile?.provider === "azure") {
       expect(wroteProfile.azure.openaiCompatibleEndpoint).toBe(
         "https://hermes.openai.azure.com",
       );
+      expect(wroteProfile.azure.modelDeployment).toBe("gpt-deployment");
     }
   });
 
@@ -1524,6 +1537,8 @@ describe("command surface validation", () => {
             "environment-id":
               "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
             "storage-name": "hermes-state",
+            endpoint: "https://hermes.openai.azure.com",
+            model: "gpt-deployment",
           },
         },
         quick: false,
@@ -1545,8 +1560,7 @@ describe("command surface validation", () => {
           deleteProfile: () => ({ deleted: false }),
         },
         authRunners: (target) => ({
-          authCheck: () =>
-            Effect.succeed(authSummaryFor(target)),
+          authCheck: () => Effect.succeed(authSummaryFor(target)),
         }),
         discoveryRunners: (target) =>
           target.provider === "azure"
@@ -1563,7 +1577,7 @@ describe("command surface validation", () => {
             checkedStorage = target.deploymentSpec?.state.storageName ?? "";
           }
           return {
-            ...azureRunnerCapturingPatch(() => undefined),
+            ...azureRunnerCapturingModule(() => undefined),
             validateSetup: () =>
               Effect.fail(
                 new RemediationRequired({
@@ -1589,7 +1603,7 @@ describe("command surface validation", () => {
   });
 
   test("lowers a GCP model default through the provider model selection shape", async () => {
-    let capturedPatch: HomeManagerPatch | undefined;
+    let capturedModule: HomeManagerModule | undefined;
     const result = await runIntent(
       {
         command: "config.set",
@@ -1604,6 +1618,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1613,20 +1628,20 @@ describe("command surface validation", () => {
       },
       {
         runners: () =>
-          gcpRunnerCapturingPatch((patch) => {
-            capturedPatch = patch;
+          gcpRunnerCapturingModule((module) => {
+            capturedModule = module;
           }),
       },
     );
 
     expect(result.ok).toBe(true);
     expect(result.summary).toContain("runtime was rolled");
-    expect(capturedPatch?.section).toBe("model");
-    expect(capturedPatch?.block).toContain('provider = lib.mkForce "gemini";');
-    expect(capturedPatch?.block).toContain(
+    expect(capturedModule).toContain("{ lib, ... }:");
+    expect(capturedModule).toContain('provider = lib.mkForce "gemini";');
+    expect(capturedModule).toContain(
       'default = lib.mkForce "gemini-3-flash-preview";',
     );
-    expect(capturedPatch?.block).toContain(
+    expect(capturedModule).toContain(
       'base_url = lib.mkForce "https://generativelanguage.googleapis.com/v1beta";',
     );
   });
@@ -1646,6 +1661,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1653,7 +1669,7 @@ describe("command surface validation", () => {
         yes: false,
       },
       {
-        runners: () => gcpRunnerCapturingPatch(() => undefined),
+        runners: () => gcpRunnerCapturingModule(() => undefined),
       },
     );
 
@@ -1667,7 +1683,7 @@ describe("command surface validation", () => {
         "Resources to create: Cloud Run service demo",
       );
       expect(result.error.message).toContain(
-        "Config/secrets: unchanged by deploy",
+        "Config: deploy will set Hermes default model to gemini-model-id",
       );
       expect(result.error.message).toContain(
         "State: NFS 10.0.0.8:/exports/data",
@@ -1699,7 +1715,7 @@ describe("command surface validation", () => {
       },
       {
         runners: () => ({
-          ...gcpRunnerCapturingPatch(() => undefined),
+          ...gcpRunnerCapturingModule(() => undefined),
           listSecrets: () => {
             listedSecrets = true;
             return Effect.succeed(["GOOGLE_API_KEY"]);
@@ -1731,7 +1747,7 @@ describe("command surface validation", () => {
       },
       raw: {},
     };
-    const runner = gcpRunnerCapturingPatch(() => undefined);
+    const runner = gcpRunnerCapturingModule(() => undefined);
 
     const result = await runIntent(
       {
@@ -1747,6 +1763,7 @@ describe("command surface validation", () => {
           providerFields: {
             project: "project",
             region: "us-central1",
+            model: "gemini-model-id",
             "state-server": "10.0.0.8",
             "state-path": "/exports/hermes",
           },
@@ -1782,7 +1799,7 @@ describe("command surface validation", () => {
   });
 
   test("includes operation events in JSON secret mutation data", async () => {
-    const runner = gcpRunnerCapturingPatch(() => undefined);
+    const runner = gcpRunnerCapturingModule(() => undefined);
     const result = await runIntent(
       {
         command: "secrets.set",
@@ -1836,7 +1853,7 @@ describe("command surface validation", () => {
   });
 
   test("redacts secret-bearing fields from debug raw provider data", async () => {
-    const runner = gcpRunnerCapturingPatch(() => undefined);
+    const runner = gcpRunnerCapturingModule(() => undefined);
     const raw = {
       accessToken: "raw-access-token",
       properties: {
@@ -1894,7 +1911,9 @@ describe("command surface validation", () => {
     const configuration = recordFrom(properties?.configuration);
     const azureFile = recordFrom(properties?.azureFile);
     const secrets = configuration?.secrets;
-    const firstSecret = Array.isArray(secrets) ? recordFrom(secrets[0]) : undefined;
+    const firstSecret = Array.isArray(secrets)
+      ? recordFrom(secrets[0])
+      : undefined;
     const payload = recordFrom(runtime?.payload);
 
     expect(runtime?.accessToken).toBe("[redacted]");
@@ -1987,7 +2006,8 @@ describe("command surface validation", () => {
           subscription: "subscription",
           "resource-group": "hermes",
           location: "eastus",
-          "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+          "environment-id":
+            "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
           "storage-name": "hermes",
         },
       },
@@ -2002,7 +2022,7 @@ describe("command surface validation", () => {
   });
 
   test("lowers an Azure model default through the Foundry OpenAI-compatible shape", async () => {
-    let capturedPatch: HomeManagerPatch | undefined;
+    let capturedModule: HomeManagerModule | undefined;
     const result = await runIntent(
       {
         command: "config.set",
@@ -2019,7 +2039,8 @@ describe("command surface validation", () => {
             subscription: "subscription",
             "resource-group": "hermes",
             location: "eastus",
-            "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+            "environment-id":
+              "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
             "storage-name": "hermes",
             endpoint: "https://example.openai.azure.com/",
           },
@@ -2029,34 +2050,30 @@ describe("command surface validation", () => {
       },
       {
         runners: () =>
-          azureRunnerCapturingPatch((patch) => {
-            capturedPatch = patch;
+          azureRunnerCapturingModule((module) => {
+            capturedModule = module;
           }),
       },
     );
 
     expect(result.ok).toBe(true);
-    expect(capturedPatch?.section).toBe("model");
-    expect(capturedPatch?.block).toContain(
-      'provider = lib.mkForce "azure-foundry";',
-    );
-    expect(capturedPatch?.block).toContain(
-      'default = lib.mkForce "gpt-5-mini";',
-    );
-    expect(capturedPatch?.block).toContain(
+    expect(capturedModule).toContain("{ lib, ... }:");
+    expect(capturedModule).toContain('provider = lib.mkForce "azure-foundry";');
+    expect(capturedModule).toContain('default = lib.mkForce "gpt-5-mini";');
+    expect(capturedModule).toContain(
       'base_url = lib.mkForce "https://example.openai.azure.com/openai/v1";',
     );
-    expect(capturedPatch?.block).toContain(
+    expect(capturedModule).toContain(
       'api_mode = lib.mkForce "chat_completions";',
     );
-    expect(capturedPatch?.block).not.toContain("auth_mode");
+    expect(capturedModule).not.toContain("auth_mode");
   });
 
   test("shows Azure managed config content through config show", async () => {
     const managedModule = [
       "{ ... }:",
       "{",
-      "programs.hermes-agent.settings.model.default = \"gpt-5-mini\";",
+      'programs.hermes-agent.settings.model.default = "gpt-5-mini";',
       "}",
     ].join("\n");
     const result = await runIntent(
@@ -2075,14 +2092,15 @@ describe("command surface validation", () => {
             subscription: "subscription",
             "resource-group": "hermes",
             location: "eastus",
-            "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+            "environment-id":
+              "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
             "storage-name": "hermes",
           },
         },
       },
       {
         runners: () => ({
-          ...azureRunnerCapturingPatch(() => undefined),
+          ...azureRunnerCapturingModule(() => undefined),
           readHomeManagerConfig: () =>
             Effect.succeed({
               configured: true,
@@ -2117,7 +2135,8 @@ describe("command surface validation", () => {
           subscription: "subscription",
           "resource-group": "hermes",
           location: "eastus",
-          "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+          "environment-id":
+            "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
           "storage-name": "hermes",
         },
       },
@@ -2147,7 +2166,8 @@ describe("command surface validation", () => {
           subscription: "subscription",
           "resource-group": "hermes",
           location: "eastus",
-          "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+          "environment-id":
+            "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
           "storage-name": "hermes",
         },
       },
@@ -2173,7 +2193,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "hermes",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
         openaiCompatibleEndpoint: "https://example.openai.azure.com",
         state: {
           storageName: "hermes",
@@ -2225,7 +2246,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "hermes",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
         state: {
           storageName: "hermes",
           dataSubPath: "data",
@@ -2284,7 +2306,9 @@ describe("command surface validation", () => {
 
     expect(statePathResult.ok).toBe(false);
     if (!statePathResult.ok) {
-      expect(statePathResult.error.message).toContain("--state-path is not valid");
+      expect(statePathResult.error.message).toContain(
+        "--state-path is not valid",
+      );
     }
   });
 
@@ -2353,7 +2377,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "hermes",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
         state: {
           storageName: "hermes",
           dataSubPath: "data",
@@ -2379,7 +2404,7 @@ describe("command surface validation", () => {
       },
       {
         profiles: profileStoreFor(profile),
-        runners: () => azureRunnerCapturingPatch(() => undefined),
+        runners: () => azureRunnerCapturingModule(() => undefined),
         modelRunners: (target) => {
           capturedTarget = target;
           return {
@@ -2407,7 +2432,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "work",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/work/providers/Microsoft.App/managedEnvironments/work",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/work/providers/Microsoft.App/managedEnvironments/work",
         state: {
           storageName: "work",
           dataSubPath: "data",
@@ -2415,20 +2441,24 @@ describe("command surface validation", () => {
         },
       },
     };
-    const parsedIntent: Extract<CommandIntent, { readonly command: "status" }> = {
-      command: "status",
-      globals: {
-        config: "deploy.json",
-        outputMode: "json",
-        inputMode: "nonInteractive",
-        noBrowser: true,
-        debug: false,
-        color: "never",
-        providerFields: {},
-      },
-      watch: false,
-    };
-    const configuredIntent: Extract<CommandIntent, { readonly command: "status" }> = {
+    const parsedIntent: Extract<CommandIntent, { readonly command: "status" }> =
+      {
+        command: "status",
+        globals: {
+          config: "deploy.json",
+          outputMode: "json",
+          inputMode: "nonInteractive",
+          noBrowser: true,
+          debug: false,
+          color: "never",
+          providerFields: {},
+        },
+        watch: false,
+      };
+    const configuredIntent: Extract<
+      CommandIntent,
+      { readonly command: "status" }
+    > = {
       ...parsedIntent,
       globals: {
         outputMode: "json",
@@ -2445,11 +2475,9 @@ describe("command surface validation", () => {
       },
     };
 
-    const resolved = applyActiveProfileDefault(
-      parsedIntent,
-      configuredIntent,
-      { profiles: profileStoreFor(activeProfile) },
-    );
+    const resolved = applyActiveProfileDefault(parsedIntent, configuredIntent, {
+      profiles: profileStoreFor(activeProfile),
+    });
 
     expect("code" in resolved).toBe(false);
     if (!("code" in resolved)) {
@@ -2487,7 +2515,9 @@ describe("command surface validation", () => {
     expect("code" in merged).toBe(true);
     if ("code" in merged) {
       expect(merged.code).toBe("config.invalid");
-      expect(merged.message).toContain("azure section cannot be used with provider gcp");
+      expect(merged.message).toContain(
+        "azure section cannot be used with provider gcp",
+      );
     }
   });
 
@@ -2552,13 +2582,9 @@ describe("command surface validation", () => {
 
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
-      const resolved = applyActiveProfileDefault(
-        parsed.intent,
-        parsed.intent,
-        {
-          profiles: profileStoreFor(activeProfile),
-        },
-      );
+      const resolved = applyActiveProfileDefault(parsed.intent, parsed.intent, {
+        profiles: profileStoreFor(activeProfile),
+      });
 
       expect("code" in resolved).toBe(false);
       if (!("code" in resolved)) {
@@ -2578,7 +2604,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "work",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/work/providers/Microsoft.App/managedEnvironments/work",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/work/providers/Microsoft.App/managedEnvironments/work",
         state: {
           storageName: "work",
           dataSubPath: "data",
@@ -2628,7 +2655,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "default",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/default/providers/Microsoft.App/managedEnvironments/default",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/default/providers/Microsoft.App/managedEnvironments/default",
         state: {
           storageName: "default",
           dataSubPath: "data",
@@ -2660,7 +2688,7 @@ describe("command surface validation", () => {
         profiles: profileStoreFor(defaultProfile),
         runners: (target) => {
           statusProvider = target.provider;
-          return gcpRunnerCapturingPatch(() => undefined);
+          return gcpRunnerCapturingModule(() => undefined);
         },
       },
     );
@@ -2726,7 +2754,7 @@ describe("command surface validation", () => {
   });
 
   test("uses the Azure profile endpoint when setting model.default", async () => {
-    let capturedPatch: HomeManagerPatch | undefined;
+    let capturedModule: HomeManagerModule | undefined;
     const profile: AppProfile = {
       provider: "azure",
       name: "default",
@@ -2737,7 +2765,8 @@ describe("command surface validation", () => {
         subscriptionId: "subscription",
         resourceGroupName: "hermes",
         location: "eastus",
-        environmentId: "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+        environmentId:
+          "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
         openaiCompatibleEndpoint: "https://example.openai.azure.com",
         state: {
           storageName: "hermes",
@@ -2765,14 +2794,14 @@ describe("command surface validation", () => {
       {
         profiles: profileStoreFor(profile),
         runners: () =>
-          azureRunnerCapturingPatch((patch) => {
-            capturedPatch = patch;
+          azureRunnerCapturingModule((module) => {
+            capturedModule = module;
           }),
       },
     );
 
     expect(result.ok).toBe(true);
-    expect(capturedPatch?.block).toContain(
+    expect(capturedModule).toContain(
       'base_url = lib.mkForce "https://example.openai.azure.com/openai/v1";',
     );
   });
@@ -2822,7 +2851,8 @@ describe("human rendering", () => {
     const output = renderHuman({
       ok: true,
       command: "doctor",
-      summary: "Doctor checked gcp profile default: 1 passed, 0 failed, 0 skipped.",
+      summary:
+        "Doctor checked gcp profile default: 1 passed, 0 failed, 0 skipped.",
       data: {
         checks: [
           {
@@ -2898,7 +2928,8 @@ describe("human rendering", () => {
           subscriptionId: "subscription",
           resourceGroupName: "hermes",
           location: "eastus",
-          environmentId: "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+          environmentId:
+            "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
           state: {
             storageName: "hermes",
             dataSubPath: "data",

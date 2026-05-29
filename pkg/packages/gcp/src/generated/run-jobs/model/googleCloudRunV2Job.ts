@@ -4,13 +4,13 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2JobLabels } from './googleCloudRunV2JobLabels';
-import type { GoogleCloudRunV2JobAnnotations } from './googleCloudRunV2JobAnnotations';
-import type { GoogleCloudRunV2JobLaunchStage } from './googleCloudRunV2JobLaunchStage';
-import type { GoogleCloudRunV2BinaryAuthorization } from './googleCloudRunV2BinaryAuthorization';
-import type { GoogleCloudRunV2ExecutionTemplate } from './googleCloudRunV2ExecutionTemplate';
-import type { GoogleCloudRunV2Condition } from './googleCloudRunV2Condition';
-import type { GoogleCloudRunV2ExecutionReference } from './googleCloudRunV2ExecutionReference';
+import type { GoogleCloudRunV2JobLabels } from "./googleCloudRunV2JobLabels";
+import type { GoogleCloudRunV2JobAnnotations } from "./googleCloudRunV2JobAnnotations";
+import type { GoogleCloudRunV2JobLaunchStage } from "./googleCloudRunV2JobLaunchStage";
+import type { GoogleCloudRunV2BinaryAuthorization } from "./googleCloudRunV2BinaryAuthorization";
+import type { GoogleCloudRunV2ExecutionTemplate } from "./googleCloudRunV2ExecutionTemplate";
+import type { GoogleCloudRunV2Condition } from "./googleCloudRunV2Condition";
+import type { GoogleCloudRunV2ExecutionReference } from "./googleCloudRunV2ExecutionReference";
 
 /**
  * Job represents the configuration of a single job, which references a container image that is run to completion.

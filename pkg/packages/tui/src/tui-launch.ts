@@ -6,11 +6,7 @@ import {
   setSetupDraftField,
   type SetupDraft,
 } from "./setup-state.js";
-import type {
-  AppError,
-  CommandIntent,
-  ProviderKind,
-} from "./types.js";
+import type { AppError, CommandIntent, ProviderKind } from "./types.js";
 
 export type TuiLaunchContext = {
   readonly profileName: string;
@@ -70,7 +66,9 @@ export const tuiLaunchContext = (
       : undefined;
   const profileName =
     intent.globals.profile ??
-    (useActiveProfile && typeof activeName === "string" ? activeName : "default");
+    (useActiveProfile && typeof activeName === "string"
+      ? activeName
+      : "default");
   const directLaunchInput = explicitLaunchInput && !intent.globals.profile;
 
   if (directLaunchInput) {
@@ -110,7 +108,10 @@ export const tuiLaunchContext = (
   }
 
   if (explicitLaunchInput) {
-    const setupDraft = overlayIntentInput(draftFromProfile(readProfile), intent);
+    const setupDraft = overlayIntentInput(
+      draftFromProfile(readProfile),
+      intent,
+    );
     return {
       profileName,
       ...(setupDraft.provider ? { provider: setupDraft.provider } : {}),

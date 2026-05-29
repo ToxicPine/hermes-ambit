@@ -20,738 +20,962 @@ import type {
   ContainerAppsStopParams,
   ContainerAppsUpdateParams,
   CustomHostnameAnalysisResult,
-  SecretsCollection
-} from './model';
-import type {
-  ErrorResponse
-} from './model/common-types-resource-management-v5-types';
-
-
+  SecretsCollection,
+} from "./model";
+import type { ErrorResponse } from "./model/common-types-resource-management-v5-types";
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
 export type HTTPStatusCode2xx = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207;
 export type HTTPStatusCode3xx = 300 | 301 | 302 | 303 | 304 | 305 | 307 | 308;
-export type HTTPStatusCode4xx = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 419 | 420 | 421 | 422 | 423 | 424 | 426 | 428 | 429 | 431 | 451;
+export type HTTPStatusCode4xx =
+  | 400
+  | 401
+  | 402
+  | 403
+  | 404
+  | 405
+  | 406
+  | 407
+  | 408
+  | 409
+  | 410
+  | 411
+  | 412
+  | 413
+  | 414
+  | 415
+  | 416
+  | 417
+  | 418
+  | 419
+  | 420
+  | 421
+  | 422
+  | 423
+  | 424
+  | 426
+  | 428
+  | 429
+  | 431
+  | 451;
 export type HTTPStatusCode5xx = 500 | 501 | 502 | 503 | 504 | 505 | 507 | 511;
-export type HTTPStatusCodes = HTTPStatusCode1xx | HTTPStatusCode2xx | HTTPStatusCode3xx | HTTPStatusCode4xx | HTTPStatusCode5xx;
+export type HTTPStatusCodes =
+  | HTTPStatusCode1xx
+  | HTTPStatusCode2xx
+  | HTTPStatusCode3xx
+  | HTTPStatusCode4xx
+  | HTTPStatusCode5xx;
 
 /**
  * @summary Get the Container Apps in a given subscription.
  */
 export type containerAppsListBySubscriptionResponse200 = {
-  data: ContainerAppCollection
-  status: 200
-}
+  data: ContainerAppCollection;
+  status: 200;
+};
 
 export type containerAppsListBySubscriptionResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type containerAppsListBySubscriptionResponseSuccess = (containerAppsListBySubscriptionResponse200) & {
-  headers: Headers;
-};
-export type containerAppsListBySubscriptionResponseError = (containerAppsListBySubscriptionResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type containerAppsListBySubscriptionResponse = (containerAppsListBySubscriptionResponseSuccess | containerAppsListBySubscriptionResponseError)
+export type containerAppsListBySubscriptionResponseSuccess =
+  containerAppsListBySubscriptionResponse200 & {
+    headers: Headers;
+  };
+export type containerAppsListBySubscriptionResponseError =
+  containerAppsListBySubscriptionResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsListBySubscriptionUrl = (subscriptionId: string,
-    params: ContainerAppsListBySubscriptionParams,) => {
+export type containerAppsListBySubscriptionResponse =
+  | containerAppsListBySubscriptionResponseSuccess
+  | containerAppsListBySubscriptionResponseError;
+
+export const getContainerAppsListBySubscriptionUrl = (
+  subscriptionId: string,
+  params: ContainerAppsListBySubscriptionParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.App/containerApps?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.App/containerApps`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.App/containerApps?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/providers/Microsoft.App/containerApps`;
+};
 
-export const containerAppsListBySubscription = async (subscriptionId: string,
-    params: ContainerAppsListBySubscriptionParams, options?: RequestInit): Promise<containerAppsListBySubscriptionResponse> => {
-
-  const res = await fetch(getContainerAppsListBySubscriptionUrl(subscriptionId,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
+export const containerAppsListBySubscription = async (
+  subscriptionId: string,
+  params: ContainerAppsListBySubscriptionParams,
+  options?: RequestInit,
+): Promise<containerAppsListBySubscriptionResponse> => {
+  const res = await fetch(
+    getContainerAppsListBySubscriptionUrl(subscriptionId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsListBySubscriptionResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsListBySubscriptionResponse
-}
-
-
+  const data: containerAppsListBySubscriptionResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsListBySubscriptionResponse;
+};
 
 /**
  * @summary Get the Container Apps in a given resource group.
  */
 export type containerAppsListByResourceGroupResponse200 = {
-  data: ContainerAppCollection
-  status: 200
-}
+  data: ContainerAppCollection;
+  status: 200;
+};
 
 export type containerAppsListByResourceGroupResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type containerAppsListByResourceGroupResponseSuccess = (containerAppsListByResourceGroupResponse200) & {
-  headers: Headers;
-};
-export type containerAppsListByResourceGroupResponseError = (containerAppsListByResourceGroupResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type containerAppsListByResourceGroupResponse = (containerAppsListByResourceGroupResponseSuccess | containerAppsListByResourceGroupResponseError)
+export type containerAppsListByResourceGroupResponseSuccess =
+  containerAppsListByResourceGroupResponse200 & {
+    headers: Headers;
+  };
+export type containerAppsListByResourceGroupResponseError =
+  containerAppsListByResourceGroupResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsListByResourceGroupUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    params: ContainerAppsListByResourceGroupParams,) => {
+export type containerAppsListByResourceGroupResponse =
+  | containerAppsListByResourceGroupResponseSuccess
+  | containerAppsListByResourceGroupResponseError;
+
+export const getContainerAppsListByResourceGroupUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  params: ContainerAppsListByResourceGroupParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps`;
+};
 
-export const containerAppsListByResourceGroup = async (subscriptionId: string,
-    resourceGroupName: string,
-    params: ContainerAppsListByResourceGroupParams, options?: RequestInit): Promise<containerAppsListByResourceGroupResponse> => {
-
-  const res = await fetch(getContainerAppsListByResourceGroupUrl(subscriptionId,resourceGroupName,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
+export const containerAppsListByResourceGroup = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  params: ContainerAppsListByResourceGroupParams,
+  options?: RequestInit,
+): Promise<containerAppsListByResourceGroupResponse> => {
+  const res = await fetch(
+    getContainerAppsListByResourceGroupUrl(
+      subscriptionId,
+      resourceGroupName,
+      params,
+    ),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsListByResourceGroupResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsListByResourceGroupResponse
-}
-
-
+  const data: containerAppsListByResourceGroupResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsListByResourceGroupResponse;
+};
 
 /**
  * @summary Get the properties of a Container App.
  */
 export type containerAppsGetResponse200 = {
-  data: ContainerApp
-  status: 200
-}
+  data: ContainerApp;
+  status: 200;
+};
 
 export type containerAppsGetResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type containerAppsGetResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type containerAppsGetResponseSuccess = (containerAppsGetResponse200) & {
-  headers: Headers;
-};
-export type containerAppsGetResponseError = (containerAppsGetResponse404 | containerAppsGetResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 404>;
 };
 
-export type containerAppsGetResponse = (containerAppsGetResponseSuccess | containerAppsGetResponseError)
+export type containerAppsGetResponseSuccess = containerAppsGetResponse200 & {
+  headers: Headers;
+};
+export type containerAppsGetResponseError = (
+  | containerAppsGetResponse404
+  | containerAppsGetResponseDefault
+) & {
+  headers: Headers;
+};
 
-export const getContainerAppsGetUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsGetParams,) => {
+export type containerAppsGetResponse =
+  | containerAppsGetResponseSuccess
+  | containerAppsGetResponseError;
+
+export const getContainerAppsGetUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsGetParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`;
+};
 
-export const containerAppsGet = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsGetParams, options?: RequestInit): Promise<containerAppsGetResponse> => {
-
-  const res = await fetch(getContainerAppsGetUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
+export const containerAppsGet = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsGetParams,
+  options?: RequestInit,
+): Promise<containerAppsGetResponse> => {
+  const res = await fetch(
+    getContainerAppsGetUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsGetResponse
-}
-
-
+  const data: containerAppsGetResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsGetResponse;
+};
 
 /**
  * Create or update a Container App.
  * @summary Create or update a Container App.
  */
 export type containerAppsCreateOrUpdateResponse200 = {
-  data: ContainerApp
-  status: 200
-}
+  data: ContainerApp;
+  status: 200;
+};
 
 export type containerAppsCreateOrUpdateResponse201 = {
-  data: ContainerApp
-  status: 201
-}
+  data: ContainerApp;
+  status: 201;
+};
 
 export type containerAppsCreateOrUpdateResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 201>
-}
-
-export type containerAppsCreateOrUpdateResponseSuccess = (containerAppsCreateOrUpdateResponse200 | containerAppsCreateOrUpdateResponse201) & {
-  headers: Headers;
-};
-export type containerAppsCreateOrUpdateResponseError = (containerAppsCreateOrUpdateResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 201>;
 };
 
-export type containerAppsCreateOrUpdateResponse = (containerAppsCreateOrUpdateResponseSuccess | containerAppsCreateOrUpdateResponseError)
+export type containerAppsCreateOrUpdateResponseSuccess = (
+  | containerAppsCreateOrUpdateResponse200
+  | containerAppsCreateOrUpdateResponse201
+) & {
+  headers: Headers;
+};
+export type containerAppsCreateOrUpdateResponseError =
+  containerAppsCreateOrUpdateResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsCreateOrUpdateUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsCreateOrUpdateParams,) => {
+export type containerAppsCreateOrUpdateResponse =
+  | containerAppsCreateOrUpdateResponseSuccess
+  | containerAppsCreateOrUpdateResponseError;
+
+export const getContainerAppsCreateOrUpdateUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsCreateOrUpdateParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`;
+};
 
-export const containerAppsCreateOrUpdate = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    containerApp: ContainerApp,
-    params: ContainerAppsCreateOrUpdateParams, options?: RequestInit): Promise<containerAppsCreateOrUpdateResponse> => {
-
-  const res = await fetch(getContainerAppsCreateOrUpdateUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      containerApp,)
-  }
-)
+export const containerAppsCreateOrUpdate = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  containerApp: ContainerApp,
+  params: ContainerAppsCreateOrUpdateParams,
+  options?: RequestInit,
+): Promise<containerAppsCreateOrUpdateResponse> => {
+  const res = await fetch(
+    getContainerAppsCreateOrUpdateUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(containerApp),
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsCreateOrUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsCreateOrUpdateResponse
-}
-
-
+  const data: containerAppsCreateOrUpdateResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsCreateOrUpdateResponse;
+};
 
 /**
  * Delete a Container App.
  * @summary Delete a Container App.
  */
 export type containerAppsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+  data: void;
+  status: 200;
+};
 
 export type containerAppsDeleteResponse202 = {
-  data: void
-  status: 202
-}
+  data: void;
+  status: 202;
+};
 
 export type containerAppsDeleteResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type containerAppsDeleteResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 202 | 204>
-}
-
-export type containerAppsDeleteResponseSuccess = (containerAppsDeleteResponse200 | containerAppsDeleteResponse202 | containerAppsDeleteResponse204) & {
-  headers: Headers;
-};
-export type containerAppsDeleteResponseError = (containerAppsDeleteResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 202 | 204>;
 };
 
-export type containerAppsDeleteResponse = (containerAppsDeleteResponseSuccess | containerAppsDeleteResponseError)
+export type containerAppsDeleteResponseSuccess = (
+  | containerAppsDeleteResponse200
+  | containerAppsDeleteResponse202
+  | containerAppsDeleteResponse204
+) & {
+  headers: Headers;
+};
+export type containerAppsDeleteResponseError =
+  containerAppsDeleteResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsDeleteUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsDeleteParams,) => {
+export type containerAppsDeleteResponse =
+  | containerAppsDeleteResponseSuccess
+  | containerAppsDeleteResponseError;
+
+export const getContainerAppsDeleteUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsDeleteParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`;
+};
 
-export const containerAppsDelete = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsDeleteParams, options?: RequestInit): Promise<containerAppsDeleteResponse> => {
-
-  const res = await fetch(getContainerAppsDeleteUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-)
+export const containerAppsDelete = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsDeleteParams,
+  options?: RequestInit,
+): Promise<containerAppsDeleteResponse> => {
+  const res = await fetch(
+    getContainerAppsDeleteUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsDeleteResponse
-}
-
-
+  const data: containerAppsDeleteResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsDeleteResponse;
+};
 
 /**
  * Patches a Container App using JSON Merge Patch
  * @summary Update properties of a Container App
  */
 export type containerAppsUpdateResponse200 = {
-  data: ContainerApp
-  status: 200
-}
+  data: ContainerApp;
+  status: 200;
+};
 
 export type containerAppsUpdateResponse202 = {
-  data: void
-  status: 202
-}
+  data: void;
+  status: 202;
+};
 
 export type containerAppsUpdateResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 202>
-}
-
-export type containerAppsUpdateResponseSuccess = (containerAppsUpdateResponse200 | containerAppsUpdateResponse202) & {
-  headers: Headers;
-};
-export type containerAppsUpdateResponseError = (containerAppsUpdateResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 202>;
 };
 
-export type containerAppsUpdateResponse = (containerAppsUpdateResponseSuccess | containerAppsUpdateResponseError)
+export type containerAppsUpdateResponseSuccess = (
+  | containerAppsUpdateResponse200
+  | containerAppsUpdateResponse202
+) & {
+  headers: Headers;
+};
+export type containerAppsUpdateResponseError =
+  containerAppsUpdateResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsUpdateUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsUpdateParams,) => {
+export type containerAppsUpdateResponse =
+  | containerAppsUpdateResponseSuccess
+  | containerAppsUpdateResponseError;
+
+export const getContainerAppsUpdateUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsUpdateParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}`;
+};
 
-export const containerAppsUpdate = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    containerApp: ContainerApp,
-    params: ContainerAppsUpdateParams, options?: RequestInit): Promise<containerAppsUpdateResponse> => {
-
-  const res = await fetch(getContainerAppsUpdateUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      containerApp,)
-  }
-)
+export const containerAppsUpdate = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  containerApp: ContainerApp,
+  params: ContainerAppsUpdateParams,
+  options?: RequestInit,
+): Promise<containerAppsUpdateResponse> => {
+  const res = await fetch(
+    getContainerAppsUpdateUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(containerApp),
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsUpdateResponse
-}
-
-
+  const data: containerAppsUpdateResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsUpdateResponse;
+};
 
 /**
  * @summary Analyzes a custom hostname for a Container App
  */
 export type containerAppsListCustomHostNameAnalysisResponse200 = {
-  data: CustomHostnameAnalysisResult
-  status: 200
-}
+  data: CustomHostnameAnalysisResult;
+  status: 200;
+};
 
 export type containerAppsListCustomHostNameAnalysisResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type containerAppsListCustomHostNameAnalysisResponseSuccess = (containerAppsListCustomHostNameAnalysisResponse200) & {
-  headers: Headers;
-};
-export type containerAppsListCustomHostNameAnalysisResponseError = (containerAppsListCustomHostNameAnalysisResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type containerAppsListCustomHostNameAnalysisResponse = (containerAppsListCustomHostNameAnalysisResponseSuccess | containerAppsListCustomHostNameAnalysisResponseError)
+export type containerAppsListCustomHostNameAnalysisResponseSuccess =
+  containerAppsListCustomHostNameAnalysisResponse200 & {
+    headers: Headers;
+  };
+export type containerAppsListCustomHostNameAnalysisResponseError =
+  containerAppsListCustomHostNameAnalysisResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsListCustomHostNameAnalysisUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsListCustomHostNameAnalysisParams,) => {
+export type containerAppsListCustomHostNameAnalysisResponse =
+  | containerAppsListCustomHostNameAnalysisResponseSuccess
+  | containerAppsListCustomHostNameAnalysisResponseError;
+
+export const getContainerAppsListCustomHostNameAnalysisUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsListCustomHostNameAnalysisParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listCustomHostNameAnalysis?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listCustomHostNameAnalysis`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listCustomHostNameAnalysis?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listCustomHostNameAnalysis`;
+};
 
-export const containerAppsListCustomHostNameAnalysis = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsListCustomHostNameAnalysisParams, options?: RequestInit): Promise<containerAppsListCustomHostNameAnalysisResponse> => {
-
-  const res = await fetch(getContainerAppsListCustomHostNameAnalysisUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
+export const containerAppsListCustomHostNameAnalysis = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsListCustomHostNameAnalysisParams,
+  options?: RequestInit,
+): Promise<containerAppsListCustomHostNameAnalysisResponse> => {
+  const res = await fetch(
+    getContainerAppsListCustomHostNameAnalysisUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsListCustomHostNameAnalysisResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsListCustomHostNameAnalysisResponse
-}
-
-
+  const data: containerAppsListCustomHostNameAnalysisResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsListCustomHostNameAnalysisResponse;
+};
 
 /**
  * @summary List secrets for a container app
  */
 export type containerAppsListSecretsResponse200 = {
-  data: SecretsCollection
-  status: 200
-}
+  data: SecretsCollection;
+  status: 200;
+};
 
 export type containerAppsListSecretsResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type containerAppsListSecretsResponseSuccess = (containerAppsListSecretsResponse200) & {
-  headers: Headers;
-};
-export type containerAppsListSecretsResponseError = (containerAppsListSecretsResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type containerAppsListSecretsResponse = (containerAppsListSecretsResponseSuccess | containerAppsListSecretsResponseError)
+export type containerAppsListSecretsResponseSuccess =
+  containerAppsListSecretsResponse200 & {
+    headers: Headers;
+  };
+export type containerAppsListSecretsResponseError =
+  containerAppsListSecretsResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsListSecretsUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsListSecretsParams,) => {
+export type containerAppsListSecretsResponse =
+  | containerAppsListSecretsResponseSuccess
+  | containerAppsListSecretsResponseError;
+
+export const getContainerAppsListSecretsUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsListSecretsParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listSecrets?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listSecrets`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listSecrets?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/listSecrets`;
+};
 
-export const containerAppsListSecrets = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsListSecretsParams, options?: RequestInit): Promise<containerAppsListSecretsResponse> => {
-
-  const res = await fetch(getContainerAppsListSecretsUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
+export const containerAppsListSecrets = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsListSecretsParams,
+  options?: RequestInit,
+): Promise<containerAppsListSecretsResponse> => {
+  const res = await fetch(
+    getContainerAppsListSecretsUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsListSecretsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsListSecretsResponse
-}
-
-
+  const data: containerAppsListSecretsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsListSecretsResponse;
+};
 
 /**
  * @summary Get auth token for a container app
  */
 export type containerAppsGetAuthTokenResponse200 = {
-  data: ContainerAppAuthToken
-  status: 200
-}
+  data: ContainerAppAuthToken;
+  status: 200;
+};
 
 export type containerAppsGetAuthTokenResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type containerAppsGetAuthTokenResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type containerAppsGetAuthTokenResponseSuccess = (containerAppsGetAuthTokenResponse200) & {
-  headers: Headers;
-};
-export type containerAppsGetAuthTokenResponseError = (containerAppsGetAuthTokenResponse404 | containerAppsGetAuthTokenResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 404>;
 };
 
-export type containerAppsGetAuthTokenResponse = (containerAppsGetAuthTokenResponseSuccess | containerAppsGetAuthTokenResponseError)
+export type containerAppsGetAuthTokenResponseSuccess =
+  containerAppsGetAuthTokenResponse200 & {
+    headers: Headers;
+  };
+export type containerAppsGetAuthTokenResponseError = (
+  | containerAppsGetAuthTokenResponse404
+  | containerAppsGetAuthTokenResponseDefault
+) & {
+  headers: Headers;
+};
 
-export const getContainerAppsGetAuthTokenUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsGetAuthTokenParams,) => {
+export type containerAppsGetAuthTokenResponse =
+  | containerAppsGetAuthTokenResponseSuccess
+  | containerAppsGetAuthTokenResponseError;
+
+export const getContainerAppsGetAuthTokenUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsGetAuthTokenParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/getAuthtoken?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/getAuthtoken`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/getAuthtoken?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/getAuthtoken`;
+};
 
-export const containerAppsGetAuthToken = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsGetAuthTokenParams, options?: RequestInit): Promise<containerAppsGetAuthTokenResponse> => {
-
-  const res = await fetch(getContainerAppsGetAuthTokenUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
+export const containerAppsGetAuthToken = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsGetAuthTokenParams,
+  options?: RequestInit,
+): Promise<containerAppsGetAuthTokenResponse> => {
+  const res = await fetch(
+    getContainerAppsGetAuthTokenUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsGetAuthTokenResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsGetAuthTokenResponse
-}
-
-
+  const data: containerAppsGetAuthTokenResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsGetAuthTokenResponse;
+};
 
 /**
  * @summary Start a container app
  */
 export type containerAppsStartResponse200 = {
-  data: ContainerApp
-  status: 200
-}
+  data: ContainerApp;
+  status: 200;
+};
 
 export type containerAppsStartResponse202 = {
-  data: void
-  status: 202
-}
+  data: void;
+  status: 202;
+};
 
 export type containerAppsStartResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 202>
-}
-
-export type containerAppsStartResponseSuccess = (containerAppsStartResponse200 | containerAppsStartResponse202) & {
-  headers: Headers;
-};
-export type containerAppsStartResponseError = (containerAppsStartResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 202>;
 };
 
-export type containerAppsStartResponse = (containerAppsStartResponseSuccess | containerAppsStartResponseError)
+export type containerAppsStartResponseSuccess = (
+  | containerAppsStartResponse200
+  | containerAppsStartResponse202
+) & {
+  headers: Headers;
+};
+export type containerAppsStartResponseError =
+  containerAppsStartResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsStartUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsStartParams,) => {
+export type containerAppsStartResponse =
+  | containerAppsStartResponseSuccess
+  | containerAppsStartResponseError;
+
+export const getContainerAppsStartUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsStartParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/start?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/start`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/start?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/start`;
+};
 
-export const containerAppsStart = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsStartParams, options?: RequestInit): Promise<containerAppsStartResponse> => {
-
-  const res = await fetch(getContainerAppsStartUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
+export const containerAppsStart = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsStartParams,
+  options?: RequestInit,
+): Promise<containerAppsStartResponse> => {
+  const res = await fetch(
+    getContainerAppsStartUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsStartResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsStartResponse
-}
-
-
+  const data: containerAppsStartResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsStartResponse;
+};
 
 /**
  * @summary Stop a container app
  */
 export type containerAppsStopResponse200 = {
-  data: ContainerApp
-  status: 200
-}
+  data: ContainerApp;
+  status: 200;
+};
 
 export type containerAppsStopResponse202 = {
-  data: void
-  status: 202
-}
+  data: void;
+  status: 202;
+};
 
 export type containerAppsStopResponseDefault = {
-  data: ErrorResponse
-  status: Exclude<HTTPStatusCodes, 200 | 202>
-}
-
-export type containerAppsStopResponseSuccess = (containerAppsStopResponse200 | containerAppsStopResponse202) & {
-  headers: Headers;
-};
-export type containerAppsStopResponseError = (containerAppsStopResponseDefault) & {
-  headers: Headers;
+  data: ErrorResponse;
+  status: Exclude<HTTPStatusCodes, 200 | 202>;
 };
 
-export type containerAppsStopResponse = (containerAppsStopResponseSuccess | containerAppsStopResponseError)
+export type containerAppsStopResponseSuccess = (
+  | containerAppsStopResponse200
+  | containerAppsStopResponse202
+) & {
+  headers: Headers;
+};
+export type containerAppsStopResponseError =
+  containerAppsStopResponseDefault & {
+    headers: Headers;
+  };
 
-export const getContainerAppsStopUrl = (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsStopParams,) => {
+export type containerAppsStopResponse =
+  | containerAppsStopResponseSuccess
+  | containerAppsStopResponseError;
+
+export const getContainerAppsStopUrl = (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsStopParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/stop?${stringifiedParams}` : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/stop`
-}
+  return stringifiedParams.length > 0
+    ? `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/stop?${stringifiedParams}`
+    : `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.App/containerApps/${containerAppName}/stop`;
+};
 
-export const containerAppsStop = async (subscriptionId: string,
-    resourceGroupName: string,
-    containerAppName: string,
-    params: ContainerAppsStopParams, options?: RequestInit): Promise<containerAppsStopResponse> => {
-
-  const res = await fetch(getContainerAppsStopUrl(subscriptionId,resourceGroupName,containerAppName,params),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
+export const containerAppsStop = async (
+  subscriptionId: string,
+  resourceGroupName: string,
+  containerAppName: string,
+  params: ContainerAppsStopParams,
+  options?: RequestInit,
+): Promise<containerAppsStopResponse> => {
+  const res = await fetch(
+    getContainerAppsStopUrl(
+      subscriptionId,
+      resourceGroupName,
+      containerAppName,
+      params,
+    ),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: containerAppsStopResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as containerAppsStopResponse
-}
+  const data: containerAppsStopResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as containerAppsStopResponse;
+};

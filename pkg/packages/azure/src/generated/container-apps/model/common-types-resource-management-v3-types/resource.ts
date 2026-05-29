@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { SystemData } from './systemData';
+import type { SystemData } from "./systemData";
 
 /**
  * Common fields that are returned in the response for all Azure Resource Manager resources

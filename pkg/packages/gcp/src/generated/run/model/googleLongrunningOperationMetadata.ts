@@ -8,4 +8,4 @@
 /**
  * Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.
  */
-export type GoogleLongrunningOperationMetadata = {[key: string]: unknown};
+export type GoogleLongrunningOperationMetadata = { [key: string]: unknown };

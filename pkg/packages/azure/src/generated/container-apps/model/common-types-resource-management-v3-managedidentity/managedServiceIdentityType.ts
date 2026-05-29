@@ -8,13 +8,13 @@
 /**
  * Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).
  */
-export type ManagedServiceIdentityType = typeof ManagedServiceIdentityType[keyof typeof ManagedServiceIdentityType];
-
+export type ManagedServiceIdentityType =
+  (typeof ManagedServiceIdentityType)[keyof typeof ManagedServiceIdentityType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ManagedServiceIdentityType = {
-  None: 'None',
-  SystemAssigned: 'SystemAssigned',
-  UserAssigned: 'UserAssigned',
-  'SystemAssigned,UserAssigned': 'SystemAssigned,UserAssigned',
+  None: "None",
+  SystemAssigned: "SystemAssigned",
+  UserAssigned: "UserAssigned",
+  "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned",
 } as const;

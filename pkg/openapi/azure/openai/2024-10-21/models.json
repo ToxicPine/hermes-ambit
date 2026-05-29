@@ -199,9 +199,7 @@
       },
       "InnerErrorCode": {
         "type": "string",
-        "enum": [
-          "invalidPayload"
-        ]
+        "enum": ["invalidPayload"]
       },
       "FineTuningState": {
         "type": "string",
@@ -216,10 +214,7 @@
       },
       "LifeCycleStatus": {
         "type": "string",
-        "enum": [
-          "preview",
-          "generally-available"
-        ]
+        "enum": ["preview", "generally-available"]
       },
       "TypeDiscriminator": {
         "type": "string",

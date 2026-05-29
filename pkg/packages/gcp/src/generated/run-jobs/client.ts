@@ -13,375 +13,457 @@ import type {
   RunProjectsLocationsJobsCreateParams,
   RunProjectsLocationsJobsDeleteParams,
   RunProjectsLocationsJobsListParams,
-  RunProjectsLocationsJobsPatchParams
-} from './model';
-
+  RunProjectsLocationsJobsPatchParams,
+} from "./model";
 
 // https://stackoverflow.com/questions/49579094/typescript-conditional-types-filter-out-readonly-properties-pick-only-requir/49579497#49579497
-type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
-T,
->() => T extends Y ? 1 : 2
-? A
-: B;
+type IfEquals<X, Y, A = X, B = never> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
 
 type WritableKeys<T> = {
-[P in keyof T]-?: IfEquals<
-  { [Q in P]: T[P] },
-  { -readonly [Q in P]: T[P] },
-  P
->;
+  [P in keyof T]-?: IfEquals<
+    { [Q in P]: T[P] },
+    { -readonly [Q in P]: T[P] },
+    P
+  >;
 }[keyof T];
 
-type UnionToIntersection<U> =
-  (U extends any ? (k: U)=>void : never) extends ((k: infer I)=>void) ? I : never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
 type DistributeReadOnlyOverUnions<T> = T extends any ? NonReadonly<T> : never;
 
 type Writable<T> = Pick<T, WritableKeys<T>>;
-type NonReadonly<T> = [T] extends [UnionToIntersection<T>] ? {
-  [P in keyof Writable<T>]: T[P] extends object
-    ? NonReadonly<NonNullable<T[P]>>
-    : T[P];
-} : DistributeReadOnlyOverUnions<T>;
-
-
+type NonReadonly<T> = [T] extends [UnionToIntersection<T>]
+  ? {
+      [P in keyof Writable<T>]: T[P] extends object
+        ? NonReadonly<NonNullable<T[P]>>
+        : T[P];
+    }
+  : DistributeReadOnlyOverUnions<T>;
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
 export type HTTPStatusCode2xx = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207;
 export type HTTPStatusCode3xx = 300 | 301 | 302 | 303 | 304 | 305 | 307 | 308;
-export type HTTPStatusCode4xx = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 419 | 420 | 421 | 422 | 423 | 424 | 426 | 428 | 429 | 431 | 451;
+export type HTTPStatusCode4xx =
+  | 400
+  | 401
+  | 402
+  | 403
+  | 404
+  | 405
+  | 406
+  | 407
+  | 408
+  | 409
+  | 410
+  | 411
+  | 412
+  | 413
+  | 414
+  | 415
+  | 416
+  | 417
+  | 418
+  | 419
+  | 420
+  | 421
+  | 422
+  | 423
+  | 424
+  | 426
+  | 428
+  | 429
+  | 431
+  | 451;
 export type HTTPStatusCode5xx = 500 | 501 | 502 | 503 | 504 | 505 | 507 | 511;
-export type HTTPStatusCodes = HTTPStatusCode1xx | HTTPStatusCode2xx | HTTPStatusCode3xx | HTTPStatusCode4xx | HTTPStatusCode5xx;
+export type HTTPStatusCodes =
+  | HTTPStatusCode1xx
+  | HTTPStatusCode2xx
+  | HTTPStatusCode3xx
+  | HTTPStatusCode4xx
+  | HTTPStatusCode5xx;
 
 /**
  * Creates a Job.
  */
 export type runProjectsLocationsJobsCreateResponse200 = {
-  data: GoogleLongrunningOperation
-  status: 200
-}
+  data: GoogleLongrunningOperation;
+  status: 200;
+};
 
 export type runProjectsLocationsJobsCreateResponseDefault = {
-  data: GoogleRpcStatus
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type runProjectsLocationsJobsCreateResponseSuccess = (runProjectsLocationsJobsCreateResponse200) & {
-  headers: Headers;
-};
-export type runProjectsLocationsJobsCreateResponseError = (runProjectsLocationsJobsCreateResponseDefault) & {
-  headers: Headers;
+  data: GoogleRpcStatus;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type runProjectsLocationsJobsCreateResponse = (runProjectsLocationsJobsCreateResponseSuccess | runProjectsLocationsJobsCreateResponseError)
+export type runProjectsLocationsJobsCreateResponseSuccess =
+  runProjectsLocationsJobsCreateResponse200 & {
+    headers: Headers;
+  };
+export type runProjectsLocationsJobsCreateResponseError =
+  runProjectsLocationsJobsCreateResponseDefault & {
+    headers: Headers;
+  };
 
-export const getRunProjectsLocationsJobsCreateUrl = (parent: string,
-    params?: RunProjectsLocationsJobsCreateParams,) => {
+export type runProjectsLocationsJobsCreateResponse =
+  | runProjectsLocationsJobsCreateResponseSuccess
+  | runProjectsLocationsJobsCreateResponseError;
+
+export const getRunProjectsLocationsJobsCreateUrl = (
+  parent: string,
+  params?: RunProjectsLocationsJobsCreateParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://run.googleapis.com/v2/${parent}/jobs?${stringifiedParams}` : `https://run.googleapis.com/v2/${parent}/jobs`
-}
+  return stringifiedParams.length > 0
+    ? `https://run.googleapis.com/v2/${parent}/jobs?${stringifiedParams}`
+    : `https://run.googleapis.com/v2/${parent}/jobs`;
+};
 
-export const runProjectsLocationsJobsCreate = async (parent: string,
-    googleCloudRunV2Job: NonReadonly<GoogleCloudRunV2Job>,
-    params?: RunProjectsLocationsJobsCreateParams, options?: RequestInit): Promise<runProjectsLocationsJobsCreateResponse> => {
-
-  const res = await fetch(getRunProjectsLocationsJobsCreateUrl(parent,params),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      googleCloudRunV2Job,)
-  }
-)
+export const runProjectsLocationsJobsCreate = async (
+  parent: string,
+  googleCloudRunV2Job: NonReadonly<GoogleCloudRunV2Job>,
+  params?: RunProjectsLocationsJobsCreateParams,
+  options?: RequestInit,
+): Promise<runProjectsLocationsJobsCreateResponse> => {
+  const res = await fetch(
+    getRunProjectsLocationsJobsCreateUrl(parent, params),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(googleCloudRunV2Job),
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: runProjectsLocationsJobsCreateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as runProjectsLocationsJobsCreateResponse
-}
-
-
+  const data: runProjectsLocationsJobsCreateResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as runProjectsLocationsJobsCreateResponse;
+};
 
 /**
  * Lists Jobs. Results are sorted by creation time, descending.
  */
 export type runProjectsLocationsJobsListResponse200 = {
-  data: GoogleCloudRunV2ListJobsResponse
-  status: 200
-}
+  data: GoogleCloudRunV2ListJobsResponse;
+  status: 200;
+};
 
 export type runProjectsLocationsJobsListResponseDefault = {
-  data: GoogleRpcStatus
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type runProjectsLocationsJobsListResponseSuccess = (runProjectsLocationsJobsListResponse200) & {
-  headers: Headers;
-};
-export type runProjectsLocationsJobsListResponseError = (runProjectsLocationsJobsListResponseDefault) & {
-  headers: Headers;
+  data: GoogleRpcStatus;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type runProjectsLocationsJobsListResponse = (runProjectsLocationsJobsListResponseSuccess | runProjectsLocationsJobsListResponseError)
+export type runProjectsLocationsJobsListResponseSuccess =
+  runProjectsLocationsJobsListResponse200 & {
+    headers: Headers;
+  };
+export type runProjectsLocationsJobsListResponseError =
+  runProjectsLocationsJobsListResponseDefault & {
+    headers: Headers;
+  };
 
-export const getRunProjectsLocationsJobsListUrl = (parent: string,
-    params?: RunProjectsLocationsJobsListParams,) => {
+export type runProjectsLocationsJobsListResponse =
+  | runProjectsLocationsJobsListResponseSuccess
+  | runProjectsLocationsJobsListResponseError;
+
+export const getRunProjectsLocationsJobsListUrl = (
+  parent: string,
+  params?: RunProjectsLocationsJobsListParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://run.googleapis.com/v2/${parent}/jobs?${stringifiedParams}` : `https://run.googleapis.com/v2/${parent}/jobs`
-}
+  return stringifiedParams.length > 0
+    ? `https://run.googleapis.com/v2/${parent}/jobs?${stringifiedParams}`
+    : `https://run.googleapis.com/v2/${parent}/jobs`;
+};
 
-export const runProjectsLocationsJobsList = async (parent: string,
-    params?: RunProjectsLocationsJobsListParams, options?: RequestInit): Promise<runProjectsLocationsJobsListResponse> => {
-
-  const res = await fetch(getRunProjectsLocationsJobsListUrl(parent,params),
-  {
+export const runProjectsLocationsJobsList = async (
+  parent: string,
+  params?: RunProjectsLocationsJobsListParams,
+  options?: RequestInit,
+): Promise<runProjectsLocationsJobsListResponse> => {
+  const res = await fetch(getRunProjectsLocationsJobsListUrl(parent, params), {
     ...options,
-    method: 'GET'
-
-
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: runProjectsLocationsJobsListResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as runProjectsLocationsJobsListResponse
-}
-
-
+  const data: runProjectsLocationsJobsListResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as runProjectsLocationsJobsListResponse;
+};
 
 /**
  * Gets information about a Job.
  */
 export type runProjectsLocationsJobsGetResponse200 = {
-  data: GoogleCloudRunV2Job
-  status: 200
-}
+  data: GoogleCloudRunV2Job;
+  status: 200;
+};
 
 export type runProjectsLocationsJobsGetResponseDefault = {
-  data: GoogleRpcStatus
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type runProjectsLocationsJobsGetResponseSuccess = (runProjectsLocationsJobsGetResponse200) & {
-  headers: Headers;
-};
-export type runProjectsLocationsJobsGetResponseError = (runProjectsLocationsJobsGetResponseDefault) & {
-  headers: Headers;
+  data: GoogleRpcStatus;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type runProjectsLocationsJobsGetResponse = (runProjectsLocationsJobsGetResponseSuccess | runProjectsLocationsJobsGetResponseError)
+export type runProjectsLocationsJobsGetResponseSuccess =
+  runProjectsLocationsJobsGetResponse200 & {
+    headers: Headers;
+  };
+export type runProjectsLocationsJobsGetResponseError =
+  runProjectsLocationsJobsGetResponseDefault & {
+    headers: Headers;
+  };
 
-export const getRunProjectsLocationsJobsGetUrl = (name: string,) => {
+export type runProjectsLocationsJobsGetResponse =
+  | runProjectsLocationsJobsGetResponseSuccess
+  | runProjectsLocationsJobsGetResponseError;
 
+export const getRunProjectsLocationsJobsGetUrl = (name: string) => {
+  return `https://run.googleapis.com/v2/${name}`;
+};
 
-
-
-  return `https://run.googleapis.com/v2/${name}`
-}
-
-export const runProjectsLocationsJobsGet = async (name: string, options?: RequestInit): Promise<runProjectsLocationsJobsGetResponse> => {
-
-  const res = await fetch(getRunProjectsLocationsJobsGetUrl(name),
-  {
+export const runProjectsLocationsJobsGet = async (
+  name: string,
+  options?: RequestInit,
+): Promise<runProjectsLocationsJobsGetResponse> => {
+  const res = await fetch(getRunProjectsLocationsJobsGetUrl(name), {
     ...options,
-    method: 'GET'
-
-
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: runProjectsLocationsJobsGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as runProjectsLocationsJobsGetResponse
-}
-
-
+  const data: runProjectsLocationsJobsGetResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as runProjectsLocationsJobsGetResponse;
+};
 
 /**
  * Updates a Job.
  */
 export type runProjectsLocationsJobsPatchResponse200 = {
-  data: GoogleLongrunningOperation
-  status: 200
-}
+  data: GoogleLongrunningOperation;
+  status: 200;
+};
 
 export type runProjectsLocationsJobsPatchResponseDefault = {
-  data: GoogleRpcStatus
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type runProjectsLocationsJobsPatchResponseSuccess = (runProjectsLocationsJobsPatchResponse200) & {
-  headers: Headers;
-};
-export type runProjectsLocationsJobsPatchResponseError = (runProjectsLocationsJobsPatchResponseDefault) & {
-  headers: Headers;
+  data: GoogleRpcStatus;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type runProjectsLocationsJobsPatchResponse = (runProjectsLocationsJobsPatchResponseSuccess | runProjectsLocationsJobsPatchResponseError)
+export type runProjectsLocationsJobsPatchResponseSuccess =
+  runProjectsLocationsJobsPatchResponse200 & {
+    headers: Headers;
+  };
+export type runProjectsLocationsJobsPatchResponseError =
+  runProjectsLocationsJobsPatchResponseDefault & {
+    headers: Headers;
+  };
 
-export const getRunProjectsLocationsJobsPatchUrl = (name: string,
-    params?: RunProjectsLocationsJobsPatchParams,) => {
+export type runProjectsLocationsJobsPatchResponse =
+  | runProjectsLocationsJobsPatchResponseSuccess
+  | runProjectsLocationsJobsPatchResponseError;
+
+export const getRunProjectsLocationsJobsPatchUrl = (
+  name: string,
+  params?: RunProjectsLocationsJobsPatchParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://run.googleapis.com/v2/${name}?${stringifiedParams}` : `https://run.googleapis.com/v2/${name}`
-}
+  return stringifiedParams.length > 0
+    ? `https://run.googleapis.com/v2/${name}?${stringifiedParams}`
+    : `https://run.googleapis.com/v2/${name}`;
+};
 
-export const runProjectsLocationsJobsPatch = async (name: string,
-    googleCloudRunV2Job: NonReadonly<GoogleCloudRunV2Job>,
-    params?: RunProjectsLocationsJobsPatchParams, options?: RequestInit): Promise<runProjectsLocationsJobsPatchResponse> => {
-
-  const res = await fetch(getRunProjectsLocationsJobsPatchUrl(name,params),
-  {
+export const runProjectsLocationsJobsPatch = async (
+  name: string,
+  googleCloudRunV2Job: NonReadonly<GoogleCloudRunV2Job>,
+  params?: RunProjectsLocationsJobsPatchParams,
+  options?: RequestInit,
+): Promise<runProjectsLocationsJobsPatchResponse> => {
+  const res = await fetch(getRunProjectsLocationsJobsPatchUrl(name, params), {
     ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      googleCloudRunV2Job,)
-  }
-)
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(googleCloudRunV2Job),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: runProjectsLocationsJobsPatchResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as runProjectsLocationsJobsPatchResponse
-}
-
-
+  const data: runProjectsLocationsJobsPatchResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as runProjectsLocationsJobsPatchResponse;
+};
 
 /**
  * Deletes a Job.
  */
 export type runProjectsLocationsJobsDeleteResponse200 = {
-  data: GoogleLongrunningOperation
-  status: 200
-}
+  data: GoogleLongrunningOperation;
+  status: 200;
+};
 
 export type runProjectsLocationsJobsDeleteResponseDefault = {
-  data: GoogleRpcStatus
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type runProjectsLocationsJobsDeleteResponseSuccess = (runProjectsLocationsJobsDeleteResponse200) & {
-  headers: Headers;
-};
-export type runProjectsLocationsJobsDeleteResponseError = (runProjectsLocationsJobsDeleteResponseDefault) & {
-  headers: Headers;
+  data: GoogleRpcStatus;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type runProjectsLocationsJobsDeleteResponse = (runProjectsLocationsJobsDeleteResponseSuccess | runProjectsLocationsJobsDeleteResponseError)
+export type runProjectsLocationsJobsDeleteResponseSuccess =
+  runProjectsLocationsJobsDeleteResponse200 & {
+    headers: Headers;
+  };
+export type runProjectsLocationsJobsDeleteResponseError =
+  runProjectsLocationsJobsDeleteResponseDefault & {
+    headers: Headers;
+  };
 
-export const getRunProjectsLocationsJobsDeleteUrl = (name: string,
-    params?: RunProjectsLocationsJobsDeleteParams,) => {
+export type runProjectsLocationsJobsDeleteResponse =
+  | runProjectsLocationsJobsDeleteResponseSuccess
+  | runProjectsLocationsJobsDeleteResponseError;
+
+export const getRunProjectsLocationsJobsDeleteUrl = (
+  name: string,
+  params?: RunProjectsLocationsJobsDeleteParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://run.googleapis.com/v2/${name}?${stringifiedParams}` : `https://run.googleapis.com/v2/${name}`
-}
+  return stringifiedParams.length > 0
+    ? `https://run.googleapis.com/v2/${name}?${stringifiedParams}`
+    : `https://run.googleapis.com/v2/${name}`;
+};
 
-export const runProjectsLocationsJobsDelete = async (name: string,
-    params?: RunProjectsLocationsJobsDeleteParams, options?: RequestInit): Promise<runProjectsLocationsJobsDeleteResponse> => {
-
-  const res = await fetch(getRunProjectsLocationsJobsDeleteUrl(name,params),
-  {
+export const runProjectsLocationsJobsDelete = async (
+  name: string,
+  params?: RunProjectsLocationsJobsDeleteParams,
+  options?: RequestInit,
+): Promise<runProjectsLocationsJobsDeleteResponse> => {
+  const res = await fetch(getRunProjectsLocationsJobsDeleteUrl(name, params), {
     ...options,
-    method: 'DELETE'
-
-
-  }
-)
+    method: "DELETE",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: runProjectsLocationsJobsDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as runProjectsLocationsJobsDeleteResponse
-}
-
-
+  const data: runProjectsLocationsJobsDeleteResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as runProjectsLocationsJobsDeleteResponse;
+};
 
 /**
  * Triggers creation of a new Execution of this Job.
  */
 export type runProjectsLocationsJobsRunResponse200 = {
-  data: GoogleLongrunningOperation
-  status: 200
-}
+  data: GoogleLongrunningOperation;
+  status: 200;
+};
 
 export type runProjectsLocationsJobsRunResponseDefault = {
-  data: GoogleRpcStatus
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type runProjectsLocationsJobsRunResponseSuccess = (runProjectsLocationsJobsRunResponse200) & {
-  headers: Headers;
-};
-export type runProjectsLocationsJobsRunResponseError = (runProjectsLocationsJobsRunResponseDefault) & {
-  headers: Headers;
+  data: GoogleRpcStatus;
+  status: Exclude<HTTPStatusCodes, 200>;
 };
 
-export type runProjectsLocationsJobsRunResponse = (runProjectsLocationsJobsRunResponseSuccess | runProjectsLocationsJobsRunResponseError)
+export type runProjectsLocationsJobsRunResponseSuccess =
+  runProjectsLocationsJobsRunResponse200 & {
+    headers: Headers;
+  };
+export type runProjectsLocationsJobsRunResponseError =
+  runProjectsLocationsJobsRunResponseDefault & {
+    headers: Headers;
+  };
 
-export const getRunProjectsLocationsJobsRunUrl = (name: string,) => {
+export type runProjectsLocationsJobsRunResponse =
+  | runProjectsLocationsJobsRunResponseSuccess
+  | runProjectsLocationsJobsRunResponseError;
 
+export const getRunProjectsLocationsJobsRunUrl = (name: string) => {
+  return `https://run.googleapis.com/v2/${name}:run`;
+};
 
-
-
-  return `https://run.googleapis.com/v2/${name}:run`
-}
-
-export const runProjectsLocationsJobsRun = async (name: string,
-    googleCloudRunV2RunJobRequest: GoogleCloudRunV2RunJobRequest, options?: RequestInit): Promise<runProjectsLocationsJobsRunResponse> => {
-
-  const res = await fetch(getRunProjectsLocationsJobsRunUrl(name),
-  {
+export const runProjectsLocationsJobsRun = async (
+  name: string,
+  googleCloudRunV2RunJobRequest: GoogleCloudRunV2RunJobRequest,
+  options?: RequestInit,
+): Promise<runProjectsLocationsJobsRunResponse> => {
+  const res = await fetch(getRunProjectsLocationsJobsRunUrl(name), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      googleCloudRunV2RunJobRequest,)
-  }
-)
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(googleCloudRunV2RunJobRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: runProjectsLocationsJobsRunResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as runProjectsLocationsJobsRunResponse
-}
+  const data: runProjectsLocationsJobsRunResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as runProjectsLocationsJobsRunResponse;
+};

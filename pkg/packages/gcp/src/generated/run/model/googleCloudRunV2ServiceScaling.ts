@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ServiceScalingScalingMode } from './googleCloudRunV2ServiceScalingScalingMode';
+import type { GoogleCloudRunV2ServiceScalingScalingMode } from "./googleCloudRunV2ServiceScalingScalingMode";
 
 /**
  * Scaling settings applied at the service level rather than at the revision level.

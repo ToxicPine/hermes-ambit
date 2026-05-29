@@ -2,7 +2,9 @@ import { Data } from "effect";
 
 import type { Remediation } from "./model.js";
 
-export class ProviderUnavailable extends Data.TaggedError("ProviderUnavailable")<{
+export class ProviderUnavailable extends Data.TaggedError(
+  "ProviderUnavailable",
+)<{
   readonly scope: string;
   readonly message: string;
   readonly cause?: unknown;
@@ -19,7 +21,9 @@ export class ResourceConflict extends Data.TaggedError("ResourceConflict")<{
   readonly message: string;
 }> {}
 
-export class RemediationRequired extends Data.TaggedError("RemediationRequired")<{
+export class RemediationRequired extends Data.TaggedError(
+  "RemediationRequired",
+)<{
   readonly scope: string;
   readonly message: string;
   readonly remediation: Remediation;

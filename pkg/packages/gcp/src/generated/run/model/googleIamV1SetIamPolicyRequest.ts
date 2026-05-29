@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleIamV1Policy } from './googleIamV1Policy';
+import type { GoogleIamV1Policy } from "./googleIamV1Policy";
 
 /**
  * Request message for `SetIamPolicy` method.

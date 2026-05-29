@@ -8,12 +8,12 @@
 /**
  * Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.
  */
-export type GoogleCloudRunV2VpcAccessEgress = typeof GoogleCloudRunV2VpcAccessEgress[keyof typeof GoogleCloudRunV2VpcAccessEgress];
-
+export type GoogleCloudRunV2VpcAccessEgress =
+  (typeof GoogleCloudRunV2VpcAccessEgress)[keyof typeof GoogleCloudRunV2VpcAccessEgress];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2VpcAccessEgress = {
-  VPC_EGRESS_UNSPECIFIED: 'VPC_EGRESS_UNSPECIFIED',
-  ALL_TRAFFIC: 'ALL_TRAFFIC',
-  PRIVATE_RANGES_ONLY: 'PRIVATE_RANGES_ONLY',
+  VPC_EGRESS_UNSPECIFIED: "VPC_EGRESS_UNSPECIFIED",
+  ALL_TRAFFIC: "ALL_TRAFFIC",
+  PRIVATE_RANGES_ONLY: "PRIVATE_RANGES_ONLY",
 } as const;

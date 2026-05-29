@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { PrivateEndpoint } from './privateEndpoint';
-import type { PrivateLinkServiceConnectionState } from './privateLinkServiceConnectionState';
-import type { PrivateEndpointConnectionProvisioningState } from './privateEndpointConnectionProvisioningState';
+import type { PrivateEndpoint } from "./privateEndpoint";
+import type { PrivateLinkServiceConnectionState } from "./privateLinkServiceConnectionState";
+import type { PrivateEndpointConnectionProvisioningState } from "./privateEndpointConnectionProvisioningState";
 
 /**
  * Properties of the private endpoint connection.

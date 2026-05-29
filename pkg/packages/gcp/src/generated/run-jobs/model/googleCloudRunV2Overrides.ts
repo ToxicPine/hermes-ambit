@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ContainerOverride } from './googleCloudRunV2ContainerOverride';
+import type { GoogleCloudRunV2ContainerOverride } from "./googleCloudRunV2ContainerOverride";
 
 /**
  * RunJob Overrides that contains Execution fields to be overridden.

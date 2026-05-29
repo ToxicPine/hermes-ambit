@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ExecutionReferenceCompletionStatus } from './googleCloudRunV2ExecutionReferenceCompletionStatus';
+import type { GoogleCloudRunV2ExecutionReferenceCompletionStatus } from "./googleCloudRunV2ExecutionReferenceCompletionStatus";
 
 /**
  * Reference to an Execution. Use /Executions.GetExecution with the given name to get full execution including the latest status.

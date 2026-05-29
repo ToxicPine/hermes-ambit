@@ -8,10 +8,9 @@
 /**
  * The identity type.
  */
-export type IdentityType = typeof IdentityType[keyof typeof IdentityType];
-
+export type IdentityType = (typeof IdentityType)[keyof typeof IdentityType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IdentityType = {
-  SystemAssigned: 'SystemAssigned',
+  SystemAssigned: "SystemAssigned",
 } as const;

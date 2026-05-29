@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { z } from "zod";
 
 import { OperationFailed } from "./errors.js";
 import type { CloudError } from "./errors.js";
@@ -9,30 +10,24 @@ export type HttpResponse = {
   readonly headers: Headers;
 };
 
-const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
-  value !== null && typeof value === "object";
-
-const messageField = (
-  value: Readonly<Record<string, unknown>>,
-): string | undefined => {
-  const message = value.message;
-  return typeof message === "string" && message.length > 0
-    ? message
-    : undefined;
-};
+const httpMessageDataSchema = z
+  .object({
+    message: z.string().min(1).optional(),
+    error: z
+      .object({
+        message: z.string().min(1).optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+  .passthrough();
 
 const httpMessage = (response: HttpResponse) => {
-  const data = response.data;
-  if (isRecord(data)) {
-    const message = messageField(data);
-    if (message) return message;
-
-    const nested = data.error;
-    if (isRecord(nested)) {
-      const nestedMessage = messageField(nested);
-      if (nestedMessage) return nestedMessage;
-    }
-  }
+  const parsed = httpMessageDataSchema.safeParse(response.data);
+  const message = parsed.success
+    ? (parsed.data.message ?? parsed.data.error?.message)
+    : undefined;
+  if (message) return message;
   return `HTTP ${response.status}`;
 };
 

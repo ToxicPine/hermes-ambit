@@ -8,12 +8,12 @@
 /**
  * Client certificate mode for mTLS authentication. Ignore indicates server drops client certificate on forwarding. Accept indicates server forwards client certificate but does not require a client certificate. Require indicates server requires a client certificate.
  */
-export type IngressClientCertificateMode = typeof IngressClientCertificateMode[keyof typeof IngressClientCertificateMode];
-
+export type IngressClientCertificateMode =
+  (typeof IngressClientCertificateMode)[keyof typeof IngressClientCertificateMode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IngressClientCertificateMode = {
-  ignore: 'ignore',
-  accept: 'accept',
-  require: 'require',
+  ignore: "ignore",
+  accept: "accept",
+  require: "require",
 } as const;

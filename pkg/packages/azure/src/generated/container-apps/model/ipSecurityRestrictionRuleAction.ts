@@ -8,11 +8,11 @@
 /**
  * Allow or Deny rules to determine for incoming IP. Note: Rules can only consist of ALL Allow or ALL Deny
  */
-export type IpSecurityRestrictionRuleAction = typeof IpSecurityRestrictionRuleAction[keyof typeof IpSecurityRestrictionRuleAction];
-
+export type IpSecurityRestrictionRuleAction =
+  (typeof IpSecurityRestrictionRuleAction)[keyof typeof IpSecurityRestrictionRuleAction];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IpSecurityRestrictionRuleAction = {
-  Allow: 'Allow',
-  Deny: 'Deny',
+  Allow: "Allow",
+  Deny: "Deny",
 } as const;

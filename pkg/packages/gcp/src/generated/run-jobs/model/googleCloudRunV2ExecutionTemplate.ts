@@ -4,9 +4,9 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ExecutionTemplateLabels } from './googleCloudRunV2ExecutionTemplateLabels';
-import type { GoogleCloudRunV2ExecutionTemplateAnnotations } from './googleCloudRunV2ExecutionTemplateAnnotations';
-import type { GoogleCloudRunV2TaskTemplate } from './googleCloudRunV2TaskTemplate';
+import type { GoogleCloudRunV2ExecutionTemplateLabels } from "./googleCloudRunV2ExecutionTemplateLabels";
+import type { GoogleCloudRunV2ExecutionTemplateAnnotations } from "./googleCloudRunV2ExecutionTemplateAnnotations";
+import type { GoogleCloudRunV2TaskTemplate } from "./googleCloudRunV2TaskTemplate";
 
 /**
  * ExecutionTemplate describes the data an execution should have when created from a template.

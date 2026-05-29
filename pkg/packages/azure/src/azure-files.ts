@@ -63,7 +63,10 @@ export const getAzureFileShareForManagedEnvironmentStorage = (
   });
 
 const normalizePath = (path: string): string =>
-  path.split("/").filter((segment) => segment.length > 0).join("/");
+  path
+    .split("/")
+    .filter((segment) => segment.length > 0)
+    .join("/");
 
 const encodePath = (path: string): string =>
   normalizePath(path).split("/").map(encodeURIComponent).join("/");
@@ -196,6 +199,53 @@ const createAzureFile = (
     }
   });
 
+const createAzureDirectory = (
+  auth: AzureAuthContext,
+  directory: AzureFileRef,
+): Effect.Effect<void, CloudError> =>
+  Effect.gen(function* () {
+    const path = normalizePath(directory.path);
+    if (!path) return;
+
+    const operation = "azure.files.createDirectory";
+    const response = yield* sendAzureFile(
+      auth,
+      operation,
+      { ...directory, path },
+      () => ({
+        method: "PUT",
+        query: "restype=directory",
+        headers: {
+          "Content-Length": "0",
+        },
+      }),
+    );
+    const body = yield* azureFileResponseBody(operation, response);
+    if (response.status === 409) {
+      return;
+    }
+    if (!successStatus(response.status)) {
+      return yield* failAzureFileResponse(operation, response, body);
+    }
+  });
+
+const parentDirectories = (path: string): readonly string[] => {
+  const segments = normalizePath(path).split("/").filter(Boolean);
+  return segments
+    .slice(0, -1)
+    .map((_, index) => segments.slice(0, index + 1).join("/"));
+};
+
+const ensureAzureFileParentDirectories = (
+  auth: AzureAuthContext,
+  file: AzureFileRef,
+): Effect.Effect<void, CloudError> =>
+  Effect.forEach(
+    parentDirectories(file.path),
+    (path) => createAzureDirectory(auth, { ...file, path }),
+    { discard: true },
+  );
+
 const putAzureFileRange = (
   auth: AzureAuthContext,
   file: AzureFileRef,
@@ -247,6 +297,7 @@ const writeAzureFileText = (
 ): Effect.Effect<void, CloudError> =>
   Effect.gen(function* () {
     const bytes = new TextEncoder().encode(contents);
+    yield* ensureAzureFileParentDirectories(auth, file);
     yield* createAzureFile(auth, file, bytes.byteLength);
     yield* putAzureFileRanges(auth, file, bytes, 0);
   });
@@ -310,7 +361,10 @@ const firstElementText = (
 const parseAzureDirectoryEntries = (
   body: string,
 ): Effect.Effect<
-  { readonly entries: readonly AzureDirectoryEntry[]; readonly nextMarker?: string },
+  {
+    readonly entries: readonly AzureDirectoryEntry[];
+    readonly nextMarker?: string;
+  },
   OperationFailed
 > => {
   const document = new DOMParser().parseFromString(body, "application/xml");
@@ -325,28 +379,27 @@ const parseAzureDirectoryEntries = (
 
   const entriesElement = document.getElementsByTagName("Entries").item(0);
   const entries: readonly AzureDirectoryEntry[] = entriesElement
-    ? Array.from(entriesElement.children).reduce<readonly AzureDirectoryEntry[]>(
-        (acc, entry) => {
-          const name = firstElementText(entry, "Name");
-          if (!name) return acc;
-          if (entry.tagName === "File") {
-            const file: AzureDirectoryEntry = {
-              kind: "file",
-              name: decodeAzureListedName(name),
-            };
-            return [...acc, file];
-          }
-          if (entry.tagName === "Directory") {
-            const directory: AzureDirectoryEntry = {
-              kind: "directory",
-              name: decodeAzureListedName(name),
-            };
-            return [...acc, directory];
-          }
-          return acc;
-        },
-        [],
-      )
+    ? Array.from(entriesElement.children).reduce<
+        readonly AzureDirectoryEntry[]
+      >((acc, entry) => {
+        const name = firstElementText(entry, "Name");
+        if (!name) return acc;
+        if (entry.tagName === "File") {
+          const file: AzureDirectoryEntry = {
+            kind: "file",
+            name: decodeAzureListedName(name),
+          };
+          return [...acc, file];
+        }
+        if (entry.tagName === "Directory") {
+          const directory: AzureDirectoryEntry = {
+            kind: "directory",
+            name: decodeAzureListedName(name),
+          };
+          return [...acc, directory];
+        }
+        return acc;
+      }, [])
     : [];
   const nextMarker = firstElementText(document.documentElement, "NextMarker");
 
@@ -361,7 +414,10 @@ const listAzureDirectoryPage = (
   directory: AzureFileRef,
   marker?: string,
 ): Effect.Effect<
-  { readonly entries: readonly AzureDirectoryEntry[]; readonly nextMarker?: string },
+  {
+    readonly entries: readonly AzureDirectoryEntry[];
+    readonly nextMarker?: string;
+  },
   CloudError
 > =>
   Effect.gen(function* () {
@@ -469,7 +525,9 @@ const dataVolumePath = (
     );
   }
 
-  return Effect.succeed(normalizePath(`${dataSubPath}/${path.slice(prefix.length)}`));
+  return Effect.succeed(
+    normalizePath(`${dataSubPath}/${path.slice(prefix.length)}`),
+  );
 };
 
 export const makeAzureFilesUserVolume = (
@@ -485,7 +543,10 @@ export const makeAzureFilesUserVolume = (
   readTextIfExists: (path) =>
     Effect.gen(function* () {
       const filePath = yield* dataVolumePath(dataSubPath, path);
-      return yield* readAzureFileTextIfExists(auth, { ...share, path: filePath });
+      return yield* readAzureFileTextIfExists(auth, {
+        ...share,
+        path: filePath,
+      });
     }),
   writeText: (path, contents) =>
     Effect.gen(function* () {

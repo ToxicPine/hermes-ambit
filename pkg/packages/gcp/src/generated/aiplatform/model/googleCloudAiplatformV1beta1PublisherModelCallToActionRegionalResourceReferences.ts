@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferencesReferences } from './googleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferencesReferences';
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferencesReferences } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferencesReferences";
 
 /**
  * The regional resource name or the URI. Key is region, e.g., us-central1, europe-west2, global, etc..

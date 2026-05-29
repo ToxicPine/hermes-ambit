@@ -4,9 +4,9 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleLongrunningOperationMetadata } from './googleLongrunningOperationMetadata';
-import type { GoogleRpcStatus } from './googleRpcStatus';
-import type { GoogleLongrunningOperationResponse } from './googleLongrunningOperationResponse';
+import type { GoogleLongrunningOperationMetadata } from "./googleLongrunningOperationMetadata";
+import type { GoogleRpcStatus } from "./googleRpcStatus";
+import type { GoogleLongrunningOperationResponse } from "./googleLongrunningOperationResponse";
 
 /**
  * This resource represents a long-running operation that is the result of a network API call.

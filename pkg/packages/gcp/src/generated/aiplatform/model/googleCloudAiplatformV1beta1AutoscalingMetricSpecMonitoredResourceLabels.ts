@@ -8,4 +8,5 @@
 /**
  * Optional. The Cloud Monitoring monitored resource labels as key value pairs used for metrics filtering. See Cloud Monitoring Labels https://cloud.google.com/monitoring/api/v3/metric-model#generic-label-info
  */
-export type GoogleCloudAiplatformV1beta1AutoscalingMetricSpecMonitoredResourceLabels = {[key: string]: string};
+export type GoogleCloudAiplatformV1beta1AutoscalingMetricSpecMonitoredResourceLabels =
+  { [key: string]: string };

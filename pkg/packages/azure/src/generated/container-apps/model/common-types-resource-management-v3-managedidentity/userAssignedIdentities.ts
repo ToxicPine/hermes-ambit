@@ -4,10 +4,12 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { UserAssignedIdentity } from './userAssignedIdentity';
+import type { UserAssignedIdentity } from "./userAssignedIdentity";
 
 /**
  * The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.
  * @nullable
  */
-export type UserAssignedIdentities = {[key: string]: UserAssignedIdentity} | null;
+export type UserAssignedIdentities = {
+  [key: string]: UserAssignedIdentity;
+} | null;

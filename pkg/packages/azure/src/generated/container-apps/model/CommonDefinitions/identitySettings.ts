@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { IdentitySettingsLifecycle } from './identitySettingsLifecycle';
+import type { IdentitySettingsLifecycle } from "./identitySettingsLifecycle";
 
 /**
  * Optional settings for a Managed Identity that is assigned to the Container App.

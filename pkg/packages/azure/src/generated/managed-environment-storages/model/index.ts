@@ -5,10 +5,10 @@
  * OpenAPI spec version: 2025-07-01
  */
 
-export * from './managedEnvironmentStorage';
-export * from './managedEnvironmentStorageProperties';
-export * from './managedEnvironmentStoragesCollection';
-export * from './managedEnvironmentsStoragesCreateOrUpdateParams';
-export * from './managedEnvironmentsStoragesDeleteParams';
-export * from './managedEnvironmentsStoragesGetParams';
-export * from './managedEnvironmentsStoragesListParams';
+export * from "./managedEnvironmentStorage";
+export * from "./managedEnvironmentStorageProperties";
+export * from "./managedEnvironmentStoragesCollection";
+export * from "./managedEnvironmentsStoragesCreateOrUpdateParams";
+export * from "./managedEnvironmentsStoragesDeleteParams";
+export * from "./managedEnvironmentsStoragesGetParams";
+export * from "./managedEnvironmentsStoragesListParams";

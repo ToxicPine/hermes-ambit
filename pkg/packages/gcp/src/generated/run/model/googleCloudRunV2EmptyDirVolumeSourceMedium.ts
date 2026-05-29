@@ -8,12 +8,12 @@
 /**
  * The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional
  */
-export type GoogleCloudRunV2EmptyDirVolumeSourceMedium = typeof GoogleCloudRunV2EmptyDirVolumeSourceMedium[keyof typeof GoogleCloudRunV2EmptyDirVolumeSourceMedium];
-
+export type GoogleCloudRunV2EmptyDirVolumeSourceMedium =
+  (typeof GoogleCloudRunV2EmptyDirVolumeSourceMedium)[keyof typeof GoogleCloudRunV2EmptyDirVolumeSourceMedium];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2EmptyDirVolumeSourceMedium = {
-  MEDIUM_UNSPECIFIED: 'MEDIUM_UNSPECIFIED',
-  MEMORY: 'MEMORY',
-  DISK: 'DISK',
+  MEDIUM_UNSPECIFIED: "MEDIUM_UNSPECIFIED",
+  MEMORY: "MEMORY",
+  DISK: "DISK",
 } as const;

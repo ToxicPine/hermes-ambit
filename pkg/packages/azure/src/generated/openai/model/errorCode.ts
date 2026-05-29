@@ -5,23 +5,22 @@
  * OpenAPI spec version: 2024-10-21
  */
 
-export type ErrorCode = typeof ErrorCode[keyof typeof ErrorCode];
-
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ErrorCode = {
-  conflict: 'conflict',
-  invalidPayload: 'invalidPayload',
-  forbidden: 'forbidden',
-  notFound: 'notFound',
-  unexpectedEntityState: 'unexpectedEntityState',
-  itemDoesAlreadyExist: 'itemDoesAlreadyExist',
-  serviceUnavailable: 'serviceUnavailable',
-  internalFailure: 'internalFailure',
-  quotaExceeded: 'quotaExceeded',
-  jsonlValidationFailed: 'jsonlValidationFailed',
-  fileImportFailed: 'fileImportFailed',
-  tooManyRequests: 'tooManyRequests',
-  unauthorized: 'unauthorized',
-  contentFilter: 'contentFilter',
+  conflict: "conflict",
+  invalidPayload: "invalidPayload",
+  forbidden: "forbidden",
+  notFound: "notFound",
+  unexpectedEntityState: "unexpectedEntityState",
+  itemDoesAlreadyExist: "itemDoesAlreadyExist",
+  serviceUnavailable: "serviceUnavailable",
+  internalFailure: "internalFailure",
+  quotaExceeded: "quotaExceeded",
+  jsonlValidationFailed: "jsonlValidationFailed",
+  fileImportFailed: "fileImportFailed",
+  tooManyRequests: "tooManyRequests",
+  unauthorized: "unauthorized",
+  contentFilter: "contentFilter",
 } as const;

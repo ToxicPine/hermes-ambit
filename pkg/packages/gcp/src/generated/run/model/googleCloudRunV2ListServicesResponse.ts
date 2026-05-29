@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2Service } from './googleCloudRunV2Service';
+import type { GoogleCloudRunV2Service } from "./googleCloudRunV2Service";
 
 /**
  * Response message containing a list of Services.

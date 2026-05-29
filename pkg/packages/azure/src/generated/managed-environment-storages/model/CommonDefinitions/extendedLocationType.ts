@@ -8,10 +8,10 @@
 /**
  * The type of extendedLocation.
  */
-export type ExtendedLocationType = typeof ExtendedLocationType[keyof typeof ExtendedLocationType];
-
+export type ExtendedLocationType =
+  (typeof ExtendedLocationType)[keyof typeof ExtendedLocationType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ExtendedLocationType = {
-  CustomLocation: 'CustomLocation',
+  CustomLocation: "CustomLocation",
 } as const;

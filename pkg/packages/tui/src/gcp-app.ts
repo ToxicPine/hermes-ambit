@@ -14,7 +14,7 @@ import {
   type GcpBoundary,
   type GcpStatus,
 } from "@cardelli/gcp";
-import type { CloudError, HomeManagerPatch } from "@cardelli/shared";
+import type { CloudError, HomeManagerModule } from "@cardelli/shared";
 import { Effect } from "effect";
 
 import type {
@@ -85,9 +85,7 @@ const summarizeGcpDiscoveryDeployment = (
 
 const supportedGcpSharedModelPrefixes = ["gemini-"];
 
-const isSupportedGcpSharedModel = (
-  model: GcpPublisherModel,
-): boolean => {
+const isSupportedGcpSharedModel = (model: GcpPublisherModel): boolean => {
   const id = model.id;
   return (
     supportedGcpSharedModelPrefixes.some((prefix) => id.startsWith(prefix)) &&
@@ -98,13 +96,11 @@ const isSupportedGcpSharedModel = (
 export const summarizeGcpModels = (
   models: GcpPublisherModels,
 ): readonly SupportedModelSummary[] =>
-  models
-    .filter(isSupportedGcpSharedModel)
-    .map((model) => ({
-      id: model.id,
-      route: "gemini/developer-api",
-      runtimeTarget: "model-id",
-    }));
+  models.filter(isSupportedGcpSharedModel).map((model) => ({
+    id: model.id,
+    route: "gemini/developer-api",
+    runtimeTarget: "model-id",
+  }));
 
 export const makeGcpApp = (auth: GcpAuthContext) => {
   const deployment = makeGcpDeployer(auth);
@@ -124,16 +120,11 @@ export const makeGcpApp = (auth: GcpAuthContext) => {
       ProviderOperationResult<ProviderDiscoverySummary>,
       CloudError
     > =>
-      mapProviderOperationResult(
-        deployment.discover(boundary),
-        (raw) => ({
-          boundary,
-          deployments: raw.map(summarizeGcpDiscoveryDeployment),
-        }),
-      ),
-    validateSetup: (
-      input: GcpDeployment,
-    ): Effect.Effect<void, CloudError> =>
+      mapProviderOperationResult(deployment.discover(boundary), (raw) => ({
+        boundary,
+        deployments: raw.map(summarizeGcpDiscoveryDeployment),
+      })),
+    validateSetup: (input: GcpDeployment): Effect.Effect<void, CloudError> =>
       deployment.validateSetup(input),
     restart: (input: GcpDeploymentRef): Effect.Effect<GcpStatus, CloudError> =>
       deployment.restart(input),
@@ -166,14 +157,14 @@ export const makeGcpApp = (auth: GcpAuthContext) => {
 };
 
 export const makeGcpHomeManagerApp = (auth: GcpAuthContext) => ({
-  applyPatch: (
+  writeModule: (
     deployment: GcpDeployment,
     user: string,
-    patch: HomeManagerPatch,
+    module: HomeManagerModule,
   ) =>
     updateGcpHomeManager(auth, {
       identity: deployment,
       user,
-      patch,
+      module,
     }),
 });

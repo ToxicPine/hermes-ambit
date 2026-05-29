@@ -4,8 +4,8 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { AutomaticStatus } from './automaticStatus';
-import type { UserManagedStatus } from './userManagedStatus';
+import type { AutomaticStatus } from "./automaticStatus";
+import type { UserManagedStatus } from "./userManagedStatus";
 
 /**
  * The replication status of a SecretVersion.

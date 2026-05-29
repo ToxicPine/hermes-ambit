@@ -4,14 +4,14 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Secret } from './CommonDefinitions/secret';
-import type { ConfigurationActiveRevisionsMode } from './configurationActiveRevisionsMode';
-import type { Ingress } from './ingress';
-import type { RegistryCredentials } from './registryCredentials';
-import type { Dapr } from './dapr';
-import type { Runtime } from './runtime';
-import type { Service } from './service';
-import type { IdentitySettings } from './CommonDefinitions/identitySettings';
+import type { Secret } from "./CommonDefinitions/secret";
+import type { ConfigurationActiveRevisionsMode } from "./configurationActiveRevisionsMode";
+import type { Ingress } from "./ingress";
+import type { RegistryCredentials } from "./registryCredentials";
+import type { Dapr } from "./dapr";
+import type { Runtime } from "./runtime";
+import type { Service } from "./service";
+import type { IdentitySettings } from "./CommonDefinitions/identitySettings";
 
 /**
  * Non versioned Container App configuration properties that define the mutable settings of a Container app

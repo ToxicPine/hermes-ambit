@@ -1,4 +1,5 @@
 import type { CloudEvent, Remediation } from "@cardelli/shared";
+import { z } from "zod";
 
 import type {
   AppError,
@@ -55,31 +56,41 @@ const jsonEnvelope = (result: CommandResult): JsonEnvelope =>
 export const renderJson = (result: CommandResult): string =>
   `${JSON.stringify(jsonEnvelope(result), null, 2)}\n`;
 
-const isRecord = (
-  value: unknown,
-): value is Readonly<Record<string, unknown>> =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
+const recordSchema = z.object({}).catchall(z.unknown());
+const stringSchema = z.string();
+const nonEmptyStringSchema = z.string().min(1);
+const booleanSchema = z.boolean();
+const numberSchema = z.number();
+const arraySchema = z.array(z.unknown());
+
+const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+  recordSchema.safeParse(value).success;
 
 const field = (value: unknown, name: string): unknown =>
   isRecord(value) ? value[name] : undefined;
 
 const stringField = (value: unknown, name: string): string | undefined => {
   const entry = field(value, name);
-  return typeof entry === "string" && entry.length > 0 ? entry : undefined;
+  const parsed = nonEmptyStringSchema.safeParse(entry);
+  return parsed.success ? parsed.data : undefined;
 };
 
 const booleanField = (value: unknown, name: string): boolean | undefined => {
   const entry = field(value, name);
-  return typeof entry === "boolean" ? entry : undefined;
+  const parsed = booleanSchema.safeParse(entry);
+  return parsed.success ? parsed.data : undefined;
 };
 
 const numberField = (value: unknown, name: string): number | undefined => {
   const entry = field(value, name);
-  return typeof entry === "number" ? entry : undefined;
+  const parsed = numberSchema.safeParse(entry);
+  return parsed.success ? parsed.data : undefined;
 };
 
-const arrayItems = (value: unknown): readonly unknown[] =>
-  Array.isArray(value) ? value : [];
+const arrayItems = (value: unknown): readonly unknown[] => {
+  const parsed = arraySchema.safeParse(value);
+  return parsed.success ? parsed.data : [];
+};
 
 const renderDetailLine = (label: string, value: string): string =>
   `  ${label}: ${value}`;
@@ -263,12 +274,13 @@ const renderSecretsDetails = (data: unknown): string => {
   if (secrets.length === 0) return "";
 
   return `\n${secrets
-    .map((secret) =>
-      `  - ${
-        typeof secret === "string"
-          ? secret
-          : stringField(secret, "name") ?? "unknown"
-      }`
+    .map(
+      (secret) => {
+        const parsed = stringSchema.safeParse(secret);
+        return `  - ${
+          parsed.success ? parsed.data : (stringField(secret, "name") ?? "unknown")
+        }`;
+      },
     )
     .join("\n")}`;
 };

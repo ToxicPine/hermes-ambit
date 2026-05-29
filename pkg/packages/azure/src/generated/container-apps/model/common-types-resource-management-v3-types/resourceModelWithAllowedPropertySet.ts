@@ -4,10 +4,10 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { TrackedResource } from './trackedResource';
-import type { Identity } from './identity';
-import type { Sku } from './sku';
-import type { Plan } from './plan';
+import type { TrackedResource } from "./trackedResource";
+import type { Identity } from "./identity";
+import type { Sku } from "./sku";
+import type { Plan } from "./plan";
 
 /**
  * The resource model definition containing the full set of allowed properties for a resource. Except properties bag, there cannot be a top level property outside of this set.

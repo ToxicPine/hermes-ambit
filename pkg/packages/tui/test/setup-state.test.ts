@@ -21,6 +21,7 @@ describe("setup draft fields", () => {
       fields: {
         project: "project",
         region: "us-central1",
+        model: "gemini-model-id",
         "state-server": "10.0.0.8",
         "state-path": "/exports/hermes",
       },
@@ -45,6 +46,7 @@ describe("setup draft fields", () => {
       fields: {
         project: "project",
         region: "us-central1",
+        model: "gemini-model-id",
         "state-server": "10.0.0.8",
       },
     });
@@ -70,6 +72,8 @@ describe("setup draft fields", () => {
       "location",
       "environment-id",
       "storage-name",
+      "endpoint",
+      "model",
     ]);
     expect(keys(setupDraftFields(draft))).not.toContain("project");
   });
@@ -105,7 +109,7 @@ describe("setup draft fields", () => {
     expect(profileFromDraft(draft)).toBeUndefined();
   });
 
-  test("keeps the Azure model endpoint optional and profile-scoped", () => {
+  test("keeps the Azure model endpoint required and profile-scoped", () => {
     const draft = draftFromArgs({
       provider: "azure",
       deployment: "demo",
@@ -114,9 +118,11 @@ describe("setup draft fields", () => {
         subscription: "subscription",
         "resource-group": "hermes",
         location: "eastus",
-        "environment-id": "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
+        "environment-id":
+          "/subscriptions/subscription/resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes",
         "storage-name": "hermes",
         endpoint: "https://example.openai.azure.com",
+        model: "gpt-deployment",
       },
     });
 
@@ -129,10 +135,11 @@ describe("setup draft fields", () => {
       expect(profile.azure.openaiCompatibleEndpoint).toBe(
         "https://example.openai.azure.com",
       );
+      expect(profile.azure.modelDeployment).toBe("gpt-deployment");
     }
-    expect(keys(setupDraftFields(draftFromArgs({ provider: "gcp" })))).not.toContain(
-      "endpoint",
-    );
+    expect(
+      keys(setupDraftFields(draftFromArgs({ provider: "gcp" }))),
+    ).not.toContain("endpoint");
   });
 
   test("clears provider-specific fields when the provider changes", () => {
@@ -142,6 +149,7 @@ describe("setup draft fields", () => {
       fields: {
         project: "project",
         region: "us-central1",
+        model: "gemini-model-id",
         "state-server": "10.0.0.8",
         "state-path": "/exports/hermes",
       },
@@ -158,6 +166,8 @@ describe("setup draft fields", () => {
       "location",
       "environment-id",
       "storage-name",
+      "endpoint",
+      "model",
     ]);
   });
 
@@ -168,6 +178,7 @@ describe("setup draft fields", () => {
       fields: {
         project: "project",
         region: "us-central1",
+        model: "gemini-model-id",
         "state-server": "10.0.0.8",
         "state-path": "/exports/hermes",
       },
@@ -191,6 +202,7 @@ describe("setup draft fields", () => {
       fields: {
         project: "project",
         region: "us-central1",
+        model: "gemini-model-id",
         "service-account": "hermes-runtime@project.iam.gserviceaccount.com",
         "state-server": "10.0.0.8",
         "state-path": "/exports/hermes",
@@ -207,8 +219,8 @@ describe("setup draft fields", () => {
         "hermes-runtime@project.iam.gserviceaccount.com",
       );
     }
-    expect(keys(setupDraftFields(draftFromArgs({ provider: "azure" })))).not.toContain(
-      "service-account",
-    );
+    expect(
+      keys(setupDraftFields(draftFromArgs({ provider: "azure" }))),
+    ).not.toContain("service-account");
   });
 });

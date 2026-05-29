@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { DaprAppProtocol } from './daprAppProtocol';
-import type { DaprLogLevel } from './daprLogLevel';
-import type { DaprAppHealth } from './daprAppHealth';
+import type { DaprAppProtocol } from "./daprAppProtocol";
+import type { DaprLogLevel } from "./daprLogLevel";
+import type { DaprAppHealth } from "./daprAppHealth";
 
 /**
  * Container App Dapr configuration.

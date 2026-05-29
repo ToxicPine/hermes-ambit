@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences } from './googleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences';
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences";
 
 /**
  * Open notebooks.

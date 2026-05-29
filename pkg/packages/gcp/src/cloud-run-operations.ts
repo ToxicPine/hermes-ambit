@@ -27,10 +27,8 @@ const rpcStatusMessage = (status: GoogleRpcStatus) =>
     ? status.message
     : "Cloud Run operation failed";
 
-const failCompletedOperation = (
-  operation: string,
-  status: GoogleRpcStatus,
-) => operationFailed(operation, rpcStatusMessage(status), status);
+const failCompletedOperation = (operation: string, status: GoogleRpcStatus) =>
+  operationFailed(operation, rpcStatusMessage(status), status);
 
 const waitForCloudRunOperation = (
   auth: GcpAuthContext,

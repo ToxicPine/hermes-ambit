@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2EmptyDirVolumeSourceMedium } from './googleCloudRunV2EmptyDirVolumeSourceMedium';
+import type { GoogleCloudRunV2EmptyDirVolumeSourceMedium } from "./googleCloudRunV2EmptyDirVolumeSourceMedium";
 
 /**
  * In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).

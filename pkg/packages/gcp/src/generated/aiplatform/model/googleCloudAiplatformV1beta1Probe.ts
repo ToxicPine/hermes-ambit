@@ -4,10 +4,10 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1ProbeExecAction } from './googleCloudAiplatformV1beta1ProbeExecAction';
-import type { GoogleCloudAiplatformV1beta1ProbeHttpGetAction } from './googleCloudAiplatformV1beta1ProbeHttpGetAction';
-import type { GoogleCloudAiplatformV1beta1ProbeGrpcAction } from './googleCloudAiplatformV1beta1ProbeGrpcAction';
-import type { GoogleCloudAiplatformV1beta1ProbeTcpSocketAction } from './googleCloudAiplatformV1beta1ProbeTcpSocketAction';
+import type { GoogleCloudAiplatformV1beta1ProbeExecAction } from "./googleCloudAiplatformV1beta1ProbeExecAction";
+import type { GoogleCloudAiplatformV1beta1ProbeHttpGetAction } from "./googleCloudAiplatformV1beta1ProbeHttpGetAction";
+import type { GoogleCloudAiplatformV1beta1ProbeGrpcAction } from "./googleCloudAiplatformV1beta1ProbeGrpcAction";
+import type { GoogleCloudAiplatformV1beta1ProbeTcpSocketAction } from "./googleCloudAiplatformV1beta1ProbeTcpSocketAction";
 
 /**
  * Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.

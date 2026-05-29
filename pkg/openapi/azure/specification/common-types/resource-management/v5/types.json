@@ -49,10 +49,7 @@
         "reason": {
           "type": "string",
           "description": "The reason why the given name is not available.",
-          "enum": [
-            "Invalid",
-            "AlreadyExists"
-          ],
+          "enum": ["Invalid", "AlreadyExists"],
           "x-ms-enum": {
             "name": "CheckNameAvailabilityReason",
             "modelAsString": true
@@ -106,10 +103,7 @@
             "$ref": "#/definitions/ErrorDetail"
           },
           "readOnly": true,
-          "x-ms-identifiers": [
-            "message",
-            "target"
-          ]
+          "x-ms-identifiers": ["message", "target"]
         },
         "additionalInfo": {
           "type": "array",
@@ -152,9 +146,7 @@
         "type": {
           "type": "string",
           "description": "The identity type.",
-          "enum": [
-            "SystemAssigned"
-          ],
+          "enum": ["SystemAssigned"],
           "x-ms-enum": {
             "name": "ResourceIdentityType",
             "modelAsString": false
@@ -219,11 +211,7 @@
         "origin": {
           "type": "string",
           "description": "The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit logs UX. Default value is \"user,system\"",
-          "enum": [
-            "user",
-            "system",
-            "user,system"
-          ],
+          "enum": ["user", "system", "user,system"],
           "x-ms-enum": {
             "name": "Origin",
             "modelAsString": true
@@ -233,9 +221,7 @@
         "actionType": {
           "type": "string",
           "description": "Enum. Indicates the action type. \"Internal\" refers to actions that are for internal only APIs.",
-          "enum": [
-            "Internal"
-          ],
+          "enum": ["Internal"],
           "x-ms-enum": {
             "name": "ActionType",
             "modelAsString": true
@@ -255,9 +241,7 @@
             "$ref": "#/definitions/Operation"
           },
           "readOnly": true,
-          "x-ms-identifiers": [
-            "name"
-          ]
+          "x-ms-identifiers": ["name"]
         },
         "nextLink": {
           "type": "string",
@@ -318,9 +302,7 @@
           "description": "If present, details of the operation error."
         }
       },
-      "required": [
-        "status"
-      ]
+      "required": ["status"]
     },
     "Plan": {
       "type": "object",
@@ -347,11 +329,7 @@
           "description": "The version of the desired product/artifact."
         }
       },
-      "required": [
-        "name",
-        "publisher",
-        "product"
-      ]
+      "required": ["name", "publisher", "product"]
     },
     "ProxyResource": {
       "type": "object",
@@ -399,20 +377,13 @@
         "managedBy": {
           "type": "string",
           "description": "The fully qualified resource ID of the resource that manages this resource. Indicates if this resource is managed by another Azure resource. If this is present, complete mode deployment will not delete the resource if it is removed from the template since it is managed by another resource.",
-          "x-ms-mutability": [
-            "read",
-            "create",
-            "update"
-          ]
+          "x-ms-mutability": ["read", "create", "update"]
         },
         "kind": {
           "type": "string",
           "description": "Metadata used by portal/tooling/etc to render different UX experiences for resources of the same type. E.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, the resource provider must validate and persist this value.",
           "pattern": "^[-\\w\\._,\\(\\)]+$",
-          "x-ms-mutability": [
-            "read",
-            "create"
-          ]
+          "x-ms-mutability": ["read", "create"]
         },
         "etag": {
           "type": "string",
@@ -473,19 +444,12 @@
           "description": "If the SKU supports scale out/in then the capacity integer should be included. If scale out/in is not possible for the resource this may be omitted."
         }
       },
-      "required": [
-        "name"
-      ]
+      "required": ["name"]
     },
     "SkuTier": {
       "type": "string",
       "description": "This field is required to be implemented by the Resource Provider if the service has more than one tier, but is not required on a PUT.",
-      "enum": [
-        "Free",
-        "Basic",
-        "Standard",
-        "Premium"
-      ],
+      "enum": ["Free", "Basic", "Standard", "Premium"],
       "x-ms-enum": {
         "name": "SkuTier",
         "modelAsString": false
@@ -502,24 +466,15 @@
           "additionalProperties": {
             "type": "string"
           },
-          "x-ms-mutability": [
-            "read",
-            "create",
-            "update"
-          ]
+          "x-ms-mutability": ["read", "create", "update"]
         },
         "location": {
           "type": "string",
           "description": "The geo-location where the resource lives",
-          "x-ms-mutability": [
-            "read",
-            "create"
-          ]
+          "x-ms-mutability": ["read", "create"]
         }
       },
-      "required": [
-        "location"
-      ],
+      "required": ["location"],
       "allOf": [
         {
           "$ref": "#/definitions/Resource"
@@ -533,10 +488,7 @@
         "status": {
           "type": "string",
           "description": "Indicates whether or not the encryption is enabled for container registry.",
-          "enum": [
-            "enabled",
-            "disabled"
-          ],
+          "enum": ["enabled", "disabled"],
           "x-ms-enum": {
             "name": "EncryptionStatus",
             "modelAsString": true
@@ -570,9 +522,7 @@
           "description": "The country or region where the resource is located"
         }
       },
-      "required": [
-        "name"
-      ]
+      "required": ["name"]
     },
     "systemData": {
       "type": "object",
@@ -585,12 +535,7 @@
         "createdByType": {
           "type": "string",
           "description": "The type of identity that created the resource.",
-          "enum": [
-            "User",
-            "Application",
-            "ManagedIdentity",
-            "Key"
-          ],
+          "enum": ["User", "Application", "ManagedIdentity", "Key"],
           "x-ms-enum": {
             "name": "createdByType",
             "modelAsString": true
@@ -608,12 +553,7 @@
         "lastModifiedByType": {
           "type": "string",
           "description": "The type of identity that last modified the resource.",
-          "enum": [
-            "User",
-            "Application",
-            "ManagedIdentity",
-            "Key"
-          ],
+          "enum": ["User", "Application", "ManagedIdentity", "Key"],
           "x-ms-enum": {
             "name": "createdByType",
             "modelAsString": true

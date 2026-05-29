@@ -4,7 +4,7 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { Replica } from './replica';
+import type { Replica } from "./replica";
 
 /**
  * A replication policy that replicates the Secret payload into the locations specified in Replication.UserManaged.replicas

@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Resource } from './resource';
+import type { Resource } from "./resource";
 
 /**
  * The resource model definition for an Azure Resource Manager resource with an etag.

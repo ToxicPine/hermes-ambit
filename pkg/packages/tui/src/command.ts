@@ -7,10 +7,11 @@ import {
   isUniversalHermesImageConfigured,
   type CloudError,
   type CloudEvent,
-  type HomeManagerPatch,
+  type HomeManagerModule,
   type Remediation,
 } from "@cardelli/shared";
 import { Effect, Either } from "effect";
+import { z } from "zod";
 
 import type { AppProfile } from "./app-profile.js";
 import { validateProfileName } from "./app-profile.js";
@@ -53,9 +54,10 @@ import {
   isHermesConfigSetKey,
   isAzureFoundryOpenAICompatibleApiMode,
   isHermesReasoningEffort,
-  renderHermesModelPatch,
-  renderHermesSettingPatch,
+  renderHermesModelModule,
+  renderHermesSettingModule,
   type HermesConfigSetKey,
+  type HermesModelSelection,
 } from "./hermes-config.js";
 import {
   azureStateDataSubPath,
@@ -140,10 +142,7 @@ export const validateRuntime = (
   intent: CommandIntent,
   runtime: RuntimeInfo,
 ): AppError | undefined => {
-  if (
-    intent.command === "tui" &&
-    !runtimeIsInteractive(runtime)
-  ) {
+  if (intent.command === "tui" && !runtimeIsInteractive(runtime)) {
     return {
       code: "runtime.ttyRequired",
       message: intent.explicit
@@ -250,7 +249,9 @@ const providerFieldsMatch = (
   if (field) return invalidProviderField(provider, field);
 
   const valueField = invalidProviderFieldValues(provider, fields)[0];
-  return valueField ? invalidProviderFieldValue(provider, valueField) : undefined;
+  return valueField
+    ? invalidProviderFieldValue(provider, valueField)
+    : undefined;
 };
 
 type GlobalProviderInput = {
@@ -274,7 +275,9 @@ const globalProviderInput = (
   return fieldError ? fieldError : { profile, provider, fields };
 };
 
-const targetFromGlobals = (intent: CommandIntent): ProviderTarget | AppError => {
+const targetFromGlobals = (
+  intent: CommandIntent,
+): ProviderTarget | AppError => {
   const input = globalProviderInput(intent);
   if ("code" in input) return input;
 
@@ -307,7 +310,6 @@ const targetFromGlobals = (intent: CommandIntent): ProviderTarget | AppError => 
     return {
       provider: "gcp",
       profile,
-      deployment,
       user,
       ref: {
         name: deployment,
@@ -325,7 +327,9 @@ const targetFromGlobals = (intent: CommandIntent): ProviderTarget | AppError => 
             },
           }
         : {}),
-      ...(fields["quota-project"] ? { quotaProjectId: fields["quota-project"] } : {}),
+      ...(fields["quota-project"]
+        ? { quotaProjectId: fields["quota-project"] }
+        : {}),
     };
   }
 
@@ -336,7 +340,8 @@ const targetFromGlobals = (intent: CommandIntent): ProviderTarget | AppError => 
   if (!subscriptionId) return missingProviderField("azure", "subscription");
 
   const resourceGroupName = fields["resource-group"];
-  if (!resourceGroupName) return missingProviderField("azure", "resource-group");
+  if (!resourceGroupName)
+    return missingProviderField("azure", "resource-group");
 
   const location = fields["location"];
   const environmentId = fields["environment-id"];
@@ -360,7 +365,6 @@ const targetFromGlobals = (intent: CommandIntent): ProviderTarget | AppError => 
   return {
     provider: "azure",
     profile,
-    deployment,
     user,
     tenantId,
     ref: {
@@ -369,9 +373,6 @@ const targetFromGlobals = (intent: CommandIntent): ProviderTarget | AppError => 
       resourceGroupName,
     },
     ...(deploymentSpec ? { deploymentSpec } : {}),
-    ...(fields["endpoint"]
-      ? { openaiCompatibleEndpoint: fields["endpoint"] }
-      : {}),
   };
 };
 
@@ -386,7 +387,9 @@ const authTargetFromGlobals = (
     return {
       provider: "gcp",
       profile,
-      ...(fields["quota-project"] ? { quotaProjectId: fields["quota-project"] } : {}),
+      ...(fields["quota-project"]
+        ? { quotaProjectId: fields["quota-project"] }
+        : {}),
     };
   }
 
@@ -425,7 +428,9 @@ const discoveryTargetFromGlobals = (
         projectId,
         region,
       },
-      ...(fields["quota-project"] ? { quotaProjectId: fields["quota-project"] } : {}),
+      ...(fields["quota-project"]
+        ? { quotaProjectId: fields["quota-project"] }
+        : {}),
     };
   }
 
@@ -436,7 +441,8 @@ const discoveryTargetFromGlobals = (
   if (!subscriptionId) return missingProviderField("azure", "subscription");
 
   const resourceGroupName = fields["resource-group"];
-  if (!resourceGroupName) return missingProviderField("azure", "resource-group");
+  if (!resourceGroupName)
+    return missingProviderField("azure", "resource-group");
 
   return {
     provider: "azure",
@@ -464,7 +470,9 @@ const modelTargetFromGlobals = (
       provider: "gcp",
       profile,
       region,
-      ...(fields["quota-project"] ? { quotaProjectId: fields["quota-project"] } : {}),
+      ...(fields["quota-project"]
+        ? { quotaProjectId: fields["quota-project"] }
+        : {}),
     };
   }
 
@@ -567,13 +575,17 @@ const mergeSetupDraft = (
 ): SetupDraft => {
   const providerChanged =
     input.provider !== undefined && input.provider !== existing.provider;
-  const fields = mergeSetupFields(existing.fields, input.fields, providerChanged);
+  const fields = mergeSetupFields(
+    existing.fields,
+    input.fields,
+    providerChanged,
+  );
   return {
     profileName: input.profile ?? existing.profileName,
-    ...(input.provider ?? existing.provider
+    ...((input.provider ?? existing.provider)
       ? { provider: input.provider ?? existing.provider }
       : {}),
-    ...(input.deployment ?? existing.deployment
+    ...((input.deployment ?? existing.deployment)
       ? { deployment: input.deployment ?? existing.deployment }
       : {}),
     user: input.fields?.["user"] ?? (providerChanged ? "user" : existing.user),
@@ -643,7 +655,7 @@ const promptSetupValue = async (
 ): Promise<string> => {
   const answer = await promptText(label, current);
   const trimmed = answer.trim();
-  return trimmed.length > 0 ? trimmed : current ?? "";
+  return trimmed.length > 0 ? trimmed : (current ?? "");
 };
 
 const setupValueNeeded = (
@@ -651,7 +663,10 @@ const setupValueNeeded = (
   value: string | undefined,
   forcePrompt: boolean,
 ): boolean =>
-  forcePrompt || intent.reconfigure || value === undefined || value.length === 0;
+  forcePrompt ||
+  intent.reconfigure ||
+  value === undefined ||
+  value.length === 0;
 
 const promptRequiredSetupValue = async (
   promptText: NonNullable<CommandRuntime["promptText"]>,
@@ -702,6 +717,13 @@ const promptSetupFields = async (
         delete next["service-account"];
       }
     }
+    next["model"] = await promptRequiredSetupValue(
+      promptText,
+      intent,
+      "Gemini model",
+      next["model"],
+      forcePrompt,
+    );
     next["state"] = "nfs";
     next["state-server"] = await promptRequiredSetupValue(
       promptText,
@@ -787,18 +809,20 @@ const promptSetupFields = async (
     next["storage-name"],
     forcePrompt,
   );
-  if (!intent.quick || forcePrompt || next["endpoint"] !== undefined) {
-    const endpoint = await promptSetupValue(
-      promptText,
-      "Foundry OpenAI-compatible endpoint",
-      next["endpoint"],
-    );
-    if (endpoint.length > 0) {
-      next["endpoint"] = endpoint;
-    } else {
-      delete next["endpoint"];
-    }
-  }
+  next["endpoint"] = await promptRequiredSetupValue(
+    promptText,
+    intent,
+    "Foundry OpenAI-compatible endpoint",
+    next["endpoint"],
+    forcePrompt,
+  );
+  next["model"] = await promptRequiredSetupValue(
+    promptText,
+    intent,
+    "Foundry deployment name",
+    next["model"],
+    forcePrompt,
+  );
   return next;
 };
 
@@ -820,7 +844,11 @@ const promptSetupDraft = async (
   try {
     const providerInput = draft.provider
       ? draft.provider
-      : await promptSetupValue(promptText, "Provider (gcp or azure)", undefined);
+      : await promptSetupValue(
+          promptText,
+          "Provider (gcp or azure)",
+          undefined,
+        );
     const provider =
       providerInput === "gcp" || providerInput === "azure"
         ? providerInput
@@ -878,7 +906,8 @@ const setupReadOnlyCheck = async <A>(
 ): Promise<CommandResult | undefined> => {
   const outcome = await Effect.runPromise(Effect.either(effect));
   return Either.match(outcome, {
-    onLeft: (error) => withResultContext(cloudErrorResult(intent, error), context),
+    onLeft: (error) =>
+      withResultContext(cloudErrorResult(intent, error), context),
     onRight: () => undefined,
   });
 };
@@ -889,7 +918,10 @@ const validateSetupProvider = async (
   profile: AppProfile,
 ): Promise<CommandResult | undefined> => {
   const context = profileResultContext(profile);
-  const authTarget = authTargetFromProfile(profile, intent.globals.providerFields);
+  const authTarget = authTargetFromProfile(
+    profile,
+    intent.globals.providerFields,
+  );
   const authRunner = authRunnerForTarget(intent, runtime, authTarget);
   if ("ok" in authRunner) {
     return withResultContext(authRunner, context);
@@ -949,9 +981,13 @@ const profileProviderFieldsMatch = (
     };
   }
 
-  const invalidValueField = invalidProviderFieldValues(profile.provider, fields)[0];
+  const invalidValueField = invalidProviderFieldValues(
+    profile.provider,
+    fields,
+  )[0];
   if (invalidValueField) {
-    const allowed = providerFieldAllowedValues(profile.provider, invalidValueField) ?? [];
+    const allowed =
+      providerFieldAllowedValues(profile.provider, invalidValueField) ?? [];
     return {
       code: "args.invalid",
       message: `--${invalidValueField} for profile ${profile.name} must be ${allowed.join(" or ")}.`,
@@ -1004,10 +1040,17 @@ const appErrorResult = (
   error,
 });
 
-const isAppError = <T extends object>(value: T | AppError): value is AppError =>
-  "code" in value;
+const appErrorSchema = z
+  .object({
+    code: z.string(),
+    message: z.string(),
+  })
+  .passthrough();
 
-const loadProfileBackedTarget = <T extends object>(
+const isAppError = (value: unknown): value is AppError =>
+  appErrorSchema.safeParse(value).success;
+
+const loadProfileBackedTarget = <T>(
   intent: CommandIntent,
   runtime: CommandRuntime,
   fromGlobals: () => T | AppError,
@@ -1060,6 +1103,155 @@ const loadTarget = (
     (profile) => targetFromProfile(profile, intent.globals.providerFields),
   );
 
+const deployModelPreview = (model: HermesModelSelection): string =>
+  model.provider === "gcp"
+    ? `Hermes default model to ${model.model} through the GCP/Gemini runtime path`
+    : `Hermes default model to Azure Foundry deployment ${model.deploymentName}`;
+
+const providerModelSelectionFor = (
+  provider: ProviderTarget["provider"],
+  model: string,
+  endpoint?: string,
+  missingAzureEndpointMessage = "Azure deploy model selection requires --endpoint <azure-openai-compatible-endpoint> so Hermes receives a complete Foundry deployment configuration.",
+): HermesModelSelection | AppError => {
+  const trimmedModel = model.trim();
+  if (provider === "gcp") {
+    return {
+      provider: "gcp",
+      model: trimmedModel,
+    };
+  }
+
+  const trimmedEndpoint = endpoint?.trim();
+  if (!trimmedEndpoint) {
+    return {
+      code: "args.missing",
+      message: missingAzureEndpointMessage,
+    };
+  }
+
+  return {
+    provider: "azure",
+    endpoint: trimmedEndpoint,
+    deploymentName: trimmedModel,
+  };
+};
+
+const optionalProviderModelSelectionFor = (
+  provider: ProviderTarget["provider"],
+  model: string | undefined,
+  endpoint?: string,
+): HermesModelSelection | AppError | undefined => {
+  const trimmedModel = model?.trim();
+  return trimmedModel
+    ? providerModelSelectionFor(provider, trimmedModel, endpoint)
+    : undefined;
+};
+
+const deployModelSelectionFromGlobals = (
+  intent: CommandIntent,
+): HermesModelSelection | AppError | undefined => {
+  const input = globalProviderInput(intent);
+  if ("code" in input) return input;
+  return optionalProviderModelSelectionFor(
+    input.provider,
+    input.fields["model"],
+    input.fields["endpoint"],
+  );
+};
+
+const deployModelSelectionFromProfile = (
+  profile: AppProfile,
+  fields: Readonly<Record<string, string>>,
+): HermesModelSelection | AppError | undefined => {
+  return profile.provider === "gcp"
+    ? optionalProviderModelSelectionFor(
+        "gcp",
+        fields["model"] ?? profile.gcp.model,
+      )
+    : optionalProviderModelSelectionFor(
+        "azure",
+        fields["model"] ?? profile.azure.modelDeployment,
+        fields["endpoint"] ?? profile.azure.openaiCompatibleEndpoint,
+      );
+};
+
+const loadDeployModelSelection = (
+  intent: CommandIntent,
+  runtime: CommandRuntime,
+): HermesModelSelection | CommandResult | undefined =>
+  loadProfileBackedTarget(
+    intent,
+    runtime,
+    () => deployModelSelectionFromGlobals(intent),
+    (profile) =>
+      deployModelSelectionFromProfile(profile, intent.globals.providerFields),
+  );
+
+const missingDeployModelSelection = (
+  intent: CommandIntent,
+  target: ProviderTarget,
+): CommandResult =>
+  appErrorResult(
+    intent,
+    target.provider === "gcp"
+      ? {
+          code: "args.missing",
+          message:
+            "deploy requires a Gemini model. Use --model <gemini-model-id> in setup/profile args.",
+        }
+      : {
+          code: "args.missing",
+          message:
+            "deploy requires an Azure Foundry endpoint and deployment name. Use --endpoint <azure-openai-compatible-endpoint> --model <foundry-deployment-name> in setup/profile args.",
+        },
+    targetResultContext(target),
+  );
+
+const requireDeployModelSelection = (
+  intent: CommandIntent,
+  runtime: CommandRuntime,
+  target: ProviderTarget,
+): HermesModelSelection | CommandResult => {
+  const model = loadDeployModelSelection(intent, runtime);
+  if (model && "ok" in model) return model;
+  if (model) return model;
+  return missingDeployModelSelection(intent, target);
+};
+
+const azureModelEndpointFromGlobals = (
+  intent: CommandIntent,
+): string | AppError | undefined => {
+  const input = globalProviderInput(intent);
+  if ("code" in input) return input;
+  if (input.provider !== "azure") return undefined;
+  const endpoint = input.fields["endpoint"]?.trim();
+  return endpoint ? endpoint : undefined;
+};
+
+const azureModelEndpointFromProfile = (
+  profile: AppProfile,
+  fields: Readonly<Record<string, string>>,
+): string | undefined => {
+  if (profile.provider !== "azure") return undefined;
+  const endpoint = (
+    fields["endpoint"] ?? profile.azure.openaiCompatibleEndpoint
+  )?.trim();
+  return endpoint ? endpoint : undefined;
+};
+
+const loadAzureModelEndpoint = (
+  intent: CommandIntent,
+  runtime: CommandRuntime,
+): string | CommandResult | undefined =>
+  loadProfileBackedTarget(
+    intent,
+    runtime,
+    () => azureModelEndpointFromGlobals(intent),
+    (profile) =>
+      azureModelEndpointFromProfile(profile, intent.globals.providerFields),
+  );
+
 const loadAuthTarget = (
   intent: CommandIntent,
   runtime: CommandRuntime,
@@ -1089,14 +1281,14 @@ const doctorProfileModelCheck = async (
   authCheck: DoctorCheck,
 ): Promise<DoctorCheck> => {
   if (authCheck.status === "failed") {
-    return doctorCheck("models", "skipped", "Skipped because auth check failed.");
+    return doctorCheck(
+      "models",
+      "skipped",
+      "Skipped because auth check failed.",
+    );
   }
 
   const target = modelTargetFromProfile(profile, intent.globals.providerFields);
-  if ("code" in target) {
-    return doctorTargetErrorCheck("models", target, "skipped");
-  }
-
   const runner = modelRunnerForTarget(intent, runtime, target);
   if ("ok" in runner) {
     return doctorCommandResultCheck("models", runner);
@@ -1125,9 +1317,7 @@ const previewActionLabel = (action: PreviewAction): string =>
       ? "to reuse"
       : "to update";
 
-const previewResourceKindLabel = (
-  resource: PreviewResource,
-): string => {
+const previewResourceKindLabel = (resource: PreviewResource): string => {
   switch (resource.resourceKind) {
     case "cloud-run-service":
       return "Cloud Run service";
@@ -1148,8 +1338,8 @@ const previewStateText = (summary: ProviderDeployPreviewSummary): string =>
     ? `State: NFS ${summary.state.server}:${summary.state.dataPath} for ${HERMES_DATA_MOUNT_PATH} and ${summary.state.server}:${summary.state.nixPath} for ${HERMES_NIX_MOUNT_PATH}; deploy mounts existing state and leaves contents intact.`
     : `State: Azure Files storage ${summary.state.storageName}, subpaths ${summary.state.dataSubPath} for ${HERMES_DATA_MOUNT_PATH} and ${summary.state.nixSubPath} for ${HERMES_NIX_MOUNT_PATH}; deploy mounts existing state and leaves contents intact.`;
 
-const previewConfigText =
-  "Config/secrets: unchanged by deploy; use config and secrets commands for runtime settings and secret values.";
+const previewConfigText = (model: HermesModelSelection): string =>
+  `Config: deploy will set ${deployModelPreview(model)}. Secrets are unchanged.`;
 
 type RuntimeMutationPreview = {
   readonly status: ProviderStatusSummary;
@@ -1157,8 +1347,9 @@ type RuntimeMutationPreview = {
 };
 
 const deploymentPreviewText = (
-  provider: ProviderTarget["provider"],
+  target: ProviderTarget,
   summary: ProviderDeployPreviewSummary,
+  model: HermesModelSelection,
 ): string => {
   const boundary =
     "projectId" in summary.boundary
@@ -1175,7 +1366,7 @@ const deploymentPreviewText = (
       : [`${previewActionLabel(action)}: ${resources.join(", ")}`];
   });
 
-  return `${provider} deployment preview in ${boundary}. Resources ${resourceGroups.join("; ")}. ${previewConfigText} ${previewStateText(summary)}`;
+  return `${target.provider} deployment preview in ${boundary}. Resources ${resourceGroups.join("; ")}. ${previewConfigText(model)} ${previewStateText(summary)}`;
 };
 
 const targetResourceKind = (target: ProviderTarget): string =>
@@ -1183,6 +1374,9 @@ const targetResourceKind = (target: ProviderTarget): string =>
 
 const targetResourceKindSlug = (target: ProviderTarget): string =>
   target.provider === "gcp" ? "cloud-run-service" : "container-app";
+
+const targetDeploymentName = (target: ProviderTarget): string =>
+  target.ref.name;
 
 const targetBoundaryText = (target: ProviderTarget): string =>
   target.provider === "gcp"
@@ -1193,7 +1387,7 @@ const runtimeStatusPreviewText = (
   target: ProviderTarget,
   status: ProviderStatusSummary,
 ): string => {
-  const resource = `${target.provider} ${targetResourceKind(target)} ${target.deployment}`;
+  const resource = `${target.provider} ${targetResourceKind(target)} ${targetDeploymentName(target)}`;
   const boundary = targetBoundaryText(target);
   const image = status.image ? ` Current image: ${status.image}.` : "";
   const endpoint = status.endpoint ? ` Endpoint: ${status.endpoint}.` : "";
@@ -1239,13 +1433,16 @@ const commandPreviewText = (
   target: ProviderTarget,
   preview?: ProviderDeployPreviewSummary,
   runtime?: RuntimeMutationPreview,
+  model?: HermesModelSelection,
 ): string | undefined => {
-  if (preview) return deploymentPreviewText(target.provider, preview);
+  if (preview) {
+    return model ? deploymentPreviewText(target, preview, model) : undefined;
+  }
 
   const current = runtime
     ? `${runtimeStatusPreviewText(target, runtime.status)} `
     : "";
-  const resource = `${target.provider} ${targetResourceKind(target)} ${target.deployment}`;
+  const resource = `${target.provider} ${targetResourceKind(target)} ${targetDeploymentName(target)}`;
   const boundary = targetBoundaryText(target);
   if (intent.command === "restart") {
     return `${current}${resource} in ${boundary} will be rolled so the runtime starts with current config and secrets.`;
@@ -1294,8 +1491,15 @@ const confirmationRequired = (
   target: ProviderTarget,
   preview?: ProviderDeployPreviewSummary,
   runtime?: RuntimeMutationPreview,
+  model?: HermesModelSelection,
 ): CommandResult => {
-  const previewText = commandPreviewText(intent, target, preview, runtime);
+  const previewText = commandPreviewText(
+    intent,
+    target,
+    preview,
+    runtime,
+    model,
+  );
   const prompt = confirmationPromptText(intent);
 
   return {
@@ -1304,14 +1508,15 @@ const confirmationRequired = (
     ...targetResultContext(target),
     error: {
       code: "command.confirmationRequired",
-      message: [...(previewText ? [previewText] : []), prompt].join(
-        " ",
-      ),
+      message: [...(previewText ? [previewText] : []), prompt].join(" "),
     },
   };
 };
 
-const invalidSecretName = (intent: CommandIntent, name: string): CommandResult => ({
+const invalidSecretName = (
+  intent: CommandIntent,
+  name: string,
+): CommandResult => ({
   ok: false,
   command: intent.command,
   error: {
@@ -1387,44 +1592,45 @@ const integerConfigValue = (
       };
 };
 
-const modelDefaultPatch = (
+const modelDefaultModule = (
   intent: ConfigSetIntent,
   target: ProviderTarget,
-): HomeManagerPatch | AppError => {
+  azureEndpoint?: string,
+): HomeManagerModule | AppError => {
   const error = nonEmptyConfigValue("model.default", intent.value);
   if (error) return error;
 
-  const value = intent.value.trim();
-  if (target.provider === "gcp") {
-    return renderHermesModelPatch({
-      provider: "gcp",
-      model: value,
-    });
-  }
-
-  const endpoint = (
-    intent.globals.providerFields["endpoint"] ??
-    target.openaiCompatibleEndpoint
-  )?.trim();
-  if (!endpoint) {
-    return {
-      code: "args.missing",
-      message:
-        "Azure model.default config requires --endpoint <azure-openai-compatible-endpoint> so Hermes receives a complete Foundry deployment configuration.",
-    };
-  }
-
-  return renderHermesModelPatch({
-    provider: "azure",
-    endpoint,
-    deploymentName: value,
-  });
+  const selection = providerModelSelectionFor(
+    target.provider,
+    intent.value,
+    azureEndpoint,
+    "Azure model.default config requires --endpoint <azure-openai-compatible-endpoint> so Hermes receives a complete Foundry deployment configuration.",
+  );
+  return "code" in selection ? selection : renderHermesModelModule(selection);
 };
 
-const configSetPatch = (
+const deployWithConfiguredModel = (
+  deployRuntime: NonNullable<ProviderRunner["deploy"]>,
+  writeHomeManagerModule: NonNullable<ProviderRunner["writeHomeManagerModule"]>,
+  module: HomeManagerModule,
+): Effect.Effect<ProviderOperationResult<ProviderStatusSummary>, CloudError> =>
+  Effect.gen(function* () {
+    const deploy = yield* deployRuntime();
+    const config = yield* writeHomeManagerModule(module);
+    return {
+      summary: config.summary,
+      raw: {
+        deploy: deploy.raw,
+        config: config.raw,
+      },
+    };
+  });
+
+const configSetModule = (
   intent: ConfigSetIntent,
   target: ProviderTarget,
-): HomeManagerPatch | AppError => {
+  azureEndpoint?: string,
+): HomeManagerModule | AppError => {
   if (!isHermesConfigSetKey(intent.key)) {
     return {
       code: "args.invalid",
@@ -1433,7 +1639,7 @@ const configSetPatch = (
   }
 
   if (intent.key === "model.default") {
-    return modelDefaultPatch(intent, target);
+    return modelDefaultModule(intent, target, azureEndpoint);
   }
 
   if (intent.key === "model.api_mode") {
@@ -1445,7 +1651,7 @@ const configSetPatch = (
       };
     }
     return isAzureFoundryOpenAICompatibleApiMode(intent.value)
-      ? renderHermesSettingPatch(intent.key, intent.value)
+      ? renderHermesSettingModule(intent.key, intent.value)
       : {
           code: "args.invalid",
           message:
@@ -1457,13 +1663,13 @@ const configSetPatch = (
     const error = integerConfigValue(intent.key, intent.value, 1, 65_535);
     return error
       ? error
-      : renderHermesSettingPatch(intent.key, Number(intent.value));
+      : renderHermesSettingModule(intent.key, Number(intent.value));
   }
   if (intent.key === "agent.max_turns") {
     const error = integerConfigValue(intent.key, intent.value, 1);
     return error
       ? error
-      : renderHermesSettingPatch(intent.key, Number(intent.value));
+      : renderHermesSettingModule(intent.key, Number(intent.value));
   }
   if (
     intent.key === "agent.reasoning_effort" &&
@@ -1473,13 +1679,13 @@ const configSetPatch = (
       code: "args.invalid",
       message:
         "Config key agent.reasoning_effort must be none, minimal, low, medium, high, or xhigh.",
-      };
+    };
   }
 
   const error = nonEmptyConfigValue(intent.key, intent.value);
   return error
     ? error
-    : renderHermesSettingPatch(intent.key, intent.value.trim());
+    : renderHermesSettingModule(intent.key, intent.value.trim());
 };
 
 const configUserVolumeUnavailable = (
@@ -1534,7 +1740,7 @@ const secretPromptFailed = (
     message:
       error instanceof Error
         ? `Interactive secret entry failed: ${error.message}`
-      : "Interactive secret entry failed.",
+        : "Interactive secret entry failed.",
   },
 });
 
@@ -1578,8 +1784,7 @@ const statePurgeConfirmationRejected = (
   ...targetResultContext(target),
   error: {
     code: "command.confirmationRequired",
-    message:
-      `destroy --purge-state was not confirmed. Type ${target.deployment} to permanently delete provider-owned persistent state for this deployment.`,
+    message: `destroy --purge-state was not confirmed. Type ${targetDeploymentName(target)} to permanently delete provider-owned persistent state for this deployment.`,
   },
 });
 
@@ -1588,7 +1793,8 @@ const secretStdinUnavailable = (intent: CommandIntent): CommandResult => ({
   command: intent.command,
   error: {
     code: "runtime.stdinUnavailable",
-    message: "Reading secret values from stdin is not available in this runtime.",
+    message:
+      "Reading secret values from stdin is not available in this runtime.",
   },
 });
 
@@ -1604,16 +1810,18 @@ const secretValueFromSource = async (
       : value;
   }
   if (source.type === "stdin") {
-    return runtime.readStdin ? runtime.readStdin() : secretStdinUnavailable(intent);
+    return runtime.readStdin
+      ? runtime.readStdin()
+      : secretStdinUnavailable(intent);
   }
 
   if (!runtime.readSecret) {
     return secretPromptUnavailable(intent);
   }
 
-  return runtime.readSecret(intent.name).catch((error: unknown) =>
-    secretPromptFailed(intent, error)
-  );
+  return runtime
+    .readSecret(intent.name)
+    .catch((error: unknown) => secretPromptFailed(intent, error));
 };
 
 const mutatingCommandIsConfirmed = (intent: CommandIntent): boolean => {
@@ -1642,22 +1850,20 @@ const confirmStatePurge = async (
     return statePurgePromptUnavailable(intent, target);
   }
 
-  const label = `Type ${target.deployment} to delete persistent state for ${target.provider} profile ${target.profile}`;
-  const answer = await runtime.promptText(label).catch((error: unknown) =>
-    statePurgePromptFailed(intent, target, error)
-  );
+  const label = `Type ${targetDeploymentName(target)} to delete persistent state for ${target.provider} profile ${target.profile}`;
+  const answer = await runtime
+    .promptText(label)
+    .catch((error: unknown) => statePurgePromptFailed(intent, target, error));
   if (typeof answer !== "string") {
     return answer;
   }
 
-  return answer === target.deployment
+  return answer === targetDeploymentName(target)
     ? undefined
     : statePurgeConfirmationRejected(intent, target);
 };
 
-const cloudErrorRemediations = (
-  error: CloudError,
-): readonly Remediation[] => {
+const cloudErrorRemediations = (error: CloudError): readonly Remediation[] => {
   if (error._tag === "RemediationRequired") {
     return [error.remediation];
   }
@@ -1691,10 +1897,12 @@ const commandResultMessage = (result: CommandResult): string =>
 const targetResultContext = (target: ProviderTarget): ResultContext => ({
   profile: target.profile,
   provider: target.provider,
-  deployment: target.deployment,
+  deployment: targetDeploymentName(target),
 });
 
-const authTargetResultContext = (target: ProviderAuthTarget): ResultContext => ({
+const authTargetResultContext = (
+  target: ProviderAuthTarget,
+): ResultContext => ({
   profile: target.profile,
   provider: target.provider,
 });
@@ -1719,10 +1927,14 @@ type ProviderCommandTarget =
   | ProviderDiscoveryTarget
   | ProviderModelTarget;
 
+const isProviderTarget = (
+  target: ProviderCommandTarget,
+): target is ProviderTarget => "ref" in target && "user" in target;
+
 const providerTargetResultContext = (
   target: ProviderCommandTarget,
 ): ResultContext =>
-  "deployment" in target
+  isProviderTarget(target)
     ? targetResultContext(target)
     : "boundary" in target
       ? discoveryTargetResultContext(target)
@@ -1744,7 +1956,8 @@ const loadDiscoveryTarget = (
     intent,
     runtime,
     () => discoveryTargetFromGlobals(intent),
-    (profile) => discoveryTargetFromProfile(profile, intent.globals.providerFields),
+    (profile) =>
+      discoveryTargetFromProfile(profile, intent.globals.providerFields),
   );
 
 const withResultContext = (
@@ -1792,10 +2005,7 @@ const shouldRedactDebugField = (
   );
 };
 
-const redactDebugValue = (
-  value: unknown,
-  parentKey?: string,
-): unknown => {
+const redactDebugValue = (value: unknown, parentKey?: string): unknown => {
   if (Array.isArray(value)) {
     return value.map((entry) => redactDebugValue(entry, parentKey));
   }
@@ -1993,7 +2203,8 @@ const discoveryRunnerForTarget = (
   runtime: CommandRuntime,
   target: ProviderDiscoveryTarget,
 ): ProviderDiscoveryRunner | CommandResult => {
-  const factory = runtime.discoveryRunners ?? makeDefaultProviderDiscoveryRunner;
+  const factory =
+    runtime.discoveryRunners ?? makeDefaultProviderDiscoveryRunner;
   const credentials = credentialsForIntent(intent, runtime);
   const runner = factory(target, credentials);
 
@@ -2024,8 +2235,10 @@ const runnerForTarget = (
   return runner ?? authUnavailable(intent, target);
 };
 
+const recordSchema = z.object({}).catchall(z.unknown());
+
 const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
+  recordSchema.safeParse(value).success;
 
 const dataWithOperationEvents = (
   data: unknown,
@@ -2241,25 +2454,34 @@ const doctorRuntimeCheck = (
       );
 };
 
-const doctorGcpConfigCheck = (): DoctorCheck =>
-  doctorCheck(
-    "config",
-    "passed",
-    "GCP model configuration can be rendered for the Gemini runtime path.",
-  );
-
-const doctorAzureConfigCheck = (endpoint: string | undefined): DoctorCheck =>
-  endpoint
+const doctorGcpConfigCheck = (model: string | undefined): DoctorCheck =>
+  model
     ? doctorCheck(
         "config",
         "passed",
-        "Azure Foundry OpenAI-compatible endpoint is configured.",
+        "GCP Gemini model configuration is configured.",
       )
     : doctorCheck(
         "config",
         "skipped",
-        "Azure Foundry model configuration requires --endpoint or a profile endpoint.",
-    );
+        "GCP model configuration requires --model or complete profile model settings.",
+      );
+
+const doctorAzureConfigCheck = (
+  endpoint: string | undefined,
+  deploymentName: string | undefined,
+): DoctorCheck =>
+  endpoint && deploymentName
+    ? doctorCheck(
+        "config",
+        "passed",
+        "Azure Foundry OpenAI-compatible endpoint and deployment name are configured.",
+      )
+    : doctorCheck(
+        "config",
+        "skipped",
+        "Azure Foundry model configuration requires --endpoint and --model or complete profile model settings.",
+      );
 
 const doctorImageCheck = (): DoctorCheck =>
   isUniversalHermesImageConfigured()
@@ -2271,7 +2493,7 @@ const doctorImageCheck = (): DoctorCheck =>
     : doctorCheck(
         "image",
         "failed",
-        "Universal Hermes runtime image is still a placeholder; deploy cannot create or update the cloud runtime.",
+        "Universal Hermes runtime image is not configured; deploy cannot create or update the cloud runtime.",
       );
 
 const doctorStateCheck = async (
@@ -2280,7 +2502,11 @@ const doctorStateCheck = async (
   authCheck: DoctorCheck,
 ): Promise<DoctorCheck> => {
   if (authCheck.status === "failed") {
-    return doctorCheck("state", "skipped", "Skipped because auth check failed.");
+    return doctorCheck(
+      "state",
+      "skipped",
+      "Skipped because auth check failed.",
+    );
   }
   if (!target.deploymentSpec) {
     return doctorCheck(
@@ -2322,10 +2548,13 @@ const doctorExplicitStateCheck = async (
 
 const doctorExplicitConfigCheck = (intent: CommandIntent): DoctorCheck => {
   if (intent.globals.provider === "gcp") {
-    return doctorGcpConfigCheck();
+    return doctorGcpConfigCheck(intent.globals.providerFields["model"]);
   }
   if (intent.globals.provider === "azure") {
-    return doctorAzureConfigCheck(intent.globals.providerFields["endpoint"]);
+    return doctorAzureConfigCheck(
+      intent.globals.providerFields["endpoint"],
+      intent.globals.providerFields["model"],
+    );
   }
   return doctorCheck(
     "config",
@@ -2339,11 +2568,14 @@ const doctorProfileConfigCheck = (
   profile: AppProfile,
 ): DoctorCheck => {
   if (profile.provider === "gcp") {
-    return doctorGcpConfigCheck();
+    return doctorGcpConfigCheck(
+      intent.globals.providerFields["model"] ?? profile.gcp.model,
+    );
   }
   return doctorAzureConfigCheck(
     intent.globals.providerFields["endpoint"] ??
       profile.azure.openaiCompatibleEndpoint,
+    intent.globals.providerFields["model"] ?? profile.azure.modelDeployment,
   );
 };
 
@@ -2359,14 +2591,11 @@ const doctorSummary = (
   return `Doctor checked ${providerText}profile ${profile}: ${passed} passed, ${failed} failed, ${skipped} skipped.`;
 };
 
-const targetCommandSummary = (
-  target: ProviderTarget,
-  action: string,
-): string =>
-  `${target.provider} profile ${target.profile} ${action} deployment ${target.deployment}.`;
+const targetCommandSummary = (target: ProviderTarget, action: string): string =>
+  `${target.provider} profile ${target.profile} ${action} deployment ${targetDeploymentName(target)}.`;
 
 const targetNotDeployedSummary = (target: ProviderTarget): string =>
-  `${target.provider} profile ${target.profile} deployment ${target.deployment} is not deployed.`;
+  `${target.provider} profile ${target.profile} deployment ${targetDeploymentName(target)} is not deployed.`;
 
 const missingDeploymentSpecFields = (
   intent: CommandIntent,
@@ -2453,16 +2682,30 @@ const runProfileCommand = async (
       if (!runner.previewDeploy) {
         return fullDeploymentRequired(intent, target);
       }
+      const model = requireDeployModelSelection(intent, runtime, target);
+      if ("ok" in model) {
+        return model;
+      }
 
-      return runEffect(intent, runner.previewDeploy(), (data) =>
-        confirmationRequired(intent, target, data.summary), context);
+      return runEffect(
+        intent,
+        runner.previewDeploy(),
+        (data) =>
+          confirmationRequired(intent, target, data.summary, undefined, model),
+        context,
+      );
     }
 
-    const previewEffect = intent.command === "destroy"
-      ? destroyMutationPreview(runner)
-      : restartMutationPreview(runner);
-    return runEffect(intent, previewEffect, (data) =>
-      confirmationRequired(intent, target, undefined, data), context);
+    const previewEffect =
+      intent.command === "destroy"
+        ? destroyMutationPreview(runner)
+        : restartMutationPreview(runner);
+    return runEffect(
+      intent,
+      previewEffect,
+      (data) => confirmationRequired(intent, target, undefined, data),
+      context,
+    );
   }
 
   if (intent.command === "destroy") {
@@ -2477,35 +2720,64 @@ const runProfileCommand = async (
       if (!runner.deploy) {
         return fullDeploymentRequired(intent, target);
       }
-      return runEffect(intent, runner.deploy(), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: targetCommandSummary(target, "deployed"),
-        data: data.summary,
-        ...commandDebug(intent, data.raw),
-      }), context);
-    }
-    case "status":
-      return runEffect(intent, deploymentStatus(runner), (data) => {
-        const runtime = data.summary.runtime;
-        return {
+      const model = requireDeployModelSelection(intent, runtime, target);
+      if ("ok" in model) {
+        return model;
+      }
+
+      const writeHomeManagerModule = runner.writeHomeManagerModule;
+      if (!writeHomeManagerModule) {
+        return configUserVolumeUnavailable(intent, target);
+      }
+
+      return runEffect(
+        intent,
+        deployWithConfiguredModel(
+          runner.deploy,
+          writeHomeManagerModule,
+          renderHermesModelModule(model),
+        ),
+        (data) => ({
           ok: true,
           command: intent.command,
-          summary: runtime.deployed
-            ? `${target.provider} ${targetResourceKindSlug(target)} ${target.deployment} is deployed.`
-            : targetNotDeployedSummary(target),
+          summary: targetCommandSummary(target, "deployed and configured"),
           data: data.summary,
           ...commandDebug(intent, data.raw),
-        };
-      }, context);
+        }),
+        context,
+      );
+    }
+    case "status":
+      return runEffect(
+        intent,
+        deploymentStatus(runner),
+        (data) => {
+          const runtime = data.summary.runtime;
+          return {
+            ok: true,
+            command: intent.command,
+            summary: runtime.deployed
+              ? `${target.provider} ${targetResourceKindSlug(target)} ${targetDeploymentName(target)} is deployed.`
+              : targetNotDeployedSummary(target),
+            data: data.summary,
+            ...commandDebug(intent, data.raw),
+          };
+        },
+        context,
+      );
     case "restart":
-      return runEffect(intent, runner.restart(), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: targetCommandSummary(target, "restarted"),
-        data: data.summary,
-        ...commandDebug(intent, data.raw),
-      }), context);
+      return runEffect(
+        intent,
+        runner.restart(),
+        (data) => ({
+          ok: true,
+          command: intent.command,
+          summary: targetCommandSummary(target, "restarted"),
+          data: data.summary,
+          ...commandDebug(intent, data.raw),
+        }),
+        context,
+      );
     case "destroy":
       if (intent.state === "purge") {
         if (!target.deploymentSpec) {
@@ -2514,21 +2786,31 @@ const runProfileCommand = async (
         if (!runner.destroyWithStatePurge) {
           return statePurgeUnavailable(intent, target);
         }
-        return runEffect(intent, runner.destroyWithStatePurge(), (data) => ({
+        return runEffect(
+          intent,
+          runner.destroyWithStatePurge(),
+          (data) => ({
+            ok: true,
+            command: intent.command,
+            summary: `${target.provider} profile ${target.profile} destroyed deployment ${targetDeploymentName(target)} and purged its persistent state.`,
+            data: data.summary,
+            ...commandDebug(intent, data.raw),
+          }),
+          context,
+        );
+      }
+      return runEffect(
+        intent,
+        runner.destroy(),
+        (data) => ({
           ok: true,
           command: intent.command,
-          summary: `${target.provider} profile ${target.profile} destroyed deployment ${target.deployment} and purged its persistent state.`,
+          summary: targetCommandSummary(target, "destroyed"),
           data: data.summary,
           ...commandDebug(intent, data.raw),
-        }), context);
-      }
-      return runEffect(intent, runner.destroy(), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: targetCommandSummary(target, "destroyed"),
-        data: data.summary,
-        ...commandDebug(intent, data.raw),
-      }), context);
+        }),
+        context,
+      );
   }
 };
 
@@ -2561,18 +2843,23 @@ const runAuthCheckCommand = async (
     return { auth, discovery };
   });
 
-  return runEffect(intent, check, (data) => ({
-    ok: true,
-    command: intent.command,
-    summary: data.discovery
-      ? `${target.provider} profile ${target.profile} can authenticate and reach the selected cloud boundary.`
-      : `${target.provider} profile ${target.profile} can authenticate.`,
-    data: {
-      ...data.auth,
-      ...(data.discovery ? { boundaryChecked: true } : {}),
-    },
-    ...(data.discovery ? commandDebug(intent, data.discovery.raw) : {}),
-  }), context);
+  return runEffect(
+    intent,
+    check,
+    (data) => ({
+      ok: true,
+      command: intent.command,
+      summary: data.discovery
+        ? `${target.provider} profile ${target.profile} can authenticate and reach the selected cloud boundary.`
+        : `${target.provider} profile ${target.profile} can authenticate.`,
+      data: {
+        ...data.auth,
+        ...(data.discovery ? { boundaryChecked: true } : {}),
+      },
+      ...(data.discovery ? commandDebug(intent, data.discovery.raw) : {}),
+    }),
+    context,
+  );
 };
 
 const runConfigCommand = async (
@@ -2597,23 +2884,44 @@ const runConfigCommand = async (
           : configReadUnavailable(intent, target);
       }
 
-      return runEffect(intent, runner.readHomeManagerConfig(), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: data.configured
-          ? `${target.provider} config for deployment ${target.deployment} is present.`
-          : `${target.provider} config for deployment ${target.deployment} has no Hermes Ambit managed module yet.`,
-        data,
-      }), context);
+      return runEffect(
+        intent,
+        runner.readHomeManagerConfig(),
+        (data) => ({
+          ok: true,
+          command: intent.command,
+          summary: data.configured
+            ? `${target.provider} config for deployment ${targetDeploymentName(target)} is present.`
+            : `${target.provider} config for deployment ${targetDeploymentName(target)} has no Hermes Ambit managed module yet.`,
+          data,
+        }),
+        context,
+      );
     }
     case "config.set": {
-      const patch = configSetPatch(intent, target);
-      if ("code" in patch) {
+      const azureEndpoint =
+        intent.key === "model.default" && target.provider === "azure"
+          ? loadAzureModelEndpoint(intent, runtime)
+          : undefined;
+      if (
+        typeof azureEndpoint === "object" &&
+        azureEndpoint !== null &&
+        "ok" in azureEndpoint
+      ) {
+        return azureEndpoint;
+      }
+
+      const module = configSetModule(
+        intent,
+        target,
+        typeof azureEndpoint === "string" ? azureEndpoint : undefined,
+      );
+      if (isAppError(module)) {
         return {
           ok: false,
           command: intent.command,
           ...context,
-          error: patch,
+          error: module,
         };
       }
 
@@ -2621,19 +2929,24 @@ const runConfigCommand = async (
       if ("ok" in runner) {
         return runner;
       }
-      if (!runner.applyHomeManagerPatch) {
+      if (!runner.writeHomeManagerModule) {
         return target.deploymentSpec
           ? configUserVolumeUnavailable(intent, target)
           : fullDeploymentRequired(intent, target);
       }
 
-      return runEffect(intent, runner.applyHomeManagerPatch(patch), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: `${target.provider} config ${intent.key} was updated for deployment ${target.deployment} and the runtime was rolled.`,
-        data: data.summary,
-        ...commandDebug(intent, data.raw),
-      }), context);
+      return runEffect(
+        intent,
+        runner.writeHomeManagerModule(module),
+        (data) => ({
+          ok: true,
+          command: intent.command,
+          summary: `${target.provider} config ${intent.key} was updated for deployment ${targetDeploymentName(target)} and the runtime was rolled.`,
+          data: data.summary,
+          ...commandDebug(intent, data.raw),
+        }),
+        context,
+      );
     }
   }
 };
@@ -2655,39 +2968,60 @@ const runSecretsCommand = async (
 
   switch (intent.command) {
     case "secrets.list":
-      return runEffect(intent, runner.listSecrets(), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: `${target.provider} profile ${target.profile} has ${data.length} configured secrets.`,
-        data,
-      }), context);
+      return runEffect(
+        intent,
+        runner.listSecrets(),
+        (data) => ({
+          ok: true,
+          command: intent.command,
+          summary: `${target.provider} profile ${target.profile} has ${data.length} configured secrets.`,
+          data,
+        }),
+        context,
+      );
     case "secrets.set": {
       if (!isRuntimeSecretName(intent.name)) {
-        return withResultContext(invalidSecretName(intent, intent.name), context);
+        return withResultContext(
+          invalidSecretName(intent, intent.name),
+          context,
+        );
       }
       const value = await secretValueFromSource(intent, runtime);
       if (typeof value !== "string") {
         return withResultContext(value, context);
       }
-      return runEffect(intent, runner.putSecret(intent.name, value), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: `${target.provider} secret ${intent.name} was updated and the runtime environment was rolled.`,
-        data: data.summary,
-        ...commandDebug(intent, data.raw),
-      }), context);
+      return runEffect(
+        intent,
+        runner.putSecret(intent.name, value),
+        (data) => ({
+          ok: true,
+          command: intent.command,
+          summary: `${target.provider} secret ${intent.name} was updated and the runtime environment was rolled.`,
+          data: data.summary,
+          ...commandDebug(intent, data.raw),
+        }),
+        context,
+      );
     }
     case "secrets.delete": {
       if (!isRuntimeSecretName(intent.name)) {
-        return withResultContext(invalidSecretName(intent, intent.name), context);
+        return withResultContext(
+          invalidSecretName(intent, intent.name),
+          context,
+        );
       }
-      return runEffect(intent, runner.deleteSecret(intent.name), (data) => ({
-        ok: true,
-        command: intent.command,
-        summary: `${target.provider} secret ${intent.name} was deleted and the runtime environment was rolled.`,
-        data: data.summary,
-        ...commandDebug(intent, data.raw),
-      }), context);
+      return runEffect(
+        intent,
+        runner.deleteSecret(intent.name),
+        (data) => ({
+          ok: true,
+          command: intent.command,
+          summary: `${target.provider} secret ${intent.name} was deleted and the runtime environment was rolled.`,
+          data: data.summary,
+          ...commandDebug(intent, data.raw),
+        }),
+        context,
+      );
     }
   }
 };
@@ -2749,9 +3083,8 @@ const runExplicitDoctorCommand = async (
   const configCheck = doctorExplicitConfigCheck(intent);
   const imageCheck = doctorImageCheck();
   const authTarget = authTargetFromGlobals(intent);
-  const provider = "code" in authTarget
-    ? intent.globals.provider
-    : authTarget.provider;
+  const provider =
+    "code" in authTarget ? intent.globals.provider : authTarget.provider;
 
   if (profileCheck.status === "failed") {
     return doctorResult(selectedProfile, provider, [
@@ -2769,8 +3102,16 @@ const runExplicitDoctorCommand = async (
       configCheck,
       imageCheck,
       doctorTargetErrorCheck("auth", authTarget),
-      doctorCheck("discovery", "skipped", "Skipped because auth target is incomplete."),
-      doctorCheck("models", "skipped", "Skipped because auth target is incomplete."),
+      doctorCheck(
+        "discovery",
+        "skipped",
+        "Skipped because auth target is incomplete.",
+      ),
+      doctorCheck(
+        "models",
+        "skipped",
+        "Skipped because auth target is incomplete.",
+      ),
     ]);
   }
 
@@ -2782,7 +3123,11 @@ const runExplicitDoctorCommand = async (
       configCheck,
       imageCheck,
       doctorCommandResultCheck("auth", authRunner),
-      doctorCheck("discovery", "skipped", "Skipped because auth is unavailable."),
+      doctorCheck(
+        "discovery",
+        "skipped",
+        "Skipped because auth is unavailable.",
+      ),
       doctorCheck("models", "skipped", "Skipped because auth is unavailable."),
     ]);
   }
@@ -2794,7 +3139,11 @@ const runExplicitDoctorCommand = async (
   );
   const discoveryCheck =
     authCheck.status === "failed"
-      ? doctorCheck("discovery", "skipped", "Skipped because auth check failed.")
+      ? doctorCheck(
+          "discovery",
+          "skipped",
+          "Skipped because auth check failed.",
+        )
       : await doctorDiscoveryCheck(intent, runtime);
   const stateCheck = await doctorExplicitStateCheck(intent, runtime, authCheck);
   const modelCheck =
@@ -2906,7 +3255,11 @@ const runDoctorCommand = async (
       imageCheck,
       doctorCheck("auth", "failed", commandResultMessage(runner)),
       doctorCheck("state", "skipped", "Skipped because auth is unavailable."),
-      doctorCheck("discovery", "skipped", "Skipped because auth is unavailable."),
+      doctorCheck(
+        "discovery",
+        "skipped",
+        "Skipped because auth is unavailable.",
+      ),
       doctorCheck("models", "skipped", "Skipped because auth is unavailable."),
     ]);
   }
@@ -2918,7 +3271,11 @@ const runDoctorCommand = async (
   );
   const discoveryCheck =
     authCheck.status === "failed"
-      ? doctorCheck("discovery", "skipped", "Skipped because auth check failed.")
+      ? doctorCheck(
+          "discovery",
+          "skipped",
+          "Skipped because auth check failed.",
+        )
       : await doctorEffectCheck(
           "discovery",
           runner.discover(),
@@ -2959,13 +3316,18 @@ const runDiscoverCommand = async (
     return runner;
   }
 
-  return runEffect(intent, runner.discover(), (data) => ({
-    ok: true,
-    command: "discover",
-    summary: `${target.provider} profile ${target.profile} found ${data.summary.deployments.length} Hermes deployment resources.`,
-    data: data.summary,
-    ...commandDebug(intent, data.raw),
-  }), context);
+  return runEffect(
+    intent,
+    runner.discover(),
+    (data) => ({
+      ok: true,
+      command: "discover",
+      summary: `${target.provider} profile ${target.profile} found ${data.summary.deployments.length} Hermes deployment resources.`,
+      data: data.summary,
+      ...commandDebug(intent, data.raw),
+    }),
+    context,
+  );
 };
 
 const runModelsListCommand = async (
@@ -2983,16 +3345,21 @@ const runModelsListCommand = async (
     return runner;
   }
 
-  return runEffect(intent, runner.listModels(), (data) => ({
-    ok: true,
-    command: "models.list",
-    summary:
-      target.provider === "azure"
-        ? `${target.provider} profile ${target.profile} found ${data.summary.length} model catalog entries. Configure Hermes with an Azure deployment name.`
-        : `${target.provider} profile ${target.profile} found ${data.summary.length} supported models.`,
-    data: data.summary,
-    ...commandDebug(intent, data.raw),
-  }), context);
+  return runEffect(
+    intent,
+    runner.listModels(),
+    (data) => ({
+      ok: true,
+      command: "models.list",
+      summary:
+        target.provider === "azure"
+          ? `${target.provider} profile ${target.profile} found ${data.summary.length} model catalog entries. Configure Hermes with an Azure deployment name.`
+          : `${target.provider} profile ${target.profile} found ${data.summary.length} supported models.`,
+      data: data.summary,
+      ...commandDebug(intent, data.raw),
+    }),
+    context,
+  );
 };
 
 export const runIntent = async (

@@ -8,14 +8,14 @@
 /**
  * Optional. Indicates the launch stage of the model.
  */
-export type GoogleCloudAiplatformV1beta1PublisherModelLaunchStage = typeof GoogleCloudAiplatformV1beta1PublisherModelLaunchStage[keyof typeof GoogleCloudAiplatformV1beta1PublisherModelLaunchStage];
-
+export type GoogleCloudAiplatformV1beta1PublisherModelLaunchStage =
+  (typeof GoogleCloudAiplatformV1beta1PublisherModelLaunchStage)[keyof typeof GoogleCloudAiplatformV1beta1PublisherModelLaunchStage];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudAiplatformV1beta1PublisherModelLaunchStage = {
-  LAUNCH_STAGE_UNSPECIFIED: 'LAUNCH_STAGE_UNSPECIFIED',
-  EXPERIMENTAL: 'EXPERIMENTAL',
-  PRIVATE_PREVIEW: 'PRIVATE_PREVIEW',
-  PUBLIC_PREVIEW: 'PUBLIC_PREVIEW',
-  GA: 'GA',
+  LAUNCH_STAGE_UNSPECIFIED: "LAUNCH_STAGE_UNSPECIFIED",
+  EXPERIMENTAL: "EXPERIMENTAL",
+  PRIVATE_PREVIEW: "PRIVATE_PREVIEW",
+  PUBLIC_PREVIEW: "PUBLIC_PREVIEW",
+  GA: "GA",
 } as const;

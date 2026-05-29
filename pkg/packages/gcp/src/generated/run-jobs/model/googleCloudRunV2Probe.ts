@@ -4,9 +4,9 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2HTTPGetAction } from './googleCloudRunV2HTTPGetAction';
-import type { GoogleCloudRunV2TCPSocketAction } from './googleCloudRunV2TCPSocketAction';
-import type { GoogleCloudRunV2GRPCAction } from './googleCloudRunV2GRPCAction';
+import type { GoogleCloudRunV2HTTPGetAction } from "./googleCloudRunV2HTTPGetAction";
+import type { GoogleCloudRunV2TCPSocketAction } from "./googleCloudRunV2TCPSocketAction";
+import type { GoogleCloudRunV2GRPCAction } from "./googleCloudRunV2GRPCAction";
 
 /**
  * Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.

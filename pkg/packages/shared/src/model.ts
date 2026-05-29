@@ -12,10 +12,7 @@ export type Remediation = {
   readonly url: string;
 };
 
-export type HomeManagerPatch = {
-  readonly section?: string;
-  readonly block: string;
-};
+export type HomeManagerModule = string;
 
 export type DeploymentDriver<
   PlanInput extends DeploymentIdentity,
@@ -26,6 +23,10 @@ export type DeploymentDriver<
   readonly plan: (identity: PlanInput) => Effect.Effect<Plan, CloudError>;
   readonly apply: (plan: Plan) => Effect.Effect<Status, CloudError>;
   readonly status: (identity: ResourceRef) => Effect.Effect<Status, CloudError>;
-  readonly restart: (identity: ResourceRef) => Effect.Effect<Status, CloudError>;
-  readonly destroy: (identity: ResourceRef) => Effect.Effect<Status, CloudError>;
+  readonly restart: (
+    identity: ResourceRef,
+  ) => Effect.Effect<Status, CloudError>;
+  readonly destroy: (
+    identity: ResourceRef,
+  ) => Effect.Effect<Status, CloudError>;
 };

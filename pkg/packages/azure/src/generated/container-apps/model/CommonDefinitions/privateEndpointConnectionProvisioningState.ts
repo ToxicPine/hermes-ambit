@@ -8,16 +8,16 @@
 /**
  * The current provisioning state.
  */
-export type PrivateEndpointConnectionProvisioningState = typeof PrivateEndpointConnectionProvisioningState[keyof typeof PrivateEndpointConnectionProvisioningState];
-
+export type PrivateEndpointConnectionProvisioningState =
+  (typeof PrivateEndpointConnectionProvisioningState)[keyof typeof PrivateEndpointConnectionProvisioningState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const PrivateEndpointConnectionProvisioningState = {
-  Succeeded: 'Succeeded',
-  Failed: 'Failed',
-  Canceled: 'Canceled',
-  Waiting: 'Waiting',
-  Updating: 'Updating',
-  Deleting: 'Deleting',
-  Pending: 'Pending',
+  Succeeded: "Succeeded",
+  Failed: "Failed",
+  Canceled: "Canceled",
+  Waiting: "Waiting",
+  Updating: "Updating",
+  Deleting: "Deleting",
+  Pending: "Pending",
 } as const;

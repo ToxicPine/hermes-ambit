@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleTypeExpr } from './googleTypeExpr';
+import type { GoogleTypeExpr } from "./googleTypeExpr";
 
 /**
  * Associates `members`, or principals, with a `role`.

@@ -8,13 +8,13 @@
 /**
  * The type of identity that last modified the resource.
  */
-export type SystemDataLastModifiedByType = typeof SystemDataLastModifiedByType[keyof typeof SystemDataLastModifiedByType];
-
+export type SystemDataLastModifiedByType =
+  (typeof SystemDataLastModifiedByType)[keyof typeof SystemDataLastModifiedByType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SystemDataLastModifiedByType = {
-  User: 'User',
-  Application: 'Application',
-  ManagedIdentity: 'ManagedIdentity',
-  Key: 'Key',
+  User: "User",
+  Application: "Application",
+  ManagedIdentity: "ManagedIdentity",
+  Key: "Key",
 } as const;

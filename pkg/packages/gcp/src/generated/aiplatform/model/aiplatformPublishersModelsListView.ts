@@ -5,13 +5,13 @@
  * OpenAPI spec version: v1beta1
  */
 
-export type AiplatformPublishersModelsListView = typeof AiplatformPublishersModelsListView[keyof typeof AiplatformPublishersModelsListView];
-
+export type AiplatformPublishersModelsListView =
+  (typeof AiplatformPublishersModelsListView)[keyof typeof AiplatformPublishersModelsListView];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const AiplatformPublishersModelsListView = {
-  PUBLISHER_MODEL_VIEW_UNSPECIFIED: 'PUBLISHER_MODEL_VIEW_UNSPECIFIED',
-  PUBLISHER_MODEL_VIEW_BASIC: 'PUBLISHER_MODEL_VIEW_BASIC',
-  PUBLISHER_MODEL_VIEW_FULL: 'PUBLISHER_MODEL_VIEW_FULL',
-  PUBLISHER_MODEL_VERSION_VIEW_BASIC: 'PUBLISHER_MODEL_VERSION_VIEW_BASIC',
+  PUBLISHER_MODEL_VIEW_UNSPECIFIED: "PUBLISHER_MODEL_VIEW_UNSPECIFIED",
+  PUBLISHER_MODEL_VIEW_BASIC: "PUBLISHER_MODEL_VIEW_BASIC",
+  PUBLISHER_MODEL_VIEW_FULL: "PUBLISHER_MODEL_VIEW_FULL",
+  PUBLISHER_MODEL_VERSION_VIEW_BASIC: "PUBLISHER_MODEL_VERSION_VIEW_BASIC",
 } as const;

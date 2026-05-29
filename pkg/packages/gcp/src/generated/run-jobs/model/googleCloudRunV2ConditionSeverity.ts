@@ -8,13 +8,13 @@
 /**
  * How to interpret failures of this condition, one of Error, Warning, Info
  */
-export type GoogleCloudRunV2ConditionSeverity = typeof GoogleCloudRunV2ConditionSeverity[keyof typeof GoogleCloudRunV2ConditionSeverity];
-
+export type GoogleCloudRunV2ConditionSeverity =
+  (typeof GoogleCloudRunV2ConditionSeverity)[keyof typeof GoogleCloudRunV2ConditionSeverity];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2ConditionSeverity = {
-  SEVERITY_UNSPECIFIED: 'SEVERITY_UNSPECIFIED',
-  ERROR: 'ERROR',
-  WARNING: 'WARNING',
-  INFO: 'INFO',
+  SEVERITY_UNSPECIFIED: "SEVERITY_UNSPECIFIED",
+  ERROR: "ERROR",
+  WARNING: "WARNING",
+  INFO: "INFO",
 } as const;

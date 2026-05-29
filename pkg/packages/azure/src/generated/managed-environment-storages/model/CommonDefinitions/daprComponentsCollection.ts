@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { DaprComponent } from './daprComponent';
+import type { DaprComponent } from "./daprComponent";
 
 /**
  * Dapr Components ARM resource.

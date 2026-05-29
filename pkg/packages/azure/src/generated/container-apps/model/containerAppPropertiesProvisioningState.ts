@@ -8,14 +8,14 @@
 /**
  * Provisioning state of the Container App.
  */
-export type ContainerAppPropertiesProvisioningState = typeof ContainerAppPropertiesProvisioningState[keyof typeof ContainerAppPropertiesProvisioningState];
-
+export type ContainerAppPropertiesProvisioningState =
+  (typeof ContainerAppPropertiesProvisioningState)[keyof typeof ContainerAppPropertiesProvisioningState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ContainerAppPropertiesProvisioningState = {
-  InProgress: 'InProgress',
-  Succeeded: 'Succeeded',
-  Failed: 'Failed',
-  Canceled: 'Canceled',
-  Deleting: 'Deleting',
+  InProgress: "InProgress",
+  Succeeded: "Succeeded",
+  Failed: "Failed",
+  Canceled: "Canceled",
+  Deleting: "Deleting",
 } as const;

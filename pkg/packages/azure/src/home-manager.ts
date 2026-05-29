@@ -6,7 +6,7 @@ import {
   readManagedHomeManagerConfig,
   updateManagedHomeManagerConfig,
   type CloudError,
-  type HomeManagerPatch,
+  type HomeManagerModule,
   type UserVolumeService,
 } from "@cardelli/shared";
 
@@ -34,7 +34,11 @@ const azureUserVolumeForDeployment = (
       storageRef,
     );
 
-    return makeAzureFilesUserVolume(filesAuth, share, deployment.state.dataSubPath);
+    return makeAzureFilesUserVolume(
+      filesAuth,
+      share,
+      deployment.state.dataSubPath,
+    );
   });
 
 export const updateAzureHomeManager = (
@@ -43,7 +47,7 @@ export const updateAzureHomeManager = (
   update: {
     readonly identity: AzureDeployment;
     readonly user: string;
-    readonly patch: HomeManagerPatch;
+    readonly module: HomeManagerModule;
   },
 ): Effect.Effect<AzureStatus, CloudError> =>
   Effect.gen(function* () {
@@ -67,16 +71,14 @@ export const updateAzureHomeManager = (
     const updateEffect = updateManagedHomeManagerConfig({
       identity: update.identity,
       user: update.user,
-      patch: update.patch,
+      module: update.module,
       restart: driver.restart,
     });
 
     return yield* Effect.provideService(updateEffect, UserVolume, volume);
   });
 
-const uniqueStatePaths = (
-  deployment: AzureDeployment,
-): readonly string[] =>
+const uniqueStatePaths = (deployment: AzureDeployment): readonly string[] =>
   deployment.state.dataSubPath === deployment.state.nixSubPath
     ? [deployment.state.dataSubPath]
     : [deployment.state.dataSubPath, deployment.state.nixSubPath];

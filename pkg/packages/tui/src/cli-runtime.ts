@@ -65,7 +65,9 @@ const providerFlagValue = (argv: readonly string[]): string | undefined => {
   return providerIndex >= 0 ? argv[providerIndex + 1] : undefined;
 };
 
-const providerFromArgv = (argv: readonly string[]): ProviderKind | undefined => {
+const providerFromArgv = (
+  argv: readonly string[],
+): ProviderKind | undefined => {
   const value = providerFlagValue(argv);
   return value === "gcp" || value === "azure" ? value : undefined;
 };
@@ -147,10 +149,8 @@ const activeProfileArgv = (
 const outputModeFromArgv = (argv: readonly string[]): OutputMode =>
   argv.includes("--json") ? "json" : "cli";
 
-const renderResult = (
-  result: CommandResult,
-  outputMode: OutputMode,
-): string => (outputMode === "json" ? renderJson(result) : renderHuman(result));
+const renderResult = (result: CommandResult, outputMode: OutputMode): string =>
+  outputMode === "json" ? renderJson(result) : renderHuman(result);
 
 const helpValueFlags = new Set([
   "--profile",
@@ -164,6 +164,7 @@ const helpValueFlags = new Set([
   "--region",
   "--service-account",
   "--quota-project",
+  "--model",
   "--state",
   "--state-server",
   "--state-path",
@@ -216,6 +217,7 @@ const gcpProviderArgs = `GCP provider args:
   --region <region>
   --service-account <email>
   --quota-project <project-id>
+  --model <gemini-model-id>
   --state nfs
   --state-server <host-or-ref>
   --state-path <path>
@@ -230,13 +232,15 @@ const azureProviderArgs = `Azure provider args:
   --environment-id <managed-environment-resource-id>
   --storage-name <container-app-environment-storage-name>
   --endpoint <azure-openai-compatible-endpoint>
+  --model <foundry-deployment-name>
   --state azure-files
   --state-data-path <path>
   --state-nix-path <path>`;
 
 const providerArgsUsage = (provider: ProviderKind | undefined): string => {
   if (provider === "gcp") return `${sharedProviderArgs}\n\n${gcpProviderArgs}`;
-  if (provider === "azure") return `${sharedProviderArgs}\n\n${azureProviderArgs}`;
+  if (provider === "azure")
+    return `${sharedProviderArgs}\n\n${azureProviderArgs}`;
   return `${sharedProviderArgs}\n\n${gcpProviderArgs}\n\n${azureProviderArgs}`;
 };
 
@@ -290,9 +294,8 @@ const readVisibleText = (
     return Promise.reject(new Error("terminal input is not a TTY"));
   }
 
-  const suffix = defaultValue && defaultValue.length > 0
-    ? ` [${defaultValue}]`
-    : "";
+  const suffix =
+    defaultValue && defaultValue.length > 0 ? ` [${defaultValue}]` : "";
 
   return new Promise((resolve) => {
     const line = createInterface({
@@ -302,7 +305,7 @@ const readVisibleText = (
     line.question(`${label}${suffix}: `, (answer) => {
       line.close();
       const trimmed = answer.trim();
-      resolve(trimmed.length > 0 ? trimmed : defaultValue ?? "");
+      resolve(trimmed.length > 0 ? trimmed : (defaultValue ?? ""));
     });
   });
 };
@@ -466,7 +469,9 @@ export const applyActiveProfileDefault = (
     : activeProfileIntent(configuredIntent, runtime);
 
 const hasProviderFieldArg = (argv: readonly string[]): boolean =>
-  argv.some((token) => token.startsWith("--") && isProviderField(token.slice(2)));
+  argv.some(
+    (token) => token.startsWith("--") && isProviderField(token.slice(2)),
+  );
 
 const activeProfileDefaultBlocked = (argv: readonly string[]): boolean =>
   outputModeFromArgv(argv) === "json" ||
@@ -486,7 +491,9 @@ export const runCli = async (
     ? providerScopedArgv(provider, argv)
     : { ok: true, argv };
   if (!scopedArgv.ok) {
-    process.stdout.write(renderResult(scopedArgv.result, outputModeFromArgv(argv)));
+    process.stdout.write(
+      renderResult(scopedArgv.result, outputModeFromArgv(argv)),
+    );
     process.exitCode = 1;
     return;
   }
@@ -504,7 +511,9 @@ export const runCli = async (
     provider,
   );
   if (!resolvedArgv.ok) {
-    process.stdout.write(renderResult(resolvedArgv.result, outputModeFromArgv(argv)));
+    process.stdout.write(
+      renderResult(resolvedArgv.result, outputModeFromArgv(argv)),
+    );
     process.exitCode = 1;
     return;
   }
@@ -545,7 +554,7 @@ export const runCli = async (
     });
   }
   const outputMode = parsed.ok
-    ? intent?.globals.outputMode ?? parsed.intent.globals.outputMode
+    ? (intent?.globals.outputMode ?? parsed.intent.globals.outputMode)
     : parsed.outputMode;
 
   process.stdout.write(renderResult(result, outputMode));

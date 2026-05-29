@@ -4,14 +4,14 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { Replication } from './replication';
-import type { SecretLabels } from './secretLabels';
-import type { Topic } from './topic';
-import type { Rotation } from './rotation';
-import type { SecretVersionAliases } from './secretVersionAliases';
-import type { SecretAnnotations } from './secretAnnotations';
-import type { CustomerManagedEncryption } from './customerManagedEncryption';
-import type { SecretTags } from './secretTags';
+import type { Replication } from "./replication";
+import type { SecretLabels } from "./secretLabels";
+import type { Topic } from "./topic";
+import type { Rotation } from "./rotation";
+import type { SecretVersionAliases } from "./secretVersionAliases";
+import type { SecretAnnotations } from "./secretAnnotations";
+import type { CustomerManagedEncryption } from "./customerManagedEncryption";
+import type { SecretTags } from "./secretTags";
 
 /**
  * A Secret is a logical secret whose value and versions can be accessed. A Secret is made up of zero or more SecretVersions that represent the secret data.

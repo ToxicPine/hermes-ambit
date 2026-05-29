@@ -8,11 +8,12 @@
 /**
  * Detailed errors.
  */
-export type CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem = {
-  /** Standardized string to programmatically identify the error. */
-  readonly code?: string;
-  /** Detailed error description and debugging information. */
-  readonly message?: string;
-  /** Detailed error description and debugging information. */
-  readonly target?: string;
-};
+export type CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem =
+  {
+    /** Standardized string to programmatically identify the error. */
+    readonly code?: string;
+    /** Detailed error description and debugging information. */
+    readonly message?: string;
+    /** Detailed error description and debugging information. */
+    readonly target?: string;
+  };

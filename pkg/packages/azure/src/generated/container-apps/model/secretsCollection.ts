@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ContainerAppSecret } from './containerAppSecret';
+import type { ContainerAppSecret } from "./containerAppSecret";
 
 /**
  * Container App Secrets Collection ARM resource.

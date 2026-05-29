@@ -9,11 +9,7 @@
       "type": "string",
       "description": "Data format for response.",
       "default": "json",
-      "enum": [
-        "json",
-        "media",
-        "proto"
-      ],
+      "enum": ["json", "media", "proto"],
       "enumDescriptions": [
         "Responses with Content-Type of application/json",
         "Media download with context-dependent Content-Type",
@@ -65,14 +61,8 @@
     "$.xgafv": {
       "type": "string",
       "description": "V1 error format.",
-      "enum": [
-        "1",
-        "2"
-      ],
-      "enumDescriptions": [
-        "v1 error format",
-        "v2 error format"
-      ],
+      "enum": ["1", "2"],
+      "enumDescriptions": ["v1 error format", "v2 error format"],
       "location": "query"
     }
   },
@@ -403,12 +393,7 @@
             "The SecretVersion may not be accessed, but the secret data is still available and can be placed back into the ENABLED state.",
             "The SecretVersion is destroyed and the secret data is no longer stored. A version may not leave this state once entered."
           ],
-          "enum": [
-            "STATE_UNSPECIFIED",
-            "ENABLED",
-            "DISABLED",
-            "DESTROYED"
-          ]
+          "enum": ["STATE_UNSPECIFIED", "ENABLED", "DISABLED", "DESTROYED"]
         },
         "replicationStatus": {
           "description": "The replication status of the SecretVersion.",
@@ -934,15 +919,11 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "ListLocationsResponse"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Lists information about the supported locations for this service. This method lists locations based on the resource scope provided in the ListLocationsRequest.name field: * **Global locations**: If `name` is empty, the method lists the public locations available to all projects. * **Project-specific locations**: If `name` follows the format `projects/{project}`, the method lists locations visible to that specific project. This includes public, private, or other project-specific locations enabled for the project. For gRPC and client library implementations, the resource name is passed as the `name` field. For direct service calls, the resource name is incorporated into the request path based on the specific service implementation and version."
             },
             "get": {
@@ -959,15 +940,11 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "Location"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Gets information about a location."
             }
           },
@@ -1004,15 +981,11 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "response": {
                     "$ref": "ListSecretsResponse"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Lists Secrets."
                 },
                 "create": {
@@ -1034,18 +1007,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "Secret"
                   },
                   "response": {
                     "$ref": "Secret"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Creates a new Secret containing no SecretVersions."
                 },
                 "addVersion": {
@@ -1062,18 +1031,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "AddSecretVersionRequest"
                   },
                   "response": {
                     "$ref": "SecretVersion"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Creates a new SecretVersion containing secret data and attaches it to an existing Secret."
                 },
                 "get": {
@@ -1090,15 +1055,11 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "Secret"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Gets metadata for a given Secret."
                 },
                 "patch": {
@@ -1121,18 +1082,14 @@
                       "format": "google-fieldmask"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "Secret"
                   },
                   "response": {
                     "$ref": "Secret"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Updates metadata of an existing Secret."
                 },
                 "delete": {
@@ -1154,15 +1111,11 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "Empty"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Deletes a Secret."
                 },
                 "setIamPolicy": {
@@ -1179,18 +1132,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "SetIamPolicyRequest"
                   },
                   "response": {
                     "$ref": "Policy"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Sets the access control policy on the specified secret. Replaces any existing policy. Permissions on SecretVersions are enforced according to the policy set on the associated Secret."
                 },
                 "getIamPolicy": {
@@ -1213,15 +1162,11 @@
                       "format": "int32"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "response": {
                     "$ref": "Policy"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Gets the access control policy for a secret. Returns empty policy if the secret exists and does not have a policy set."
                 },
                 "testIamPermissions": {
@@ -1238,18 +1183,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "TestIamPermissionsRequest"
                   },
                   "response": {
                     "$ref": "TestIamPermissionsResponse"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Returns permissions that a caller has for the specified secret. If the secret does not exist, this call returns an empty set of permissions, not a NOT_FOUND error. Note: This operation is designed to be used for building permission-aware UIs and command-line tools, not for authorization checking. This operation may \"fail open\" without warning."
                 }
               },
@@ -1286,9 +1227,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "parent"
-                      ],
+                      "parameterOrder": ["parent"],
                       "response": {
                         "$ref": "ListSecretVersionsResponse"
                       },
@@ -1311,9 +1250,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "SecretVersion"
                       },
@@ -1336,9 +1273,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "AccessSecretVersionResponse"
                       },
@@ -1361,9 +1296,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "request": {
                         "$ref": "DisableSecretVersionRequest"
                       },
@@ -1389,9 +1322,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "request": {
                         "$ref": "EnableSecretVersionRequest"
                       },
@@ -1417,9 +1348,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "request": {
                         "$ref": "DestroySecretVersionRequest"
                       },
@@ -1469,15 +1398,11 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "parent"
-              ],
+              "parameterOrder": ["parent"],
               "response": {
                 "$ref": "ListSecretsResponse"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Lists Secrets."
             },
             "create": {
@@ -1499,18 +1424,14 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "parent"
-              ],
+              "parameterOrder": ["parent"],
               "request": {
                 "$ref": "Secret"
               },
               "response": {
                 "$ref": "Secret"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Creates a new Secret containing no SecretVersions."
             },
             "addVersion": {
@@ -1527,18 +1448,14 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "parent"
-              ],
+              "parameterOrder": ["parent"],
               "request": {
                 "$ref": "AddSecretVersionRequest"
               },
               "response": {
                 "$ref": "SecretVersion"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Creates a new SecretVersion containing secret data and attaches it to an existing Secret."
             },
             "get": {
@@ -1555,15 +1472,11 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "Secret"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Gets metadata for a given Secret."
             },
             "patch": {
@@ -1586,18 +1499,14 @@
                   "format": "google-fieldmask"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "request": {
                 "$ref": "Secret"
               },
               "response": {
                 "$ref": "Secret"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Updates metadata of an existing Secret."
             },
             "delete": {
@@ -1619,15 +1528,11 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "Empty"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Deletes a Secret."
             },
             "setIamPolicy": {
@@ -1644,18 +1549,14 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "resource"
-              ],
+              "parameterOrder": ["resource"],
               "request": {
                 "$ref": "SetIamPolicyRequest"
               },
               "response": {
                 "$ref": "Policy"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Sets the access control policy on the specified secret. Replaces any existing policy. Permissions on SecretVersions are enforced according to the policy set on the associated Secret."
             },
             "getIamPolicy": {
@@ -1678,15 +1579,11 @@
                   "format": "int32"
                 }
               },
-              "parameterOrder": [
-                "resource"
-              ],
+              "parameterOrder": ["resource"],
               "response": {
                 "$ref": "Policy"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Gets the access control policy for a secret. Returns empty policy if the secret exists and does not have a policy set."
             },
             "testIamPermissions": {
@@ -1703,18 +1600,14 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "resource"
-              ],
+              "parameterOrder": ["resource"],
               "request": {
                 "$ref": "TestIamPermissionsRequest"
               },
               "response": {
                 "$ref": "TestIamPermissionsResponse"
               },
-              "scopes": [
-                "https://www.googleapis.com/auth/cloud-platform"
-              ],
+              "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
               "description": "Returns permissions that a caller has for the specified secret. If the secret does not exist, this call returns an empty set of permissions, not a NOT_FOUND error. Note: This operation is designed to be used for building permission-aware UIs and command-line tools, not for authorization checking. This operation may \"fail open\" without warning."
             }
           },
@@ -1751,15 +1644,11 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "response": {
                     "$ref": "ListSecretVersionsResponse"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Lists SecretVersions. This call does not return secret data."
                 },
                 "get": {
@@ -1776,15 +1665,11 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "SecretVersion"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Gets metadata for a SecretVersion. `projects/*/secrets/*/versions/latest` is an alias to the most recently created SecretVersion."
                 },
                 "access": {
@@ -1801,15 +1686,11 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "AccessSecretVersionResponse"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Accesses a SecretVersion. This call returns the secret data. `projects/*/secrets/*/versions/latest` is an alias to the most recently created SecretVersion."
                 },
                 "disable": {
@@ -1826,18 +1707,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "DisableSecretVersionRequest"
                   },
                   "response": {
                     "$ref": "SecretVersion"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Disables a SecretVersion. Sets the state of the SecretVersion to DISABLED."
                 },
                 "enable": {
@@ -1854,18 +1731,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "EnableSecretVersionRequest"
                   },
                   "response": {
                     "$ref": "SecretVersion"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Enables a SecretVersion. Sets the state of the SecretVersion to ENABLED."
                 },
                 "destroy": {
@@ -1882,18 +1755,14 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "DestroySecretVersionRequest"
                   },
                   "response": {
                     "$ref": "SecretVersion"
                   },
-                  "scopes": [
-                    "https://www.googleapis.com/auth/cloud-platform"
-                  ],
+                  "scopes": ["https://www.googleapis.com/auth/cloud-platform"],
                   "description": "Destroys a SecretVersion. Sets the state of the SecretVersion to DESTROYED and irrevocably destroys the secret data."
                 }
               }

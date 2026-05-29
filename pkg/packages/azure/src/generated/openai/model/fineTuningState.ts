@@ -5,15 +5,15 @@
  * OpenAPI spec version: 2024-10-21
  */
 
-export type FineTuningState = typeof FineTuningState[keyof typeof FineTuningState];
-
+export type FineTuningState =
+  (typeof FineTuningState)[keyof typeof FineTuningState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const FineTuningState = {
-  created: 'created',
-  pending: 'pending',
-  running: 'running',
-  succeeded: 'succeeded',
-  cancelled: 'cancelled',
-  failed: 'failed',
+  created: "created",
+  pending: "pending",
+  running: "running",
+  succeeded: "succeeded",
+  cancelled: "cancelled",
+  failed: "failed",
 } as const;

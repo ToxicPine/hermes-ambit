@@ -8,13 +8,13 @@
 /**
  * The log type that this config enables.
  */
-export type GoogleIamV1AuditLogConfigLogType = typeof GoogleIamV1AuditLogConfigLogType[keyof typeof GoogleIamV1AuditLogConfigLogType];
-
+export type GoogleIamV1AuditLogConfigLogType =
+  (typeof GoogleIamV1AuditLogConfigLogType)[keyof typeof GoogleIamV1AuditLogConfigLogType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleIamV1AuditLogConfigLogType = {
-  LOG_TYPE_UNSPECIFIED: 'LOG_TYPE_UNSPECIFIED',
-  ADMIN_READ: 'ADMIN_READ',
-  DATA_WRITE: 'DATA_WRITE',
-  DATA_READ: 'DATA_READ',
+  LOG_TYPE_UNSPECIFIED: "LOG_TYPE_UNSPECIFIED",
+  ADMIN_READ: "ADMIN_READ",
+  DATA_WRITE: "DATA_WRITE",
+  DATA_READ: "DATA_READ",
 } as const;

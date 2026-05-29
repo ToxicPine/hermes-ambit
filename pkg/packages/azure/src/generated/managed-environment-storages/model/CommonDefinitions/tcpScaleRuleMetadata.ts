@@ -8,4 +8,4 @@
 /**
  * Metadata properties to describe tcp scale rule.
  */
-export type TcpScaleRuleMetadata = {[key: string]: string};
+export type TcpScaleRuleMetadata = { [key: string]: string };

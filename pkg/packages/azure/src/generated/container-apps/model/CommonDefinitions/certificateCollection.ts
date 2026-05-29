@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Certificate } from './certificate';
+import type { Certificate } from "./certificate";
 
 /**
  * Collection of Certificates.

@@ -8,4 +8,4 @@
 /**
  * Application-specific metadata in the form of key-value pairs.
  */
-export type ManagedCertificatePatchTags = {[key: string]: string};
+export type ManagedCertificatePatchTags = { [key: string]: string };

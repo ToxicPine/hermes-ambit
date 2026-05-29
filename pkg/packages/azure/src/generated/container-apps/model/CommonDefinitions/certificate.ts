@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { TrackedResource } from '../common-types-resource-management-v5-types/trackedResource';
-import type { CertificateProperties } from './certificateProperties';
+import type { TrackedResource } from "../common-types-resource-management-v5-types/trackedResource";
+import type { CertificateProperties } from "./certificateProperties";
 
 /**
  * Certificate used for Custom Domain bindings of Container Apps in a Managed Environment

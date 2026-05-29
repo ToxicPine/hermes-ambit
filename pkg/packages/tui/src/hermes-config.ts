@@ -1,4 +1,5 @@
-import type { HomeManagerPatch } from "@cardelli/shared";
+import type { HomeManagerModule } from "@cardelli/shared";
+import { z } from "zod";
 
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue =
@@ -7,32 +8,43 @@ type JsonValue =
   | { readonly [key: string]: JsonValue };
 type HermesSettingsObject = { readonly [key: string]: JsonValue };
 
-export type HermesReasoningEffort =
-  | "none"
-  | "minimal"
-  | "low"
-  | "medium"
-  | "high"
-  | "xhigh";
+const hermesReasoningEfforts = [
+  "none",
+  "minimal",
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+] as const;
+
+export const hermesReasoningEffortSchema = z.enum(hermesReasoningEfforts);
+
+export type HermesReasoningEffort = z.infer<
+  typeof hermesReasoningEffortSchema
+>;
 
 export const isHermesReasoningEffort = (
   value: string,
 ): value is HermesReasoningEffort =>
-  value === "none" ||
-  value === "minimal" ||
-  value === "low" ||
-  value === "medium" ||
-  value === "high" ||
-  value === "xhigh";
+  hermesReasoningEffortSchema.safeParse(value).success;
 
-export type AzureFoundryOpenAICompatibleApiMode =
-  | "chat_completions"
-  | "codex_responses";
+const azureFoundryOpenAICompatibleApiModes = [
+  "chat_completions",
+  "codex_responses",
+] as const;
+
+export const azureFoundryOpenAICompatibleApiModeSchema = z.enum(
+  azureFoundryOpenAICompatibleApiModes,
+);
+
+export type AzureFoundryOpenAICompatibleApiMode = z.infer<
+  typeof azureFoundryOpenAICompatibleApiModeSchema
+>;
 
 export const isAzureFoundryOpenAICompatibleApiMode = (
   value: string,
 ): value is AzureFoundryOpenAICompatibleApiMode =>
-  value === "chat_completions" || value === "codex_responses";
+  azureFoundryOpenAICompatibleApiModeSchema.safeParse(value).success;
 
 const commonHermesConfigSetKeys = [
   "model.default",
@@ -42,9 +54,7 @@ const commonHermesConfigSetKeys = [
   "agent.reasoning_effort",
 ] as const;
 
-const azureHermesConfigSetKeys = [
-  "model.api_mode",
-] as const;
+const azureHermesConfigSetKeys = ["model.api_mode"] as const;
 
 const hermesConfigSetKeys = [
   ...commonHermesConfigSetKeys,
@@ -53,19 +63,15 @@ const hermesConfigSetKeys = [
 
 export type HermesConfigSetKey = (typeof hermesConfigSetKeys)[number];
 
-const hermesConfigSetKeySet: ReadonlySet<string> = new Set(hermesConfigSetKeys);
+export const hermesConfigSetKeySchema = z.enum(hermesConfigSetKeys);
 
 export const hermesConfigSetKeysForProvider = (
   provider: "gcp" | "azure" | undefined,
 ): readonly HermesConfigSetKey[] =>
-  provider === "azure"
-    ? hermesConfigSetKeys
-    : commonHermesConfigSetKeys;
+  provider === "azure" ? hermesConfigSetKeys : commonHermesConfigSetKeys;
 
-export const isHermesConfigSetKey = (
-  key: string,
-): key is HermesConfigSetKey =>
-  hermesConfigSetKeySet.has(key);
+export const isHermesConfigSetKey = (key: string): key is HermesConfigSetKey =>
+  hermesConfigSetKeySchema.safeParse(key).success;
 
 export type HermesGatewaySelection = {
   readonly host?: string;
@@ -94,11 +100,16 @@ export type HermesModelSelection =
   | GcpGeminiDeveloperApiModelSelection
   | AzureFoundryOpenAICompatibleModelSelection;
 
-export type HermesConfigSelection = {
-  readonly model: HermesModelSelection;
+type HermesConfigSelectionFields = {
+  readonly model?: HermesModelSelection;
   readonly gateway?: HermesGatewaySelection;
   readonly agent?: HermesAgentSelection;
 };
+
+export type HermesConfigSelection =
+  | (HermesConfigSelectionFields & { readonly model: HermesModelSelection })
+  | (HermesConfigSelectionFields & { readonly gateway: HermesGatewaySelection })
+  | (HermesConfigSelectionFields & { readonly agent: HermesAgentSelection });
 
 const DEFAULT_GEMINI_DEVELOPER_API_BASE_URL =
   "https://generativelanguage.googleapis.com/v1beta";
@@ -156,19 +167,6 @@ const renderNixValue = (value: JsonValue, level: number): string => {
 const isSettingsObject = (value: JsonValue): value is HermesSettingsObject =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
-const renderNixAssignments = (
-  path: string,
-  settings: HermesSettingsObject,
-): string =>
-  Object.entries(settings)
-    .flatMap(([key, value]) => {
-      const nextPath = `${path}.${key}`;
-      return isSettingsObject(value)
-        ? renderNixAssignments(nextPath, value).split("\n")
-        : [`${nextPath} = ${renderNixValue(value, 1)};`];
-    })
-    .join("\n");
-
 const renderForcedNixAssignments = (
   path: string,
   settings: HermesSettingsObject,
@@ -181,6 +179,16 @@ const renderForcedNixAssignments = (
         : [`${nextPath} = lib.mkForce ${renderNixValue(value, 1)};`];
     })
     .join("\n");
+
+const renderManagedModule = (block: string): HomeManagerModule => {
+  const body = block
+    .trim()
+    .split("\n")
+    .filter((line) => line.length > 0)
+    .map((line) => `  ${line}`)
+    .join("\n");
+  return `{ lib, ... }:\n{\n${body}${body ? "\n" : ""}}\n`;
+};
 
 const modelSettings = (model: HermesModelSelection): HermesSettingsObject => {
   if (model.provider === "gcp") {
@@ -232,35 +240,36 @@ const selectionToHermesSettings = (
   const agent = agentSettings(selection.agent);
 
   return {
-    model: modelSettings(selection.model),
+    ...(selection.model ? { model: modelSettings(selection.model) } : {}),
     ...(gateway ? { gateway } : {}),
     ...(agent ? { agent } : {}),
   };
 };
 
-export const renderHermesPatch = (
+export const renderHermesModule = (
   selection: HermesConfigSelection,
-): HomeManagerPatch => ({
-  block: renderForcedNixAssignments(
-    "programs.hermes-agent.settings",
-    selectionToHermesSettings(selection),
-  ),
-});
+): HomeManagerModule =>
+  renderManagedModule(
+    renderForcedNixAssignments(
+      "programs.hermes-agent.settings",
+      selectionToHermesSettings(selection),
+    ),
+  );
 
-export const renderHermesModelPatch = (
+export const renderHermesModelModule = (
   model: HermesModelSelection,
-): HomeManagerPatch => ({
-  section: "model",
-  block: renderForcedNixAssignments(
-    "programs.hermes-agent.settings.model",
-    modelSettings(model),
-  ),
-});
+): HomeManagerModule =>
+  renderManagedModule(
+    renderForcedNixAssignments(
+      "programs.hermes-agent.settings.model",
+      modelSettings(model),
+    ),
+  );
 
-export const renderHermesSettingPatch = (
+export const renderHermesSettingModule = (
   key: HermesConfigSetKey,
   value: string | number,
-): HomeManagerPatch => ({
-  section: key,
-  block: `programs.hermes-agent.settings.${key} = lib.mkForce ${renderNixValue(value, 1)};`,
-});
+): HomeManagerModule =>
+  renderManagedModule(
+    `programs.hermes-agent.settings.${key} = lib.mkForce ${renderNixValue(value, 1)};`,
+  );

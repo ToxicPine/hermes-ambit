@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { z } from "zod";
 
 import {
   OWNERSHIP_DEPLOYMENT_KEY,
@@ -74,6 +75,11 @@ export type GcpIamPolicy = {
 };
 
 const secretAccessorRole = "roles/secretmanager.secretAccessor";
+const recordSchema = z.object({}).catchall(z.unknown());
+const stringSchema = z.string();
+const numberSchema = z.number();
+const stringArraySchema = z.array(z.string());
+const unknownArraySchema = z.array(z.unknown());
 
 const gcpProjectName = (projectId: string) => `projects/${projectId}`;
 
@@ -89,38 +95,33 @@ export const gcpServiceAccountMember = (email: string): string =>
   email.startsWith("serviceAccount:") ? email : `serviceAccount:${email}`;
 
 const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
-  value !== null && typeof value === "object";
+  recordSchema.safeParse(value).success;
+
+const schemaField = <T>(
+  schema: z.ZodType<T>,
+  value: Readonly<Record<string, unknown>>,
+  key: string,
+): T | undefined => {
+  const parsed = schema.safeParse(value[key]);
+  return parsed.success ? parsed.data : undefined;
+};
 
 const stringField = (
   value: Readonly<Record<string, unknown>>,
   key: string,
-): string | undefined => {
-  const entry = value[key];
-  return typeof entry === "string" ? entry : undefined;
-};
+): string | undefined => schemaField(stringSchema, value, key);
 
 const numberField = (
   value: Readonly<Record<string, unknown>>,
   key: string,
-): number | undefined => {
-  const entry = value[key];
-  return typeof entry === "number" ? entry : undefined;
-};
+): number | undefined => schemaField(numberSchema, value, key);
 
 const stringArrayField = (
   value: Readonly<Record<string, unknown>>,
   key: string,
-): readonly string[] | undefined => {
-  const entry = value[key];
-  return Array.isArray(entry) &&
-    entry.every((item) => typeof item === "string")
-    ? entry
-    : undefined;
-};
+): readonly string[] | undefined => schemaField(stringArraySchema, value, key);
 
-const iamConditionFromValue = (
-  value: unknown,
-): GcpIamCondition | undefined => {
+const iamConditionFromValue = (value: unknown): GcpIamCondition | undefined => {
   if (!isRecord(value)) return undefined;
   const title = stringField(value, "title");
   const description = stringField(value, "description");
@@ -149,8 +150,8 @@ const iamPolicyFromValue = (value: unknown): GcpIamPolicy | undefined => {
   if (!isRecord(value)) return undefined;
   const version = numberField(value, "version");
   const etag = stringField(value, "etag");
-  const bindingsValue = value.bindings;
-  const bindings = Array.isArray(bindingsValue)
+  const bindingsValue = schemaField(unknownArraySchema, value, "bindings");
+  const bindings = bindingsValue
     ? bindingsValue.flatMap((binding) => {
         const parsed = iamBindingFromValue(binding);
         return parsed ? [parsed] : [];
@@ -239,7 +240,9 @@ export const withSecretAccessorMember = (
   member: string,
 ): GcpIamPolicy => {
   const bindings = policy.bindings ?? [];
-  const existing = bindings.find((binding) => binding.role === secretAccessorRole);
+  const existing = bindings.find(
+    (binding) => binding.role === secretAccessorRole,
+  );
   if (existing?.members?.includes(member)) {
     return policy;
   }
@@ -276,7 +279,9 @@ export const grantSecretAccessorToServiceAccount = (
       current,
       gcpServiceAccountMember(serviceAccountEmail),
     );
-    return next === current ? current : yield* setSecretIamPolicy(auth, ref, next);
+    return next === current
+      ? current
+      : yield* setSecretIamPolicy(auth, ref, next);
   });
 
 const base64Encode = (value: string) => {
@@ -296,7 +301,9 @@ const findSecret = (
       filter: `name:${ref.secretId}`,
       pageSize: 25000,
     });
-    return listed.data.secrets?.find((secret) => secret.name === gcpSecretName(ref));
+    return listed.data.secrets?.find(
+      (secret) => secret.name === gcpSecretName(ref),
+    );
   });
 
 const secretMatchesOwner = (
@@ -331,7 +338,11 @@ const listSecrets = (
   Effect.gen(function* () {
     const operation = "gcp.secretmanager.secrets.list";
     const response = yield* sendGcp(auth, operation, (options) =>
-      secretmanagerProjectsSecretsList(gcpProjectName(projectId), params, options),
+      secretmanagerProjectsSecretsList(
+        gcpProjectName(projectId),
+        params,
+        options,
+      ),
     );
     const success = yield* expectHttpStatus(operation, response, [200]);
     return yield* validateGcpResponseData(
@@ -345,7 +356,10 @@ const createSecret = (
   auth: GcpAuthContext,
   ref: GcpSecretRef,
   owner?: DeploymentIdentity,
-): Effect.Effect<secretmanagerProjectsSecretsCreateResponseSuccess, CloudError> =>
+): Effect.Effect<
+  secretmanagerProjectsSecretsCreateResponseSuccess,
+  CloudError
+> =>
   Effect.gen(function* () {
     const operation = "gcp.secretmanager.secrets.create";
     const secret: Secret = owner
@@ -376,7 +390,10 @@ const addSecretVersion = (
   auth: GcpAuthContext,
   ref: GcpSecretRef,
   value: string,
-): Effect.Effect<secretmanagerProjectsSecretsAddVersionResponseSuccess, CloudError> =>
+): Effect.Effect<
+  secretmanagerProjectsSecretsAddVersionResponseSuccess,
+  CloudError
+> =>
   Effect.gen(function* () {
     const operation = "gcp.secretmanager.secrets.addVersion";
     const response = yield* sendGcp(auth, operation, (options) =>
@@ -429,7 +446,11 @@ export const deleteSecret = (
 
     const operation = "gcp.secretmanager.secrets.delete";
     const response = yield* sendGcp(auth, operation, (options) =>
-      secretmanagerProjectsSecretsDelete(gcpSecretName(ref), undefined, options),
+      secretmanagerProjectsSecretsDelete(
+        gcpSecretName(ref),
+        undefined,
+        options,
+      ),
     );
     const success = yield* expectHttpStatus(operation, response, [200]);
     return yield* validateGcpResponseData(

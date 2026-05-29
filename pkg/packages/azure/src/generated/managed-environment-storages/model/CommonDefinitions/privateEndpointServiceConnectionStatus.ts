@@ -8,13 +8,13 @@
 /**
  * The private endpoint connection status.
  */
-export type PrivateEndpointServiceConnectionStatus = typeof PrivateEndpointServiceConnectionStatus[keyof typeof PrivateEndpointServiceConnectionStatus];
-
+export type PrivateEndpointServiceConnectionStatus =
+  (typeof PrivateEndpointServiceConnectionStatus)[keyof typeof PrivateEndpointServiceConnectionStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const PrivateEndpointServiceConnectionStatus = {
-  Pending: 'Pending',
-  Approved: 'Approved',
-  Rejected: 'Rejected',
-  Disconnected: 'Disconnected',
+  Pending: "Pending",
+  Approved: "Approved",
+  Rejected: "Rejected",
+  Disconnected: "Disconnected",
 } as const;

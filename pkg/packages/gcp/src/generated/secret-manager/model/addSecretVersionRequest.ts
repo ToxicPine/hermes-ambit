@@ -4,7 +4,7 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { SecretPayload } from './secretPayload';
+import type { SecretPayload } from "./secretPayload";
 
 /**
  * Request message for SecretManagerService.AddSecretVersion.

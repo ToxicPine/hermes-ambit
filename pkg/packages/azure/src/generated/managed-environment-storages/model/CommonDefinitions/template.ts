@@ -4,11 +4,11 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { InitContainer } from './initContainer';
-import type { Container } from './container';
-import type { Scale } from './scale';
-import type { Volume } from './volume';
-import type { ServiceBind } from './serviceBind';
+import type { InitContainer } from "./initContainer";
+import type { Container } from "./container";
+import type { Scale } from "./scale";
+import type { Volume } from "./volume";
+import type { ServiceBind } from "./serviceBind";
 
 /**
  * Container App versioned application definition.

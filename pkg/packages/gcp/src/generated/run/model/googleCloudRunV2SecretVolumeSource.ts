@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2VersionToPath } from './googleCloudRunV2VersionToPath';
+import type { GoogleCloudRunV2VersionToPath } from "./googleCloudRunV2VersionToPath";
 
 /**
  * The secret's value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.

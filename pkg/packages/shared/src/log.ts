@@ -30,13 +30,11 @@ export class CloudLog extends Context.Tag("@cardelli/shared/CloudLog")<
           .filter(Boolean)
           .join(" ");
         console.error(prefix ? `${prefix}: ${event.message}` : event.message);
-    }),
+      }),
   });
 }
 
-export const emitCloudEvent = (
-  event: CloudEvent,
-): Effect.Effect<void> =>
+export const emitCloudEvent = (event: CloudEvent): Effect.Effect<void> =>
   Effect.gen(function* () {
     const logger = yield* Effect.serviceOption(CloudLog);
     return yield* Option.match(logger, {

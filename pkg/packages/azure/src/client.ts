@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import type { z } from "zod";
+import { z } from "zod";
 
 import {
   OperationFailed,
@@ -74,9 +74,15 @@ type AzureLocationOperation = {
 
 type AzureOperationPollRef = AzureAsyncOperation | AzureLocationOperation;
 
-const azureOperationPollRef = (
-  response: { readonly headers: Headers },
-): AzureOperationPollRef | undefined => {
+const azureOperationStatusSchema = z
+  .object({
+    status: z.string(),
+  })
+  .passthrough();
+
+const azureOperationPollRef = (response: {
+  readonly headers: Headers;
+}): AzureOperationPollRef | undefined => {
   const azureAsyncUrl =
     response.headers.get("Azure-AsyncOperation") ??
     response.headers.get("Operation-Location");
@@ -99,11 +105,8 @@ const azureOperationPollRef = (
 const azureOperationStatus = (
   data: unknown,
 ): OperationStatusResult["status"] | undefined => {
-  if (data !== null && typeof data === "object" && "status" in data) {
-    const status = data.status;
-    return typeof status === "string" ? status : undefined;
-  }
-  return undefined;
+  const parsed = azureOperationStatusSchema.safeParse(data);
+  return parsed.success ? parsed.data.status : undefined;
 };
 
 const failAzureOperation = (
@@ -141,7 +144,11 @@ const pollAzureAsyncOperation = (
     if (status === "Succeeded") {
       return;
     }
-    if (status === "Failed" || status === "Canceled" || status === "Cancelled") {
+    if (
+      status === "Failed" ||
+      status === "Canceled" ||
+      status === "Cancelled"
+    ) {
       return yield* failAzureOperation(
         pollOperation,
         `Azure operation ${status}`,
@@ -230,7 +237,12 @@ export const waitAzureLongRunningOperation = (
     if (ref.kind === "azureAsyncOperation") {
       yield* pollAzureAsyncOperation(auth, operation, ref, remainingAttempts);
     } else {
-      yield* pollAzureLocationOperation(auth, operation, ref, remainingAttempts);
+      yield* pollAzureLocationOperation(
+        auth,
+        operation,
+        ref,
+        remainingAttempts,
+      );
     }
     yield* emitCloudEvent({
       level: "info",

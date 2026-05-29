@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ErrorAdditionalInfoInfo } from './errorAdditionalInfoInfo';
+import type { ErrorAdditionalInfoInfo } from "./errorAdditionalInfoInfo";
 
 /**
  * The resource management error additional info.

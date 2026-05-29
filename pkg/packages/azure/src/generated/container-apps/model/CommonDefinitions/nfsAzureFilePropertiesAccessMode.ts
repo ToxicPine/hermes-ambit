@@ -8,11 +8,11 @@
 /**
  * Access mode for storage
  */
-export type NfsAzureFilePropertiesAccessMode = typeof NfsAzureFilePropertiesAccessMode[keyof typeof NfsAzureFilePropertiesAccessMode];
-
+export type NfsAzureFilePropertiesAccessMode =
+  (typeof NfsAzureFilePropertiesAccessMode)[keyof typeof NfsAzureFilePropertiesAccessMode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const NfsAzureFilePropertiesAccessMode = {
-  ReadOnly: 'ReadOnly',
-  ReadWrite: 'ReadWrite',
+  ReadOnly: "ReadOnly",
+  ReadWrite: "ReadWrite",
 } as const;

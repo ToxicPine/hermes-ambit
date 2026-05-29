@@ -8,13 +8,12 @@
 /**
  * Sets the log level for the Dapr sidecar. Allowed values are debug, info, warn, error. Default is info.
  */
-export type DaprLogLevel = typeof DaprLogLevel[keyof typeof DaprLogLevel];
-
+export type DaprLogLevel = (typeof DaprLogLevel)[keyof typeof DaprLogLevel];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const DaprLogLevel = {
-  info: 'info',
-  debug: 'debug',
-  warn: 'warn',
-  error: 'error',
+  info: "info",
+  debug: "debug",
+  warn: "warn",
+  error: "error",
 } as const;

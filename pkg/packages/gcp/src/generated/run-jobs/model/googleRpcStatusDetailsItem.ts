@@ -5,4 +5,4 @@
  * OpenAPI spec version: v2
  */
 
-export type GoogleRpcStatusDetailsItem = {[key: string]: unknown};
+export type GoogleRpcStatusDetailsItem = { [key: string]: unknown };

@@ -6,5 +6,5 @@
  */
 
 export type AzureFoundryOpenAICompatibleModelsListParams = {
-'api-version'?: string;
+  "api-version"?: string;
 };

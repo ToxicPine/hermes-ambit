@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ManagedEnvironmentStorage } from './managedEnvironmentStorage';
+import type { ManagedEnvironmentStorage } from "./managedEnvironmentStorage";
 
 /**
  * Collection of Storage for Environments

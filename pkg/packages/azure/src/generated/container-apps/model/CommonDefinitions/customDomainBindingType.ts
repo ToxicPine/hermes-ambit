@@ -8,12 +8,12 @@
 /**
  * Custom Domain binding type.
  */
-export type CustomDomainBindingType = typeof CustomDomainBindingType[keyof typeof CustomDomainBindingType];
-
+export type CustomDomainBindingType =
+  (typeof CustomDomainBindingType)[keyof typeof CustomDomainBindingType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CustomDomainBindingType = {
-  Disabled: 'Disabled',
-  SniEnabled: 'SniEnabled',
-  Auto: 'Auto',
+  Disabled: "Disabled",
+  SniEnabled: "SniEnabled",
+  Auto: "Auto",
 } as const;

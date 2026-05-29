@@ -3,7 +3,10 @@ import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { defaultProfileRoot, makeFileProfileStore } from "../src/profile-store.js";
+import {
+  defaultProfileRoot,
+  makeFileProfileStore,
+} from "../src/profile-store.js";
 
 describe("profile store paths", () => {
   test("keeps deployer profiles out of the Hermes runtime profile tree", () => {
@@ -14,7 +17,10 @@ describe("profile store paths", () => {
 
   test("keeps an explicit deployer home scoped to profiles", () => {
     expect(
-      defaultProfileRoot({ HERMES_AMBIT_HOME: "/tmp/hermes-ambit" }, "/home/alice"),
+      defaultProfileRoot(
+        { HERMES_AMBIT_HOME: "/tmp/hermes-ambit" },
+        "/home/alice",
+      ),
     ).toBe("/tmp/hermes-ambit/profiles");
   });
 

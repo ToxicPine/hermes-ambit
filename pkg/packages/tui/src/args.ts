@@ -10,6 +10,7 @@ import type {
   ProviderKind,
   SecretInputSource,
 } from "./types.js";
+import { z } from "zod";
 import { commandMustNotPrompt } from "./types.js";
 import { validateDeploymentName } from "./app-profile.js";
 import {
@@ -28,10 +29,7 @@ type TokenCursor = {
   index: number;
 };
 
-const flagValue = (
-  cursor: TokenCursor,
-  flag: string,
-): string | AppError => {
+const flagValue = (cursor: TokenCursor, flag: string): string | AppError => {
   const value = cursor.tokens[cursor.index + 1];
   if (!value || value.startsWith("--")) {
     return {
@@ -43,14 +41,18 @@ const flagValue = (
   return value;
 };
 
+const providerKindSchema = z.enum(["gcp", "azure"]);
+const authModeSchema = z.enum(["auto", "browser", "device"]);
+const colorModeSchema = z.enum(["auto", "always", "never"]);
+
 const isProvider = (value: string): value is ProviderKind =>
-  value === "gcp" || value === "azure";
+  providerKindSchema.safeParse(value).success;
 
 const isAuthMode = (value: string): value is AuthMode =>
-  value === "auto" || value === "browser" || value === "device";
+  authModeSchema.safeParse(value).success;
 
 const isColorMode = (value: string): value is ColorMode =>
-  value === "auto" || value === "always" || value === "never";
+  colorModeSchema.safeParse(value).success;
 
 const errorResult = (
   command: CommandName,
@@ -466,10 +468,14 @@ const positionalLabel = (shape: CommandShape): string =>
 const unexpectedArgument = (shape: CommandShape, token: string): AppError =>
   commandError(`Unexpected argument for ${commandLabel(shape)}: ${token}.`);
 
-const selectCommandShape = (rest: readonly string[]): CommandShape | AppError => {
+const selectCommandShape = (
+  rest: readonly string[],
+): CommandShape | AppError => {
   const tokens = rest.length > 0 ? rest : ["tui"];
   const matches = commandShapes
-    .filter((shape) => shape.path.every((part, index) => tokens[index] === part))
+    .filter((shape) =>
+      shape.path.every((part, index) => tokens[index] === part),
+    )
     .sort((left, right) => right.path.length - left.path.length);
   const match = matches[0];
 
@@ -580,10 +586,14 @@ const confirmedInJson = (intent: CommandIntent): boolean =>
 type InputRequirementMode = "JSON mode" | "--no-input";
 
 const missingProviderInput = (mode: InputRequirementMode): AppError =>
-  commandError(`${mode} requires --provider unless --profile or --config supplies a target.`);
+  commandError(
+    `${mode} requires --provider unless --profile or --config supplies a target.`,
+  );
 
 const missingDeploymentInput = (mode: InputRequirementMode): AppError =>
-  commandError(`${mode} requires --deployment unless --profile or --config supplies a target.`);
+  commandError(
+    `${mode} requires --deployment unless --profile or --config supplies a target.`,
+  );
 
 const missingProviderFieldInput = (
   mode: InputRequirementMode,
@@ -603,7 +613,9 @@ const requireProviderFields = (
   if (!provider) return missingProviderInput(mode);
 
   const missing = fields.find((field) => !globals.providerFields[field]);
-  return missing ? missingProviderFieldInput(mode, provider, missing) : undefined;
+  return missing
+    ? missingProviderFieldInput(mode, provider, missing)
+    : undefined;
 };
 
 const requireAuthTarget = (
@@ -670,7 +682,9 @@ const requireDeploymentSpec = (
   if (!provider) return missingProviderInput(mode);
 
   if (provider === "gcp") {
-    const stateServerError = requireProviderFields(mode, globals, ["state-server"]);
+    const stateServerError = requireProviderFields(mode, globals, [
+      "state-server",
+    ]);
     if (stateServerError) return stateServerError;
 
     const fields = globals.providerFields;
@@ -689,6 +703,23 @@ const requireDeploymentSpec = (
   ]);
 };
 
+const requireDeploySpec = (
+  mode: InputRequirementMode,
+  globals: GlobalOptions,
+): AppError | undefined => {
+  const specError = requireDeploymentSpec(mode, globals);
+  if (specError) return specError;
+
+  if (globals.profile || globals.config) return undefined;
+
+  const provider = globals.provider;
+  if (!provider) return missingProviderInput(mode);
+
+  return provider === "gcp"
+    ? requireProviderFields(mode, globals, ["model"])
+    : requireProviderFields(mode, globals, ["endpoint", "model"]);
+};
+
 const requireCommandInput = (
   intent: CommandIntent,
   mode: InputRequirementMode,
@@ -701,6 +732,7 @@ const requireCommandInput = (
     case "models.list":
       return requireModelTarget(mode, intent.globals);
     case "deploy":
+      return requireDeploySpec(mode, intent.globals);
     case "config.set":
       return requireDeploymentSpec(mode, intent.globals);
     case "config.show":

@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CustomHostnameAnalysisResultCustomDomainVerificationTest } from './customHostnameAnalysisResultCustomDomainVerificationTest';
-import type { CustomHostnameAnalysisResultCustomDomainVerificationFailureInfo } from './customHostnameAnalysisResultCustomDomainVerificationFailureInfo';
+import type { CustomHostnameAnalysisResultCustomDomainVerificationTest } from "./customHostnameAnalysisResultCustomDomainVerificationTest";
+import type { CustomHostnameAnalysisResultCustomDomainVerificationFailureInfo } from "./customHostnameAnalysisResultCustomDomainVerificationFailureInfo";
 
 /**
  * Custom domain analysis.

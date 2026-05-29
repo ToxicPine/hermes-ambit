@@ -199,7 +199,10 @@ export const cloudRunServiceMatchesInput = (
     (expected.template?.serviceAccount === undefined ||
       current.template?.serviceAccount === expected.template.serviceAccount) &&
     (!expectedContainer ||
-      cloudRunContainerMatches(current.template?.containers, expectedContainer)) &&
+      cloudRunContainerMatches(
+        current.template?.containers,
+        expectedContainer,
+      )) &&
     sameJsonShape(
       projectCloudRunVolumes(current.template?.volumes),
       projectCloudRunVolumes(expected.template?.volumes),
@@ -240,7 +243,10 @@ export const mergeCloudRunServiceInput = (
             containers: desiredContainers.map((container) =>
               preserveCloudRunContainerRuntime(
                 container,
-                findCloudRunContainer(currentTemplate.containers, container.name),
+                findCloudRunContainer(
+                  currentTemplate.containers,
+                  container.name,
+                ),
               ),
             ),
           }
@@ -273,7 +279,8 @@ const removeCloudRunEnvironment = (
 ): GoogleCloudRunV2EnvVar[] => {
   const removeNames = new Set(names);
   return (current ?? []).filter(
-    (variable) => variable.name === undefined || !removeNames.has(variable.name),
+    (variable) =>
+      variable.name === undefined || !removeNames.has(variable.name),
   );
 };
 
@@ -487,11 +494,19 @@ export const createCloudRunService = (
   ref: GcpLocationRef,
   service: CloudRunServiceInput,
   params?: RunProjectsLocationsServicesCreateParams,
-): Effect.Effect<runProjectsLocationsServicesCreateResponseSuccess, CloudError> =>
+): Effect.Effect<
+  runProjectsLocationsServicesCreateResponseSuccess,
+  CloudError
+> =>
   Effect.gen(function* () {
     const operation = "gcp.run.services.create";
     const response = yield* sendGcp(auth, operation, (options) =>
-      runProjectsLocationsServicesCreate(gcpLocationName(ref), service, params, options),
+      runProjectsLocationsServicesCreate(
+        gcpLocationName(ref),
+        service,
+        params,
+        options,
+      ),
     );
     const success = yield* expectHttpStatus(operation, response, [200]);
     return yield* validateGcpResponseData(
@@ -506,7 +521,10 @@ export const patchCloudRunService = (
   ref: GcpServiceRef,
   service: CloudRunServiceInput,
   params?: RunProjectsLocationsServicesPatchParams,
-): Effect.Effect<runProjectsLocationsServicesPatchResponseSuccess, CloudError> =>
+): Effect.Effect<
+  runProjectsLocationsServicesPatchResponseSuccess,
+  CloudError
+> =>
   Effect.gen(function* () {
     const operation = "gcp.run.services.patch";
     const response = yield* sendGcp(auth, operation, (options) =>
@@ -529,11 +547,18 @@ export const deleteCloudRunService = (
   auth: GcpAuthContext,
   ref: GcpServiceRef,
   params?: RunProjectsLocationsServicesDeleteParams,
-): Effect.Effect<runProjectsLocationsServicesDeleteResponseSuccess, CloudError> =>
+): Effect.Effect<
+  runProjectsLocationsServicesDeleteResponseSuccess,
+  CloudError
+> =>
   Effect.gen(function* () {
     const operation = "gcp.run.services.delete";
     const response = yield* sendGcp(auth, operation, (options) =>
-      runProjectsLocationsServicesDelete(gcpServiceResourceName(ref), params, options),
+      runProjectsLocationsServicesDelete(
+        gcpServiceResourceName(ref),
+        params,
+        options,
+      ),
     );
     const success = yield* expectHttpStatus(operation, response, [200]);
     return yield* validateGcpResponseData(
@@ -547,7 +572,10 @@ export const waitCloudRunOperation = (
   auth: GcpAuthContext,
   ref: GcpOperationRef,
   request: GoogleLongrunningWaitOperationRequest = {},
-): Effect.Effect<runProjectsLocationsOperationsWaitResponseSuccess, CloudError> =>
+): Effect.Effect<
+  runProjectsLocationsOperationsWaitResponseSuccess,
+  CloudError
+> =>
   Effect.gen(function* () {
     const operation = "gcp.run.operations.wait";
     const response = yield* sendGcp(auth, operation, (options) =>

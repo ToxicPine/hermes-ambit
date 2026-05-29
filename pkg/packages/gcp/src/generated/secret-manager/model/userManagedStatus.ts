@@ -4,7 +4,7 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { ReplicaStatus } from './replicaStatus';
+import type { ReplicaStatus } from "./replicaStatus";
 
 /**
  * The replication status of a SecretVersion using user-managed replication. Only populated if the parent Secret has a user-managed replication policy.

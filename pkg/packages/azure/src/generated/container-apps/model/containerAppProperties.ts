@@ -4,11 +4,11 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ContainerAppPropertiesProvisioningState } from './containerAppPropertiesProvisioningState';
-import type { ContainerAppPropertiesRunningStatus } from './containerAppPropertiesRunningStatus';
-import type { WorkloadProfileName } from './CommonDefinitions/workloadProfileName';
-import type { Configuration } from './configuration';
-import type { Template } from './CommonDefinitions/template';
+import type { ContainerAppPropertiesProvisioningState } from "./containerAppPropertiesProvisioningState";
+import type { ContainerAppPropertiesRunningStatus } from "./containerAppPropertiesRunningStatus";
+import type { WorkloadProfileName } from "./CommonDefinitions/workloadProfileName";
+import type { Configuration } from "./configuration";
+import type { Template } from "./CommonDefinitions/template";
 
 /**
  * ContainerApp resource specific properties

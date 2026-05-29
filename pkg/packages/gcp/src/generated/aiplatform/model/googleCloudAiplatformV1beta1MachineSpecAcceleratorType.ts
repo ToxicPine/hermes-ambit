@@ -8,28 +8,28 @@
 /**
  * Immutable. The type of accelerator(s) that may be attached to the machine as per accelerator_count.
  */
-export type GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType = typeof GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType[keyof typeof GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType];
-
+export type GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType =
+  (typeof GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType)[keyof typeof GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType = {
-  ACCELERATOR_TYPE_UNSPECIFIED: 'ACCELERATOR_TYPE_UNSPECIFIED',
-  NVIDIA_TESLA_K80: 'NVIDIA_TESLA_K80',
-  NVIDIA_TESLA_P100: 'NVIDIA_TESLA_P100',
-  NVIDIA_TESLA_V100: 'NVIDIA_TESLA_V100',
-  NVIDIA_TESLA_P4: 'NVIDIA_TESLA_P4',
-  NVIDIA_TESLA_T4: 'NVIDIA_TESLA_T4',
-  NVIDIA_TESLA_A100: 'NVIDIA_TESLA_A100',
-  NVIDIA_A100_80GB: 'NVIDIA_A100_80GB',
-  NVIDIA_L4: 'NVIDIA_L4',
-  NVIDIA_H100_80GB: 'NVIDIA_H100_80GB',
-  NVIDIA_H100_MEGA_80GB: 'NVIDIA_H100_MEGA_80GB',
-  NVIDIA_H200_141GB: 'NVIDIA_H200_141GB',
-  NVIDIA_B200: 'NVIDIA_B200',
-  NVIDIA_GB200: 'NVIDIA_GB200',
-  NVIDIA_RTX_PRO_6000: 'NVIDIA_RTX_PRO_6000',
-  TPU_V2: 'TPU_V2',
-  TPU_V3: 'TPU_V3',
-  TPU_V4_POD: 'TPU_V4_POD',
-  TPU_V5_LITEPOD: 'TPU_V5_LITEPOD',
+  ACCELERATOR_TYPE_UNSPECIFIED: "ACCELERATOR_TYPE_UNSPECIFIED",
+  NVIDIA_TESLA_K80: "NVIDIA_TESLA_K80",
+  NVIDIA_TESLA_P100: "NVIDIA_TESLA_P100",
+  NVIDIA_TESLA_V100: "NVIDIA_TESLA_V100",
+  NVIDIA_TESLA_P4: "NVIDIA_TESLA_P4",
+  NVIDIA_TESLA_T4: "NVIDIA_TESLA_T4",
+  NVIDIA_TESLA_A100: "NVIDIA_TESLA_A100",
+  NVIDIA_A100_80GB: "NVIDIA_A100_80GB",
+  NVIDIA_L4: "NVIDIA_L4",
+  NVIDIA_H100_80GB: "NVIDIA_H100_80GB",
+  NVIDIA_H100_MEGA_80GB: "NVIDIA_H100_MEGA_80GB",
+  NVIDIA_H200_141GB: "NVIDIA_H200_141GB",
+  NVIDIA_B200: "NVIDIA_B200",
+  NVIDIA_GB200: "NVIDIA_GB200",
+  NVIDIA_RTX_PRO_6000: "NVIDIA_RTX_PRO_6000",
+  TPU_V2: "TPU_V2",
+  TPU_V3: "TPU_V3",
+  TPU_V4_POD: "TPU_V4_POD",
+  TPU_V5_LITEPOD: "TPU_V5_LITEPOD",
 } as const;

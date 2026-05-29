@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { z } from "zod";
 
 import {
   expectHttpStatus,
@@ -12,9 +13,7 @@ import {
   managedEnvironmentsStoragesGet,
   type managedEnvironmentsStoragesGetResponseSuccess,
 } from "./generated/managed-environment-storages/client";
-import {
-  managedEnvironmentsStoragesGet200Response,
-} from "./generated/managed-environment-storages/client/containerAppsAPIClient.zod";
+import { managedEnvironmentsStoragesGet200Response } from "./generated/managed-environment-storages/client/containerAppsAPIClient.zod";
 import type { ManagedEnvironmentsStoragesGetParams } from "./generated/managed-environment-storages/model/managedEnvironmentsStoragesGetParams";
 import { AZURE_CONTAINER_APPS_API_VERSION } from "./constants.js";
 import {
@@ -115,12 +114,18 @@ const mismatchedAzureManagedEnvironmentBoundary = (
     },
   });
 
+const azureFileStateSchema = z.object({
+  state: z.object({
+    storageName: z.string().trim().min(1),
+    dataSubPath: z.string().trim().min(1),
+    nixSubPath: z.string().trim().min(1),
+  }),
+});
+
 const validateAzureFileState = (
   deployment: AzureDeployment,
 ): Effect.Effect<void, OperationFailed> =>
-  deployment.state.storageName.trim().length > 0 &&
-  deployment.state.dataSubPath.trim().length > 0 &&
-  deployment.state.nixSubPath.trim().length > 0
+  azureFileStateSchema.safeParse(deployment).success
     ? Effect.void
     : Effect.fail(
         new OperationFailed({
@@ -245,6 +250,7 @@ export const requireAzureDeploymentStateStorage = (
   deployment: AzureDeployment,
 ): Effect.Effect<managedEnvironmentsStoragesGetResponseSuccess, CloudError> =>
   Effect.gen(function* () {
-    const ref = yield* azureManagedEnvironmentStorageRefFromDeployment(deployment);
+    const ref =
+      yield* azureManagedEnvironmentStorageRefFromDeployment(deployment);
     return yield* requireManagedEnvironmentStorage(auth, ref);
   });

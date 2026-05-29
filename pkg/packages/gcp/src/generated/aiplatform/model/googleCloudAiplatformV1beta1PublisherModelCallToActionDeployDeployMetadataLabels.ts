@@ -8,4 +8,5 @@
 /**
  * Optional. Labels for the deployment config. For managing deployment config like verifying, source of deployment config, etc.
  */
-export type GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadataLabels = {[key: string]: string};
+export type GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadataLabels =
+  { [key: string]: string };

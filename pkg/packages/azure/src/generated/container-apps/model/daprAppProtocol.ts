@@ -8,11 +8,11 @@
 /**
  * Tells Dapr which protocol your application is using. Valid options are http and grpc. Default is http
  */
-export type DaprAppProtocol = typeof DaprAppProtocol[keyof typeof DaprAppProtocol];
-
+export type DaprAppProtocol =
+  (typeof DaprAppProtocol)[keyof typeof DaprAppProtocol];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const DaprAppProtocol = {
-  http: 'http',
-  grpc: 'grpc',
+  http: "http",
+  grpc: "grpc",
 } as const;

@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { IpSecurityRestrictionRuleAction } from './ipSecurityRestrictionRuleAction';
+import type { IpSecurityRestrictionRuleAction } from "./ipSecurityRestrictionRuleAction";
 
 /**
  * Rule to restrict incoming IP address.

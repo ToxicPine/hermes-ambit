@@ -80,7 +80,12 @@ export const createCloudRunJob = (
   Effect.gen(function* () {
     const operation = "gcp.run.jobs.create";
     const response = yield* sendGcp(auth, operation, (options) =>
-      runProjectsLocationsJobsCreate(gcpLocationName(ref), job, params, options),
+      runProjectsLocationsJobsCreate(
+        gcpLocationName(ref),
+        job,
+        params,
+        options,
+      ),
     );
     const success = yield* expectHttpStatus(operation, response, [200]);
     return yield* validateGcpResponseData(
@@ -99,7 +104,12 @@ export const patchCloudRunJob = (
   Effect.gen(function* () {
     const operation = "gcp.run.jobs.patch";
     const response = yield* sendGcp(auth, operation, (options) =>
-      runProjectsLocationsJobsPatch(gcpJobResourceName(ref), job, params, options),
+      runProjectsLocationsJobsPatch(
+        gcpJobResourceName(ref),
+        job,
+        params,
+        options,
+      ),
     );
     const success = yield* expectHttpStatus(operation, response, [200]);
     return yield* validateGcpResponseData(

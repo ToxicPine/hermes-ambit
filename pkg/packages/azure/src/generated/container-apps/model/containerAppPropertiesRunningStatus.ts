@@ -8,14 +8,14 @@
 /**
  * Running status of the Container App.
  */
-export type ContainerAppPropertiesRunningStatus = typeof ContainerAppPropertiesRunningStatus[keyof typeof ContainerAppPropertiesRunningStatus];
-
+export type ContainerAppPropertiesRunningStatus =
+  (typeof ContainerAppPropertiesRunningStatus)[keyof typeof ContainerAppPropertiesRunningStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ContainerAppPropertiesRunningStatus = {
-  Progressing: 'Progressing',
-  Running: 'Running',
-  Stopped: 'Stopped',
-  Suspended: 'Suspended',
-  Ready: 'Ready',
+  Progressing: "Progressing",
+  Running: "Running",
+  Stopped: "Stopped",
+  Suspended: "Suspended",
+  Ready: "Ready",
 } as const;

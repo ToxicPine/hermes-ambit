@@ -8,12 +8,12 @@
 /**
  * Optional. The execution environment being used to host this Task.
  */
-export type GoogleCloudRunV2TaskTemplateExecutionEnvironment = typeof GoogleCloudRunV2TaskTemplateExecutionEnvironment[keyof typeof GoogleCloudRunV2TaskTemplateExecutionEnvironment];
-
+export type GoogleCloudRunV2TaskTemplateExecutionEnvironment =
+  (typeof GoogleCloudRunV2TaskTemplateExecutionEnvironment)[keyof typeof GoogleCloudRunV2TaskTemplateExecutionEnvironment];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2TaskTemplateExecutionEnvironment = {
-  EXECUTION_ENVIRONMENT_UNSPECIFIED: 'EXECUTION_ENVIRONMENT_UNSPECIFIED',
-  EXECUTION_ENVIRONMENT_GEN1: 'EXECUTION_ENVIRONMENT_GEN1',
-  EXECUTION_ENVIRONMENT_GEN2: 'EXECUTION_ENVIRONMENT_GEN2',
+  EXECUTION_ENVIRONMENT_UNSPECIFIED: "EXECUTION_ENVIRONMENT_UNSPECIFIED",
+  EXECUTION_ENVIRONMENT_GEN1: "EXECUTION_ENVIRONMENT_GEN1",
+  EXECUTION_ENVIRONMENT_GEN2: "EXECUTION_ENVIRONMENT_GEN2",
 } as const;

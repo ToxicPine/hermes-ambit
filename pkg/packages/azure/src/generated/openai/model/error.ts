@@ -4,8 +4,8 @@
  * Azure Foundry OpenAI-Compatible Models API
  * OpenAPI spec version: 2024-10-21
  */
-import type { ErrorCode } from './errorCode';
-import type { InnerError } from './innerError';
+import type { ErrorCode } from "./errorCode";
+import type { InnerError } from "./innerError";
 
 export interface Error {
   code?: ErrorCode;

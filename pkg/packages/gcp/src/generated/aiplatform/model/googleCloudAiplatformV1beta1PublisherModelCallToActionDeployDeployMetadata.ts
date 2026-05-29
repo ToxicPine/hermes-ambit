@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadataLabels } from './googleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadataLabels';
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadataLabels } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadataLabels";
 
 /**
  * Metadata information about the deployment for managing deployment config.

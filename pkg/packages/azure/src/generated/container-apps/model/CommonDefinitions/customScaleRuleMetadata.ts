@@ -8,4 +8,4 @@
 /**
  * Metadata properties to describe custom scale rule.
  */
-export type CustomScaleRuleMetadata = {[key: string]: string};
+export type CustomScaleRuleMetadata = { [key: string]: string };

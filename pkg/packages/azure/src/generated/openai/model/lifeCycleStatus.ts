@@ -5,11 +5,11 @@
  * OpenAPI spec version: 2024-10-21
  */
 
-export type LifeCycleStatus = typeof LifeCycleStatus[keyof typeof LifeCycleStatus];
-
+export type LifeCycleStatus =
+  (typeof LifeCycleStatus)[keyof typeof LifeCycleStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const LifeCycleStatus = {
-  preview: 'preview',
-  'generally-available': 'generally-available',
+  preview: "preview",
+  "generally-available": "generally-available",
 } as const;

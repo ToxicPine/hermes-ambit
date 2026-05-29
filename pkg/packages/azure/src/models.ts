@@ -9,9 +9,7 @@ import {
 } from "@cardelli/shared";
 
 import { getAzureFoundryOpenAICompatibleModelsListUrl } from "./generated/openai/client";
-import {
-  azureFoundryOpenAICompatibleModelsList200Response,
-} from "./generated/openai/client/azureFoundryOpenAICompatibleModelsAPI.zod";
+import { azureFoundryOpenAICompatibleModelsList200Response } from "./generated/openai/client/azureFoundryOpenAICompatibleModelsAPI.zod";
 
 const AZURE_FOUNDRY_OPENAI_COMPATIBLE_MODELS_API_VERSION = "2024-10-21";
 
@@ -39,9 +37,7 @@ export type AzureFoundryOpenAICompatibleModels = readonly {
 const AZURE_OPENAI_PATH = "/openai";
 const AZURE_OPENAI_V1_PATH = "/openai/v1";
 
-const azureFoundryOpenAICompatibleResourceEndpoint = (
-  endpoint: string,
-) => {
+const azureFoundryOpenAICompatibleResourceEndpoint = (endpoint: string) => {
   const trimmed = endpoint.trim().replace(/\/+$/, "");
   if (trimmed.endsWith(AZURE_OPENAI_V1_PATH)) {
     return trimmed.slice(0, -AZURE_OPENAI_V1_PATH.length);
@@ -59,12 +55,12 @@ const azureFoundryOpenAICompatibleModelsFromResponse = (
     model.id && model.id.length > 0 ? [{ id: model.id }] : [],
   );
 
-export const azureFoundryOpenAICompatibleModelsUrl = (
-  endpoint: string,
-) =>
-  `${azureFoundryOpenAICompatibleResourceEndpoint(endpoint)}${getAzureFoundryOpenAICompatibleModelsListUrl({
-    "api-version": AZURE_FOUNDRY_OPENAI_COMPATIBLE_MODELS_API_VERSION,
-  })}`;
+export const azureFoundryOpenAICompatibleModelsUrl = (endpoint: string) =>
+  `${azureFoundryOpenAICompatibleResourceEndpoint(endpoint)}${getAzureFoundryOpenAICompatibleModelsListUrl(
+    {
+      "api-version": AZURE_FOUNDRY_OPENAI_COMPATIBLE_MODELS_API_VERSION,
+    },
+  )}`;
 
 const authorizedAzureFoundryOpenAICompatibleRequest = (
   auth: AzureFoundryOpenAICompatibleAuthContext,

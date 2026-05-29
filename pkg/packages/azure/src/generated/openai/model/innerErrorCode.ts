@@ -5,10 +5,10 @@
  * OpenAPI spec version: 2024-10-21
  */
 
-export type InnerErrorCode = typeof InnerErrorCode[keyof typeof InnerErrorCode];
-
+export type InnerErrorCode =
+  (typeof InnerErrorCode)[keyof typeof InnerErrorCode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const InnerErrorCode = {
-  invalidPayload: 'invalidPayload',
+  invalidPayload: "invalidPayload",
 } as const;

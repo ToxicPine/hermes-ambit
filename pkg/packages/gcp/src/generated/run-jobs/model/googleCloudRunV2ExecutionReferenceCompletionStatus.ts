@@ -8,15 +8,15 @@
 /**
  * Status for the execution completion.
  */
-export type GoogleCloudRunV2ExecutionReferenceCompletionStatus = typeof GoogleCloudRunV2ExecutionReferenceCompletionStatus[keyof typeof GoogleCloudRunV2ExecutionReferenceCompletionStatus];
-
+export type GoogleCloudRunV2ExecutionReferenceCompletionStatus =
+  (typeof GoogleCloudRunV2ExecutionReferenceCompletionStatus)[keyof typeof GoogleCloudRunV2ExecutionReferenceCompletionStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2ExecutionReferenceCompletionStatus = {
-  COMPLETION_STATUS_UNSPECIFIED: 'COMPLETION_STATUS_UNSPECIFIED',
-  EXECUTION_SUCCEEDED: 'EXECUTION_SUCCEEDED',
-  EXECUTION_FAILED: 'EXECUTION_FAILED',
-  EXECUTION_RUNNING: 'EXECUTION_RUNNING',
-  EXECUTION_PENDING: 'EXECUTION_PENDING',
-  EXECUTION_CANCELLED: 'EXECUTION_CANCELLED',
+  COMPLETION_STATUS_UNSPECIFIED: "COMPLETION_STATUS_UNSPECIFIED",
+  EXECUTION_SUCCEEDED: "EXECUTION_SUCCEEDED",
+  EXECUTION_FAILED: "EXECUTION_FAILED",
+  EXECUTION_RUNNING: "EXECUTION_RUNNING",
+  EXECUTION_PENDING: "EXECUTION_PENDING",
+  EXECUTION_CANCELLED: "EXECUTION_CANCELLED",
 } as const;

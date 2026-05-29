@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { z } from "zod";
 
 import {
   HERMES_CONTAINER_NAME,
@@ -162,7 +163,8 @@ const identityHasUserAssigned = (
 
 const userAssignedIdentityIds = (
   identity: ManagedServiceIdentity | undefined,
-): readonly string[] => Object.keys(identity?.userAssignedIdentities ?? {}).sort();
+): readonly string[] =>
+  Object.keys(identity?.userAssignedIdentities ?? {}).sort();
 
 const identityTypeSatisfies = (
   current: ManagedServiceIdentity | undefined,
@@ -175,7 +177,9 @@ const identityTypeSatisfies = (
     return identityHasUserAssigned(current);
   }
   if (expected.type === "SystemAssigned,UserAssigned") {
-    return identityHasSystemAssigned(current) && identityHasUserAssigned(current);
+    return (
+      identityHasSystemAssigned(current) && identityHasUserAssigned(current)
+    );
   }
   return current?.type === expected.type;
 };
@@ -366,7 +370,8 @@ const removeAzureEnvironment = (
 ): EnvironmentVar[] => {
   const removeNames = new Set(names);
   return (current ?? []).filter(
-    (variable) => variable.name === undefined || !removeNames.has(variable.name),
+    (variable) =>
+      variable.name === undefined || !removeNames.has(variable.name),
   );
 };
 
@@ -435,7 +440,9 @@ export const withoutContainerAppEnvironment = (
   };
 };
 
-export const desiredContainerApp = (spec: AzureContainerAppSpec): ContainerApp => ({
+export const desiredContainerApp = (
+  spec: AzureContainerAppSpec,
+): ContainerApp => ({
   location: spec.location,
   tags: ownershipMetadata(AZURE_OWNERSHIP_SCOPE, spec.identity),
   properties: {
@@ -521,10 +528,7 @@ const listContainerAppsByResourceGroup = (
   auth: AzureAuthContext,
   ref: AzureResourceGroupRef,
   params: ContainerAppsListByResourceGroupParams = apiVersionParams,
-): Effect.Effect<
-  containerAppsListByResourceGroupResponseSuccess,
-  CloudError
-> =>
+): Effect.Effect<containerAppsListByResourceGroupResponseSuccess, CloudError> =>
   Effect.gen(function* () {
     const operation = "azure.containerApps.listByResourceGroup";
     const response = yield* sendAzure(auth, operation, (options) =>
@@ -544,27 +548,27 @@ const listContainerAppsByResourceGroup = (
     return yield* validateContainerAppCollectionResponse(operation, validated);
   });
 
-const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
-  value !== null && typeof value === "object";
-
-const isStringRecord = (
-  value: unknown,
-): value is Readonly<Record<string, string>> =>
-  isRecord(value) &&
-  Object.values(value).every((entry) => typeof entry === "string");
+const stringRecordSchema = z.record(z.string(), z.string());
+const containerAppRuntimeSchema = z
+  .object({
+    location: z.string(),
+    tags: stringRecordSchema.optional(),
+  })
+  .passthrough();
+const containerAppCollectionRuntimeSchema = z
+  .object({
+    value: z.array(containerAppRuntimeSchema),
+    nextLink: z.string().optional(),
+  })
+  .passthrough();
 
 const isContainerApp = (value: unknown): value is ContainerApp =>
-  isRecord(value) &&
-  typeof value.location === "string" &&
-  (value.tags === undefined || isStringRecord(value.tags));
+  containerAppRuntimeSchema.safeParse(value).success;
 
 const isContainerAppCollection = (
   value: unknown,
 ): value is ContainerAppCollection =>
-  isRecord(value) &&
-  Array.isArray(value.value) &&
-  value.value.every(isContainerApp) &&
-  (value.nextLink === undefined || typeof value.nextLink === "string");
+  containerAppCollectionRuntimeSchema.safeParse(value).success;
 
 const validateContainerAppResponse = <
   TResponse extends { readonly data: unknown },

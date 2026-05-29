@@ -8,11 +8,11 @@
 /**
  * Sticky Session Affinity
  */
-export type IngressStickySessionsAffinity = typeof IngressStickySessionsAffinity[keyof typeof IngressStickySessionsAffinity];
-
+export type IngressStickySessionsAffinity =
+  (typeof IngressStickySessionsAffinity)[keyof typeof IngressStickySessionsAffinity];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IngressStickySessionsAffinity = {
-  sticky: 'sticky',
-  none: 'none',
+  sticky: "sticky",
+  none: "none",
 } as const;

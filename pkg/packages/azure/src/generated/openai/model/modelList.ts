@@ -4,8 +4,8 @@
  * Azure Foundry OpenAI-Compatible Models API
  * OpenAPI spec version: 2024-10-21
  */
-import type { TypeDiscriminator } from './typeDiscriminator';
-import type { Model } from './model';
+import type { TypeDiscriminator } from "./typeDiscriminator";
+import type { Model } from "./model";
 
 export interface ModelList {
   object?: TypeDiscriminator;

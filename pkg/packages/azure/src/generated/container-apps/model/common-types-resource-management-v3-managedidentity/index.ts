@@ -5,9 +5,9 @@
  * OpenAPI spec version: 2025-07-01
  */
 
-export * from './managedServiceIdentity';
-export * from './managedServiceIdentityType';
-export * from './systemAssignedServiceIdentity';
-export * from './systemAssignedServiceIdentityType';
-export * from './userAssignedIdentities';
-export * from './userAssignedIdentity';
+export * from "./managedServiceIdentity";
+export * from "./managedServiceIdentityType";
+export * from "./systemAssignedServiceIdentity";
+export * from "./systemAssignedServiceIdentityType";
+export * from "./userAssignedIdentities";
+export * from "./userAssignedIdentity";

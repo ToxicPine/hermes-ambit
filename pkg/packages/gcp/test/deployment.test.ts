@@ -4,6 +4,7 @@ import {
   CloudLog,
   HERMES_CONTAINER_NAME,
   RUNTIME_SECRET_NAME_MESSAGE,
+  UNIVERSAL_HERMES_IMAGE,
   type CloudEvent,
 } from "@cardelli/shared";
 
@@ -60,18 +61,35 @@ describe("GCP deployment planning", () => {
     }
   });
 
-  test("fails before cloud mutation while the universal image is a placeholder", async () => {
-    const result = await Effect.runPromise(
-      Effect.either(makeGcpDriver(auth).plan(deployment)),
-    );
+  test("plans a create with the universal runtime image", async () => {
+    let called = false;
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () => {
+      called = true;
+      return new Response("{}", { status: 404 });
+    };
 
-    expect(Either.isLeft(result)).toBe(true);
-    if (Either.isLeft(result)) {
-      expect(result.left.message).toContain("UNIVERSAL_HERMES_IMAGE");
+    try {
+      const result = await Effect.runPromise(
+        Effect.either(makeGcpDriver(auth).plan(deployment)),
+      );
+
+      expect(Either.isRight(result)).toBe(true);
+      if (Either.isRight(result)) {
+        expect(result.right.action).toBe("create");
+        expect(
+          result.right.service.template?.containers?.find(
+            (container) => container.name === HERMES_CONTAINER_NAME,
+          )?.image,
+        ).toBe(UNIVERSAL_HERMES_IMAGE);
+      }
+      expect(called).toBe(true);
+    } finally {
+      globalThis.fetch = originalFetch;
     }
   });
 
-  test("rejects incomplete NFS state before the image gate", async () => {
+  test("rejects incomplete NFS state before cloud reads", async () => {
     let called = false;
     const originalFetch = globalThis.fetch;
     globalThis.fetch = async () => {
@@ -801,7 +819,7 @@ describe("GCP deployment planning", () => {
     }
   });
 
-  test("does not create a Home Manager patch job without the deployed Hermes image", async () => {
+  test("does not create a Home Manager module job without the deployed Hermes image", async () => {
     const seenRequests: {
       readonly url: string;
       readonly method: string;
@@ -835,17 +853,17 @@ describe("GCP deployment planning", () => {
           updateGcpHomeManager(auth, {
             identity: deployment,
             user: "user",
-            patch: {
-              section: "model",
-              block: 'programs.hermes-agent.settings.model.default = "gemini";',
-            },
+            module:
+              '{ lib, ... }:\n{\n  programs.hermes-agent.settings.model.default = "gemini";\n}\n',
           }),
         ),
       );
 
       expect(Either.isLeft(result)).toBe(true);
       if (Either.isLeft(result)) {
-        expect(result.left.message).toContain("deployed Hermes container image");
+        expect(result.left.message).toContain(
+          "deployed Hermes container image",
+        );
       }
       expect(
         seenRequests.some(

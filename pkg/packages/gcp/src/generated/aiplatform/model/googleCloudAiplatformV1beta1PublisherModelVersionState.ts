@@ -8,12 +8,12 @@
 /**
  * Optional. Indicates the state of the model version.
  */
-export type GoogleCloudAiplatformV1beta1PublisherModelVersionState = typeof GoogleCloudAiplatformV1beta1PublisherModelVersionState[keyof typeof GoogleCloudAiplatformV1beta1PublisherModelVersionState];
-
+export type GoogleCloudAiplatformV1beta1PublisherModelVersionState =
+  (typeof GoogleCloudAiplatformV1beta1PublisherModelVersionState)[keyof typeof GoogleCloudAiplatformV1beta1PublisherModelVersionState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudAiplatformV1beta1PublisherModelVersionState = {
-  VERSION_STATE_UNSPECIFIED: 'VERSION_STATE_UNSPECIFIED',
-  VERSION_STATE_STABLE: 'VERSION_STATE_STABLE',
-  VERSION_STATE_UNSTABLE: 'VERSION_STATE_UNSTABLE',
+  VERSION_STATE_UNSPECIFIED: "VERSION_STATE_UNSPECIFIED",
+  VERSION_STATE_STABLE: "VERSION_STATE_STABLE",
+  VERSION_STATE_UNSTABLE: "VERSION_STATE_UNSTABLE",
 } as const;

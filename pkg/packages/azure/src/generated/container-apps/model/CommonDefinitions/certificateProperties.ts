@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CertificatePropertiesProvisioningState } from './certificatePropertiesProvisioningState';
-import type { CertificateKeyVaultProperties } from './certificateKeyVaultProperties';
+import type { CertificatePropertiesProvisioningState } from "./certificatePropertiesProvisioningState";
+import type { CertificateKeyVaultProperties } from "./certificateKeyVaultProperties";
 
 /**
  * Certificate resource specific properties

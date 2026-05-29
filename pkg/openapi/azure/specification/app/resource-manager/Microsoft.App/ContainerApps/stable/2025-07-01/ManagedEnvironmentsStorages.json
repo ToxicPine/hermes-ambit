@@ -5,21 +5,13 @@
     "title": "ContainerApps API Client"
   },
   "host": "management.azure.com",
-  "schemes": [
-    "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/managedEnvironments/{environmentName}/storages": {
       "get": {
-        "tags": [
-          "ManagedEnvironmentsStorages"
-        ],
+        "tags": ["ManagedEnvironmentsStorages"],
         "summary": "Get all storages for a managedEnvironment.",
         "description": "Get all storages for a managedEnvironment.",
         "operationId": "ManagedEnvironmentsStorages_List",
@@ -64,9 +56,7 @@
     },
     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/managedEnvironments/{environmentName}/storages/{storageName}": {
       "get": {
-        "tags": [
-          "ManagedEnvironmentsStorages"
-        ],
+        "tags": ["ManagedEnvironmentsStorages"],
         "summary": "Get storage for a managedEnvironment.",
         "description": "Get storage for a managedEnvironment.",
         "operationId": "ManagedEnvironmentsStorages_Get",
@@ -119,9 +109,7 @@
         }
       },
       "put": {
-        "tags": [
-          "ManagedEnvironmentsStorages"
-        ],
+        "tags": ["ManagedEnvironmentsStorages"],
         "summary": "Create or update storage for a managedEnvironment.",
         "description": "Create or update storage for a managedEnvironment.",
         "operationId": "ManagedEnvironmentsStorages_CreateOrUpdate",
@@ -189,9 +177,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "ManagedEnvironmentsStorages"
-        ],
+        "tags": ["ManagedEnvironmentsStorages"],
         "summary": "Delete storage for a managedEnvironment.",
         "description": "Delete storage for a managedEnvironment.",
         "operationId": "ManagedEnvironmentsStorages_Delete",
@@ -245,9 +231,7 @@
   "definitions": {
     "ManagedEnvironmentStoragesCollection": {
       "description": "Collection of Storage for Environments",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -298,9 +282,7 @@
   },
   "security": [
     {
-      "azure_auth": [
-        "user_impersonation"
-      ]
+      "azure_auth": ["user_impersonation"]
     }
   ]
 }

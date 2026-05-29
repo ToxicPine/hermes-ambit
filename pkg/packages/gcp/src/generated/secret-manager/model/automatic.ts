@@ -4,7 +4,7 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { CustomerManagedEncryption } from './customerManagedEncryption';
+import type { CustomerManagedEncryption } from "./customerManagedEncryption";
 
 /**
  * A replication policy that replicates the Secret payload without any restrictions.

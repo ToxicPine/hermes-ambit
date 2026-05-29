@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { z } from "zod";
 
 import { OperationFailed } from "./errors.js";
 import type { DeploymentIdentity } from "./model.js";
@@ -11,10 +12,15 @@ export const HERMES_DEPLOYMENT_NAME_MESSAGE = [
   "They must not end with a dash.",
 ].join(" ");
 
+export const hermesDeploymentNameSchema = z.string().regex(
+  HERMES_DEPLOYMENT_NAME_PATTERN,
+  { message: HERMES_DEPLOYMENT_NAME_MESSAGE },
+);
+
 export const validateHermesDeploymentName = (
   name: string,
 ): string | undefined =>
-  HERMES_DEPLOYMENT_NAME_PATTERN.test(name)
+  hermesDeploymentNameSchema.safeParse(name).success
     ? undefined
     : HERMES_DEPLOYMENT_NAME_MESSAGE;
 

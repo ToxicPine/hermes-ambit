@@ -8,4 +8,4 @@
 /**
  * Metadata properties to describe http scale rule.
  */
-export type HttpScaleRuleMetadata = {[key: string]: string};
+export type HttpScaleRuleMetadata = { [key: string]: string };

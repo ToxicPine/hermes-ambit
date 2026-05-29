@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelDocumentation } from './googleCloudAiplatformV1beta1PublisherModelDocumentation';
+import type { GoogleCloudAiplatformV1beta1PublisherModelDocumentation } from "./googleCloudAiplatformV1beta1PublisherModelDocumentation";
 
 /**
  * Rest API docs.

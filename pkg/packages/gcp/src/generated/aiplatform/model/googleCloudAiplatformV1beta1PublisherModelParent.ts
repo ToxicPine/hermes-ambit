@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelResourceReference } from './googleCloudAiplatformV1beta1PublisherModelResourceReference';
+import type { GoogleCloudAiplatformV1beta1PublisherModelResourceReference } from "./googleCloudAiplatformV1beta1PublisherModelResourceReference";
 
 /**
  * The information about the parent of a model.

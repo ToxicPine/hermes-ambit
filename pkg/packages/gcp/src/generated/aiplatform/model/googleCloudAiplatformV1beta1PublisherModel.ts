@@ -4,12 +4,12 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory } from './googleCloudAiplatformV1beta1PublisherModelOpenSourceCategory';
-import type { GoogleCloudAiplatformV1beta1PublisherModelParent } from './googleCloudAiplatformV1beta1PublisherModelParent';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToAction } from './googleCloudAiplatformV1beta1PublisherModelCallToAction';
-import type { GoogleCloudAiplatformV1beta1PublisherModelLaunchStage } from './googleCloudAiplatformV1beta1PublisherModelLaunchStage';
-import type { GoogleCloudAiplatformV1beta1PublisherModelVersionState } from './googleCloudAiplatformV1beta1PublisherModelVersionState';
-import type { GoogleCloudAiplatformV1beta1PredictSchemata } from './googleCloudAiplatformV1beta1PredictSchemata';
+import type { GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory } from "./googleCloudAiplatformV1beta1PublisherModelOpenSourceCategory";
+import type { GoogleCloudAiplatformV1beta1PublisherModelParent } from "./googleCloudAiplatformV1beta1PublisherModelParent";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToAction } from "./googleCloudAiplatformV1beta1PublisherModelCallToAction";
+import type { GoogleCloudAiplatformV1beta1PublisherModelLaunchStage } from "./googleCloudAiplatformV1beta1PublisherModelLaunchStage";
+import type { GoogleCloudAiplatformV1beta1PublisherModelVersionState } from "./googleCloudAiplatformV1beta1PublisherModelVersionState";
+import type { GoogleCloudAiplatformV1beta1PredictSchemata } from "./googleCloudAiplatformV1beta1PredictSchemata";
 
 /**
  * A Model Garden Publisher Model.

@@ -8,12 +8,13 @@
 /**
  * Optional. The action to take if the encryption key is revoked.
  */
-export type GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction = typeof GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction[keyof typeof GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction];
-
+export type GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction =
+  (typeof GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction)[keyof typeof GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction = {
-  ENCRYPTION_KEY_REVOCATION_ACTION_UNSPECIFIED: 'ENCRYPTION_KEY_REVOCATION_ACTION_UNSPECIFIED',
-  PREVENT_NEW: 'PREVENT_NEW',
-  SHUTDOWN: 'SHUTDOWN',
+  ENCRYPTION_KEY_REVOCATION_ACTION_UNSPECIFIED:
+    "ENCRYPTION_KEY_REVOCATION_ACTION_UNSPECIFIED",
+  PREVENT_NEW: "PREVENT_NEW",
+  SHUTDOWN: "SHUTDOWN",
 } as const;

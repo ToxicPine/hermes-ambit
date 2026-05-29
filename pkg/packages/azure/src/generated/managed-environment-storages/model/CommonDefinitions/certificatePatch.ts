@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CertificatePatchTags } from './certificatePatchTags';
+import type { CertificatePatchTags } from "./certificatePatchTags";
 
 /**
  * A certificate to update

@@ -45,7 +45,7 @@ fi
 
 nixcfg="/data/homes/${user}/nixcfg"
 managed_file="${nixcfg}/managed.nix"
-empty_module='{ ... }:
+empty_module='{ lib, ... }:
 {
 }
 '
@@ -57,140 +57,9 @@ if [[ "${reset}" = "1" ]]; then
   exit 0
 fi
 
-block_b64="${HERMES_AMBIT_MANAGED_BLOCK_B64:?HERMES_AMBIT_MANAGED_BLOCK_B64 must be set}"
-marker_start="${HERMES_AMBIT_MARKER_START:?HERMES_AMBIT_MARKER_START must be set}"
-marker_end="${HERMES_AMBIT_MARKER_END:?HERMES_AMBIT_MARKER_END must be set}"
+module_b64="${HERMES_AMBIT_MANAGED_MODULE_B64:?HERMES_AMBIT_MANAGED_MODULE_B64 must be set}"
+module_tmp="$(mktemp)"
+trap 'rm -f "$module_tmp"' EXIT
 
-block_file="$(mktemp)"
-managed_tmp="$(mktemp)"
-paths_file="$(mktemp)"
-trap 'rm -f "$block_file" "$managed_tmp" "$paths_file"' EXIT
-
-printf '%s' "${block_b64}" | base64 -d >"${block_file}"
-
-awk '
-  {
-    line = $0
-    sub(/^[[:space:]]+/, "", line)
-    if (line ~ /^[A-Za-z0-9_.-]+[[:space:]]*=/) {
-      sub(/[[:space:]]*=.*/, "", line)
-      print line
-    }
-  }
-' "${block_file}" | sort -u >"${paths_file}"
-
-if [[ ! -f "${managed_file}" ]]; then
-  printf '%s' "${empty_module}" >"${managed_file}"
-fi
-
-replace_managed_block() {
-  awk -v start="${marker_start}" -v end="${marker_end}" -v block_file="${block_file}" '
-    function printBlock() {
-      while ((getline line < block_file) > 0) {
-        print line
-      }
-      close(block_file)
-    }
-    $0 == start {
-      if (inBlock) {
-        exit 71
-      }
-      printBlock()
-      inBlock = 1
-      replaced = 1
-      next
-    }
-    inBlock && $0 == end {
-      inBlock = 0
-      next
-    }
-    !inBlock {
-      print
-    }
-    END {
-      if (inBlock) {
-        exit 72
-      }
-      if (!replaced) {
-        exit 42
-      }
-    }
-  ' "${managed_file}" >"${managed_tmp}"
-}
-
-append_managed_block() {
-  awk -v block_file="${block_file}" '
-    { lines[NR] = $0 }
-    END {
-      insertAt = 0
-      for (i = NR; i >= 1; i--) {
-        if (lines[i] ~ /^[[:space:]]*}[[:space:]]*$/) {
-          insertAt = i
-          break
-        }
-      }
-      if (insertAt == 0) {
-        exit 73
-      }
-      for (i = 1; i < insertAt; i++) {
-        print lines[i]
-      }
-      print ""
-      while ((getline line < block_file) > 0) {
-        print line
-      }
-      for (i = insertAt; i <= NR; i++) {
-        print lines[i]
-      }
-    }
-  ' "${managed_file}" >"${managed_tmp}" || {
-    echo "${command_name}: managed Home Manager module is not an attrset" >&2
-    exit 1
-  }
-}
-
-remove_assigned_paths() {
-  if [[ ! -s "${paths_file}" ]]; then
-    return
-  fi
-
-  awk '
-    FNR == NR {
-      paths[$0] = 1
-      next
-    }
-    {
-      line = $0
-      sub(/^[[:space:]]+/, "", line)
-      if (line ~ /^[A-Za-z0-9_.-]+[[:space:]]*=/) {
-        path = line
-        sub(/[[:space:]]*=.*/, "", path)
-        if (path in paths) {
-          next
-        }
-      }
-      print
-    }
-  ' "${paths_file}" "${managed_file}" >"${managed_tmp}"
-
-  mv "${managed_tmp}" "${managed_file}"
-}
-
-remove_assigned_paths
-
-set +e
-replace_managed_block
-status=$?
-set -e
-
-if [[ "${status}" -eq 0 ]]; then
-  mv "${managed_tmp}" "${managed_file}"
-else
-  if [[ "${status}" -eq 42 ]]; then
-    append_managed_block
-    mv "${managed_tmp}" "${managed_file}"
-  else
-    echo "${command_name}: managed marker block is malformed" >&2
-    exit 1
-  fi
-fi
+printf '%s' "${module_b64}" | base64 -d >"${module_tmp}"
+mv "${module_tmp}" "${managed_file}"

@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ErrorDetail } from './errorDetail';
+import type { ErrorDetail } from "./errorDetail";
 
 /**
  * The current status of an async operation.

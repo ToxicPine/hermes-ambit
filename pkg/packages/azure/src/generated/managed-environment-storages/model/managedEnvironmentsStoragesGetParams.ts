@@ -4,12 +4,12 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ApiVersionParameterParameter } from './common-types-resource-management-v3-types/apiVersionParameterParameter';
+import type { ApiVersionParameterParameter } from "./common-types-resource-management-v3-types/apiVersionParameterParameter";
 
 export type ManagedEnvironmentsStoragesGetParams = {
-/**
- * The API version to use for this operation.
- * @minLength 1
- */
-'api-version': ApiVersionParameterParameter;
+  /**
+   * The API version to use for this operation.
+   * @minLength 1
+   */
+  "api-version": ApiVersionParameterParameter;
 };

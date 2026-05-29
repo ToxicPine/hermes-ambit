@@ -24,10 +24,9 @@ export {
 export type { CloudError } from "./errors.js";
 
 export {
-  homeManagerPatchMarkers,
-  mergeManagedPatch,
+  emptyManagedModule,
   readManagedHomeManagerConfig,
-  renderManagedBlock,
+  writeManagedHomeManagerConfig,
   updateManagedHomeManagerConfig,
 } from "./home-manager.js";
 
@@ -46,7 +45,7 @@ export type { CloudEvent } from "./log.js";
 export type {
   DeploymentDriver,
   DeploymentIdentity,
-  HomeManagerPatch,
+  HomeManagerModule,
   Remediation,
 } from "./model.js";
 
@@ -55,6 +54,7 @@ export {
   HERMES_DEPLOYMENT_NAME_PATTERN,
   OWNERSHIP_DEPLOYMENT_KEY,
   OWNERSHIP_SCOPE_KEY,
+  hermesDeploymentNameSchema,
   hermesName,
   ownershipMetadata,
   validateHermesDeploymentIdentity,
@@ -65,6 +65,7 @@ export {
   RUNTIME_SECRET_NAME_MESSAGE,
   isRuntimeSecretName,
   runtimeSecretSlugFromName,
+  runtimeSecretNameSchema,
   validateRuntimeSecretName,
 } from "./runtime-secret.js";
 

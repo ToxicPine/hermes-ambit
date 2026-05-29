@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Resource } from './resource';
-import type { TrackedResourceTags } from './trackedResourceTags';
+import type { Resource } from "./resource";
+import type { TrackedResourceTags } from "./trackedResourceTags";
 
 /**
  * The resource model definition for an Azure Resource Manager tracked top level resource which has 'tags' and a 'location'
@@ -15,9 +15,14 @@ export type TrackedResource = Resource & {
   tags?: TrackedResourceTags;
   /** The geo-location where the resource lives */
   location: string;
-} & Required<Pick<Resource & {
-  /** Resource tags. */
-  tags?: TrackedResourceTags;
-  /** The geo-location where the resource lives */
-  location: string;
-}, 'location'>>;
+} & Required<
+    Pick<
+      Resource & {
+        /** Resource tags. */
+        tags?: TrackedResourceTags;
+        /** The geo-location where the resource lives */
+        location: string;
+      },
+      "location"
+    >
+  >;

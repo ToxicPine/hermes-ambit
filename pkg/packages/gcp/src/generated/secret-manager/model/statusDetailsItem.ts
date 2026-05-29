@@ -5,4 +5,4 @@
  * OpenAPI spec version: v1
  */
 
-export type StatusDetailsItem = {[key: string]: unknown};
+export type StatusDetailsItem = { [key: string]: unknown };

@@ -8,11 +8,11 @@
 /**
  * Metadata to represent the container app kind, representing if a container app is workflowapp or functionapp.
  */
-export type ContainerAppKind = typeof ContainerAppKind[keyof typeof ContainerAppKind];
-
+export type ContainerAppKind =
+  (typeof ContainerAppKind)[keyof typeof ContainerAppKind];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ContainerAppKind = {
-  workflowapp: 'workflowapp',
-  functionapp: 'functionapp',
+  workflowapp: "workflowapp",
+  functionapp: "functionapp",
 } as const;

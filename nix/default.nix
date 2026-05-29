@@ -15,18 +15,11 @@ let
     };
   };
 
-  hmPolicy = {
-    buildProfiles = true;
-    activateOnBoot = true;
-    rebuildOnBoot = true;
-  };
-
   hm = import ../lib/hm.nix {
     inherit
       pkgs
       home-manager
       userConfig
-      hmPolicy
       ;
   };
 in

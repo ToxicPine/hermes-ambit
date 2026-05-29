@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { OperationDisplay } from './operationDisplay';
-import type { OperationOrigin } from './operationOrigin';
-import type { OperationActionType } from './operationActionType';
+import type { OperationDisplay } from "./operationDisplay";
+import type { OperationOrigin } from "./operationOrigin";
+import type { OperationActionType } from "./operationActionType";
 
 /**
  * Details of a REST API operation, returned from the Resource Provider Operations API

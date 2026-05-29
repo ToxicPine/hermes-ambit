@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { EncryptionPropertiesStatus } from './encryptionPropertiesStatus';
-import type { KeyVaultProperties } from './keyVaultProperties';
+import type { EncryptionPropertiesStatus } from "./encryptionPropertiesStatus";
+import type { KeyVaultProperties } from "./keyVaultProperties";
 
 /**
  * Configuration of key for data encryption

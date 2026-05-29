@@ -4,11 +4,11 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2SecretVolumeSource } from './googleCloudRunV2SecretVolumeSource';
-import type { GoogleCloudRunV2CloudSqlInstance } from './googleCloudRunV2CloudSqlInstance';
-import type { GoogleCloudRunV2EmptyDirVolumeSource } from './googleCloudRunV2EmptyDirVolumeSource';
-import type { GoogleCloudRunV2NFSVolumeSource } from './googleCloudRunV2NFSVolumeSource';
-import type { GoogleCloudRunV2GCSVolumeSource } from './googleCloudRunV2GCSVolumeSource';
+import type { GoogleCloudRunV2SecretVolumeSource } from "./googleCloudRunV2SecretVolumeSource";
+import type { GoogleCloudRunV2CloudSqlInstance } from "./googleCloudRunV2CloudSqlInstance";
+import type { GoogleCloudRunV2EmptyDirVolumeSource } from "./googleCloudRunV2EmptyDirVolumeSource";
+import type { GoogleCloudRunV2NFSVolumeSource } from "./googleCloudRunV2NFSVolumeSource";
+import type { GoogleCloudRunV2GCSVolumeSource } from "./googleCloudRunV2GCSVolumeSource";
 
 /**
  * Volume represents a named volume in a container.

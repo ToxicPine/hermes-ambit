@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { PrivateEndpointConnection } from './privateEndpointConnection';
+import type { PrivateEndpointConnection } from "./privateEndpointConnection";
 
 /**
  * List of private endpoint connection associated with the specified resource

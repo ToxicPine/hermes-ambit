@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ErrorAdditionalInfo } from './errorAdditionalInfo';
+import type { ErrorAdditionalInfo } from "./errorAdditionalInfo";
 
 /**
  * The error detail.

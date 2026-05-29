@@ -8,12 +8,12 @@
 /**
  * DNS verification test result.
  */
-export type CustomHostnameAnalysisResultCustomDomainVerificationTest = typeof CustomHostnameAnalysisResultCustomDomainVerificationTest[keyof typeof CustomHostnameAnalysisResultCustomDomainVerificationTest];
-
+export type CustomHostnameAnalysisResultCustomDomainVerificationTest =
+  (typeof CustomHostnameAnalysisResultCustomDomainVerificationTest)[keyof typeof CustomHostnameAnalysisResultCustomDomainVerificationTest];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CustomHostnameAnalysisResultCustomDomainVerificationTest = {
-  Passed: 'Passed',
-  Failed: 'Failed',
-  Skipped: 'Skipped',
+  Passed: "Passed",
+  Failed: "Failed",
+  Skipped: "Skipped",
 } as const;

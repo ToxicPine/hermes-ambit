@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem } from './customHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem';
+import type { CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem } from "./customHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem";
 
 /**
  * Raw failure information if DNS verification fails.

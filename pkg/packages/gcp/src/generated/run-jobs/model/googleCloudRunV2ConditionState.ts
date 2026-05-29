@@ -8,14 +8,14 @@
 /**
  * State of the condition.
  */
-export type GoogleCloudRunV2ConditionState = typeof GoogleCloudRunV2ConditionState[keyof typeof GoogleCloudRunV2ConditionState];
-
+export type GoogleCloudRunV2ConditionState =
+  (typeof GoogleCloudRunV2ConditionState)[keyof typeof GoogleCloudRunV2ConditionState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2ConditionState = {
-  STATE_UNSPECIFIED: 'STATE_UNSPECIFIED',
-  CONDITION_PENDING: 'CONDITION_PENDING',
-  CONDITION_RECONCILING: 'CONDITION_RECONCILING',
-  CONDITION_FAILED: 'CONDITION_FAILED',
-  CONDITION_SUCCEEDED: 'CONDITION_SUCCEEDED',
+  STATE_UNSPECIFIED: "STATE_UNSPECIFIED",
+  CONDITION_PENDING: "CONDITION_PENDING",
+  CONDITION_RECONCILING: "CONDITION_RECONCILING",
+  CONDITION_FAILED: "CONDITION_FAILED",
+  CONDITION_SUCCEEDED: "CONDITION_SUCCEEDED",
 } as const;

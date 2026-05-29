@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { AzureFileProperties } from './CommonDefinitions/azureFileProperties';
-import type { NfsAzureFileProperties } from './CommonDefinitions/nfsAzureFileProperties';
+import type { AzureFileProperties } from "./CommonDefinitions/azureFileProperties";
+import type { NfsAzureFileProperties } from "./CommonDefinitions/nfsAzureFileProperties";
 
 /**
  * Storage properties

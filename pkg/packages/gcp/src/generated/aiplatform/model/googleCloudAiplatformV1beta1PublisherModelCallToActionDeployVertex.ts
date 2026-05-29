@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy } from './googleCloudAiplatformV1beta1PublisherModelCallToActionDeploy';
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionDeploy";
 
 /**
  * Multiple setups to deploy the PublisherModel.

@@ -8,13 +8,13 @@
 /**
  * Storage type for the volume. If not provided, use EmptyDir.
  */
-export type VolumeStorageType = typeof VolumeStorageType[keyof typeof VolumeStorageType];
-
+export type VolumeStorageType =
+  (typeof VolumeStorageType)[keyof typeof VolumeStorageType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const VolumeStorageType = {
-  AzureFile: 'AzureFile',
-  EmptyDir: 'EmptyDir',
-  Secret: 'Secret',
-  NfsAzureFile: 'NfsAzureFile',
+  AzureFile: "AzureFile",
+  EmptyDir: "EmptyDir",
+  Secret: "Secret",
+  NfsAzureFile: "NfsAzureFile",
 } as const;

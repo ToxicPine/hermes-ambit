@@ -8,13 +8,13 @@
 /**
  * Use to select the lifecycle stages of a Container App during which the Managed Identity should be available.
  */
-export type IdentitySettingsLifecycle = typeof IdentitySettingsLifecycle[keyof typeof IdentitySettingsLifecycle];
-
+export type IdentitySettingsLifecycle =
+  (typeof IdentitySettingsLifecycle)[keyof typeof IdentitySettingsLifecycle];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IdentitySettingsLifecycle = {
-  Init: 'Init',
-  Main: 'Main',
-  None: 'None',
-  All: 'All',
+  Init: "Init",
+  Main: "Main",
+  None: "None",
+  All: "All",
 } as const;

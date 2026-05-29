@@ -6,16 +6,16 @@
  */
 
 export type RunProjectsLocationsJobsListParams = {
-/**
- * Maximum number of Jobs to return in this call.
- */
-pageSize?: number;
-/**
- * A page token received from a previous call to ListJobs. All other parameters must match.
- */
-pageToken?: string;
-/**
- * If true, returns deleted (but unexpired) resources along with active ones.
- */
-showDeleted?: boolean;
+  /**
+   * Maximum number of Jobs to return in this call.
+   */
+  pageSize?: number;
+  /**
+   * A page token received from a previous call to ListJobs. All other parameters must match.
+   */
+  pageToken?: string;
+  /**
+   * If true, returns deleted (but unexpired) resources along with active ones.
+   */
+  showDeleted?: boolean;
 };

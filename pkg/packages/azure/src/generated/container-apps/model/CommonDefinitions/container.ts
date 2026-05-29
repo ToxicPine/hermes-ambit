@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { BaseContainer } from './baseContainer';
-import type { ContainerAppProbe } from './containerAppProbe';
+import type { BaseContainer } from "./baseContainer";
+import type { ContainerAppProbe } from "./containerAppProbe";
 
 /**
  * Container App container definition

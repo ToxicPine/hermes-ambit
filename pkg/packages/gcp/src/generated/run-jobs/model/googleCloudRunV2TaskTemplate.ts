@@ -4,11 +4,11 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2Container } from './googleCloudRunV2Container';
-import type { GoogleCloudRunV2Volume } from './googleCloudRunV2Volume';
-import type { GoogleCloudRunV2TaskTemplateExecutionEnvironment } from './googleCloudRunV2TaskTemplateExecutionEnvironment';
-import type { GoogleCloudRunV2VpcAccess } from './googleCloudRunV2VpcAccess';
-import type { GoogleCloudRunV2NodeSelector } from './googleCloudRunV2NodeSelector';
+import type { GoogleCloudRunV2Container } from "./googleCloudRunV2Container";
+import type { GoogleCloudRunV2Volume } from "./googleCloudRunV2Volume";
+import type { GoogleCloudRunV2TaskTemplateExecutionEnvironment } from "./googleCloudRunV2TaskTemplateExecutionEnvironment";
+import type { GoogleCloudRunV2VpcAccess } from "./googleCloudRunV2VpcAccess";
+import type { GoogleCloudRunV2NodeSelector } from "./googleCloudRunV2NodeSelector";
 
 /**
  * TaskTemplate describes the data a task should have when created from a template.

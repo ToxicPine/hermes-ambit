@@ -8,11 +8,11 @@
 /**
  * Type of managed service identity (either system assigned, or none).
  */
-export type SystemAssignedServiceIdentityType = typeof SystemAssignedServiceIdentityType[keyof typeof SystemAssignedServiceIdentityType];
-
+export type SystemAssignedServiceIdentityType =
+  (typeof SystemAssignedServiceIdentityType)[keyof typeof SystemAssignedServiceIdentityType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SystemAssignedServiceIdentityType = {
-  None: 'None',
-  SystemAssigned: 'SystemAssigned',
+  None: "None",
+  SystemAssigned: "SystemAssigned",
 } as const;

@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CustomScaleRuleMetadata } from './customScaleRuleMetadata';
-import type { ScaleRuleAuth } from './scaleRuleAuth';
+import type { CustomScaleRuleMetadata } from "./customScaleRuleMetadata";
+import type { ScaleRuleAuth } from "./scaleRuleAuth";
 
 /**
  * Container App container Custom scaling rule.

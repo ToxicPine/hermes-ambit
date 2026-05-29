@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { SecretKeyVaultProperties } from './secretKeyVaultProperties';
-import type { AzureFilePropertiesAccessMode } from './azureFilePropertiesAccessMode';
+import type { SecretKeyVaultProperties } from "./secretKeyVaultProperties";
+import type { AzureFilePropertiesAccessMode } from "./azureFilePropertiesAccessMode";
 
 /**
  * Azure File Properties.

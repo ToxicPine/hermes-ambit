@@ -4,16 +4,16 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2RevisionTemplateLabels } from './googleCloudRunV2RevisionTemplateLabels';
-import type { GoogleCloudRunV2RevisionTemplateAnnotations } from './googleCloudRunV2RevisionTemplateAnnotations';
-import type { GoogleCloudRunV2RevisionScaling } from './googleCloudRunV2RevisionScaling';
-import type { GoogleCloudRunV2VpcAccess } from './googleCloudRunV2VpcAccess';
-import type { GoogleCloudRunV2Container } from './googleCloudRunV2Container';
-import type { GoogleCloudRunV2Volume } from './googleCloudRunV2Volume';
-import type { GoogleCloudRunV2RevisionTemplateExecutionEnvironment } from './googleCloudRunV2RevisionTemplateExecutionEnvironment';
-import type { GoogleCloudRunV2ServiceMesh } from './googleCloudRunV2ServiceMesh';
-import type { GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction } from './googleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction';
-import type { GoogleCloudRunV2NodeSelector } from './googleCloudRunV2NodeSelector';
+import type { GoogleCloudRunV2RevisionTemplateLabels } from "./googleCloudRunV2RevisionTemplateLabels";
+import type { GoogleCloudRunV2RevisionTemplateAnnotations } from "./googleCloudRunV2RevisionTemplateAnnotations";
+import type { GoogleCloudRunV2RevisionScaling } from "./googleCloudRunV2RevisionScaling";
+import type { GoogleCloudRunV2VpcAccess } from "./googleCloudRunV2VpcAccess";
+import type { GoogleCloudRunV2Container } from "./googleCloudRunV2Container";
+import type { GoogleCloudRunV2Volume } from "./googleCloudRunV2Volume";
+import type { GoogleCloudRunV2RevisionTemplateExecutionEnvironment } from "./googleCloudRunV2RevisionTemplateExecutionEnvironment";
+import type { GoogleCloudRunV2ServiceMesh } from "./googleCloudRunV2ServiceMesh";
+import type { GoogleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction } from "./googleCloudRunV2RevisionTemplateEncryptionKeyRevocationAction";
+import type { GoogleCloudRunV2NodeSelector } from "./googleCloudRunV2NodeSelector";
 
 /**
  * RevisionTemplate describes the data a revision should have when created from a template.

@@ -6,12 +6,12 @@
  */
 
 export type RunProjectsLocationsJobsCreateParams = {
-/**
- * Optional. The unique identifier for the Job. The name of the job becomes {parent}/jobs/{job_id}. If not provided, the server will generate a unique `job_id`.
- */
-jobId?: string;
-/**
- * Indicates that the request should be validated and default values populated, without persisting the request or creating any resources.
- */
-validateOnly?: boolean;
+  /**
+   * Optional. The unique identifier for the Job. The name of the job becomes {parent}/jobs/{job_id}. If not provided, the server will generate a unique `job_id`.
+   */
+  jobId?: string;
+  /**
+   * Indicates that the request should be validated and default values populated, without persisting the request or creating any resources.
+   */
+  validateOnly?: boolean;
 };

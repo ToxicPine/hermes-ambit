@@ -1,9 +1,6 @@
 import type { Effect } from "effect";
 
-import type {
-  CloudError,
-  DeploymentIdentity,
-} from "@cardelli/shared";
+import type { CloudError, DeploymentIdentity } from "@cardelli/shared";
 
 export type AzureSubscriptionRef = {
   readonly subscriptionId: string;

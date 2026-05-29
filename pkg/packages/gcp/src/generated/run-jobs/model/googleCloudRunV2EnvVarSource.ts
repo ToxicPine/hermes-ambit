@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2SecretKeySelector } from './googleCloudRunV2SecretKeySelector';
+import type { GoogleCloudRunV2SecretKeySelector } from "./googleCloudRunV2SecretKeySelector";
 
 /**
  * EnvVarSource represents a source for the value of an EnvVar.

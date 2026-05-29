@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Secret } from './secret';
-import type { DaprMetadata } from './daprMetadata';
-import type { DaprComponentPropertiesProvisioningState } from './daprComponentPropertiesProvisioningState';
+import type { Secret } from "./secret";
+import type { DaprMetadata } from "./daprMetadata";
+import type { DaprComponentPropertiesProvisioningState } from "./daprComponentPropertiesProvisioningState";
 
 /**
  * Dapr Component resource specific properties

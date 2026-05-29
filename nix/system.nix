@@ -4,7 +4,7 @@
 }:
 
 {
-  imageName = "hermes-gateway";
+  imageName = "container-agent";
 
   entrypoint = {
     user = "user";

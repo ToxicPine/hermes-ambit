@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { IdentityType } from './identityType';
+import type { IdentityType } from "./identityType";
 
 /**
  * Identity for the resource.

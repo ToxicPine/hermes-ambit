@@ -8,11 +8,11 @@
 /**
  * Indicates whether or not the encryption is enabled for container registry.
  */
-export type EncryptionPropertiesStatus = typeof EncryptionPropertiesStatus[keyof typeof EncryptionPropertiesStatus];
-
+export type EncryptionPropertiesStatus =
+  (typeof EncryptionPropertiesStatus)[keyof typeof EncryptionPropertiesStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const EncryptionPropertiesStatus = {
-  enabled: 'enabled',
-  disabled: 'disabled',
+  enabled: "enabled",
+  disabled: "disabled",
 } as const;

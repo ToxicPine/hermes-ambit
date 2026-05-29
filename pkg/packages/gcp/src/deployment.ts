@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { z } from "zod";
 
 import {
   HERMES_CONTAINER_NAME,
@@ -107,19 +108,25 @@ export const gcpServiceRef = (identity: GcpDeploymentRef): GcpServiceRef => ({
   serviceName: hermesName(identity),
 });
 
-export const gcpHomeManagerJobRef = (identity: GcpDeploymentRef): GcpJobRef => ({
+export const gcpHomeManagerJobRef = (
+  identity: GcpDeploymentRef,
+): GcpJobRef => ({
   projectId: identity.projectId,
   region: identity.region,
   jobName: `hm-${identity.name}`,
+});
+
+const gcpNfsStateSchema = z.object({
+  server: z.string().trim().min(1),
+  dataPath: z.string().trim().min(1),
+  nixPath: z.string().trim().min(1),
 });
 
 export const validateGcpNfsState = (
   operation: string,
   state: GcpNfsState,
 ): Effect.Effect<void, OperationFailed> =>
-  state.server.trim().length > 0 &&
-  state.dataPath.trim().length > 0 &&
-  state.nixPath.trim().length > 0
+  gcpNfsStateSchema.safeParse(state).success
     ? Effect.void
     : Effect.fail(
         new OperationFailed({
@@ -136,7 +143,7 @@ const requireUniversalImage = (): Effect.Effect<void, OperationFailed> =>
         new OperationFailed({
           operation: "gcp.deployment.image",
           message:
-            "UNIVERSAL_HERMES_IMAGE must be set to the published Hermes Ambit runtime image before deploy can create or update Cloud Run.",
+            "UNIVERSAL_HERMES_IMAGE must be a published Hermes Ambit runtime image before deploy can create or update Cloud Run.",
         }),
       );
 
@@ -209,7 +216,8 @@ const assertOwnedService = (
   if (!isGcpDeploymentService(expected, service)) {
     return Effect.fail(
       new ResourceConflict({
-        resource: service.name ?? gcpServiceResourceName(gcpServiceRef(expected)),
+        resource:
+          service.name ?? gcpServiceResourceName(gcpServiceRef(expected)),
         message: "Cloud Run service name is already used by another deployment",
       }),
     );
@@ -239,7 +247,8 @@ const assertOwnedJob = (
   if (!isGcpDeploymentJob(expected, job)) {
     return Effect.fail(
       new ResourceConflict({
-        resource: job.name ?? gcpJobResourceName(gcpHomeManagerJobRef(expected)),
+        resource:
+          job.name ?? gcpJobResourceName(gcpHomeManagerJobRef(expected)),
         message: "Cloud Run job name is already used by another deployment",
       }),
     );
@@ -433,7 +442,10 @@ export const makeGcpDriver = (auth: GcpAuthContext): GcpOperations => {
         return { ...base, action: "create", service: desiredService };
       }
 
-      const service = mergeCloudRunServiceInput(desiredService, existingService);
+      const service = mergeCloudRunServiceInput(
+        desiredService,
+        existingService,
+      );
       return cloudRunServiceMatchesInput(existingService, desiredService)
         ? { ...base, action: "ready", existingService }
         : { ...base, action: "update", service, existingService };
@@ -441,7 +453,10 @@ export const makeGcpDriver = (auth: GcpAuthContext): GcpOperations => {
 
   const status = (identity: GcpDeploymentRef) =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("gcp.deployment.status", identity);
+      yield* validateHermesDeploymentIdentity(
+        "gcp.deployment.status",
+        identity,
+      );
       const service = yield* findCloudRunService(auth, gcpServiceRef(identity));
       yield* assertOwnedService(identity, service);
       return statusFromService(service);
@@ -453,22 +468,40 @@ export const makeGcpDriver = (auth: GcpAuthContext): GcpOperations => {
         return statusFromService(planned.existingService);
       }
 
-      const mutation = planned.action === "update"
-        ? yield* patchCloudRunService(auth, planned.serviceRef, planned.service, {
-            updateMask: "labels,ingress,invokerIamDisabled,template",
-          })
-        : yield* createCloudRunService(auth, planned.serviceRef, planned.service, {
-            serviceId: planned.serviceRef.serviceName,
-          });
+      const mutation =
+        planned.action === "update"
+          ? yield* patchCloudRunService(
+              auth,
+              planned.serviceRef,
+              planned.service,
+              {
+                updateMask: "labels,ingress,invokerIamDisabled,template",
+              },
+            )
+          : yield* createCloudRunService(
+              auth,
+              planned.serviceRef,
+              planned.service,
+              {
+                serviceId: planned.serviceRef.serviceName,
+              },
+            );
 
-      yield* waitForCloudRunMutation(auth, "gcp.run.services.apply", mutation.data);
+      yield* waitForCloudRunMutation(
+        auth,
+        "gcp.run.services.apply",
+        mutation.data,
+      );
       const service = yield* findCloudRunService(auth, planned.serviceRef);
       return statusFromService(service);
     });
 
   const restart = (identity: GcpDeploymentRef) =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("gcp.deployment.restart", identity);
+      yield* validateHermesDeploymentIdentity(
+        "gcp.deployment.restart",
+        identity,
+      );
       const ref = gcpServiceRef(identity);
       const service = yield* findCloudRunService(auth, ref);
       yield* assertOwnedService(identity, service);
@@ -476,7 +509,8 @@ export const makeGcpDriver = (auth: GcpAuthContext): GcpOperations => {
         return yield* Effect.fail(
           new OperationFailed({
             operation: "gcp.run.services.restart",
-            message: "Cloud Run service must be deployed before it can be restarted.",
+            message:
+              "Cloud Run service must be deployed before it can be restarted.",
           }),
         );
       }
@@ -494,14 +528,21 @@ export const makeGcpDriver = (auth: GcpAuthContext): GcpOperations => {
         },
       );
 
-      yield* waitForCloudRunMutation(auth, "gcp.run.services.restart", mutation.data);
+      yield* waitForCloudRunMutation(
+        auth,
+        "gcp.run.services.restart",
+        mutation.data,
+      );
       const restarted = yield* findCloudRunService(auth, ref);
       return statusFromService(restarted);
     });
 
   const destroy = (identity: GcpDeploymentRef) =>
     Effect.gen(function* () {
-      yield* validateHermesDeploymentIdentity("gcp.deployment.destroy", identity);
+      yield* validateHermesDeploymentIdentity(
+        "gcp.deployment.destroy",
+        identity,
+      );
       const ref = gcpServiceRef(identity);
       const jobRef = gcpHomeManagerJobRef(identity);
       const service = yield* findCloudRunService(auth, ref);
@@ -525,7 +566,11 @@ export const makeGcpDriver = (auth: GcpAuthContext): GcpOperations => {
       }
       if (service) {
         const mutation = yield* deleteCloudRunService(auth, ref);
-        yield* waitForCloudRunMutation(auth, "gcp.run.services.delete", mutation.data);
+        yield* waitForCloudRunMutation(
+          auth,
+          "gcp.run.services.delete",
+          mutation.data,
+        );
       }
       for (const runtimeName of runtimeSecretNames) {
         yield* deleteSecret(auth, {

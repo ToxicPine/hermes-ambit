@@ -8,15 +8,17 @@
 /**
  * Required. Indicates the open source category of the publisher model.
  */
-export type GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory = typeof GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory[keyof typeof GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory];
-
+export type GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory =
+  (typeof GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory)[keyof typeof GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudAiplatformV1beta1PublisherModelOpenSourceCategory = {
-  OPEN_SOURCE_CATEGORY_UNSPECIFIED: 'OPEN_SOURCE_CATEGORY_UNSPECIFIED',
-  PROPRIETARY: 'PROPRIETARY',
-  GOOGLE_OWNED_OSS_WITH_GOOGLE_CHECKPOINT: 'GOOGLE_OWNED_OSS_WITH_GOOGLE_CHECKPOINT',
-  THIRD_PARTY_OWNED_OSS_WITH_GOOGLE_CHECKPOINT: 'THIRD_PARTY_OWNED_OSS_WITH_GOOGLE_CHECKPOINT',
-  GOOGLE_OWNED_OSS: 'GOOGLE_OWNED_OSS',
-  THIRD_PARTY_OWNED_OSS: 'THIRD_PARTY_OWNED_OSS',
+  OPEN_SOURCE_CATEGORY_UNSPECIFIED: "OPEN_SOURCE_CATEGORY_UNSPECIFIED",
+  PROPRIETARY: "PROPRIETARY",
+  GOOGLE_OWNED_OSS_WITH_GOOGLE_CHECKPOINT:
+    "GOOGLE_OWNED_OSS_WITH_GOOGLE_CHECKPOINT",
+  THIRD_PARTY_OWNED_OSS_WITH_GOOGLE_CHECKPOINT:
+    "THIRD_PARTY_OWNED_OSS_WITH_GOOGLE_CHECKPOINT",
+  GOOGLE_OWNED_OSS: "GOOGLE_OWNED_OSS",
+  THIRD_PARTY_OWNED_OSS: "THIRD_PARTY_OWNED_OSS",
 } as const;

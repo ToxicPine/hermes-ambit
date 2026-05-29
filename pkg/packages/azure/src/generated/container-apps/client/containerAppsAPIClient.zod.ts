@@ -4,33 +4,39 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * @summary Get the Container Apps in a given subscription.
  */
 
-
-
 export const containerAppsListBySubscriptionParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+});
 
 export const containerAppsListBySubscriptionQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsListBySubscription200Response = zod.object({
-  "value": zod.array(zod.unknown().describe('Container App.')).describe('Collection of resources.'),
-  "nextLink": zod.string().optional().describe('Link to next page of resources.')
-}).describe('Container App collection ARM resource.')
+export const containerAppsListBySubscription200Response = zod
+  .object({
+    value: zod
+      .array(zod.unknown().describe("Container App."))
+      .describe("Collection of resources."),
+    nextLink: zod
+      .string()
+      .optional()
+      .describe("Link to next page of resources."),
+  })
+  .describe("Container App collection ARM resource.");
 
-export const containerAppsListBySubscriptionDefaultResponse = zod.unknown()
-
+export const containerAppsListBySubscriptionDefaultResponse = zod.unknown();
 
 /**
  * @summary Get the Container Apps in a given resource group.
@@ -38,27 +44,38 @@ export const containerAppsListBySubscriptionDefaultResponse = zod.unknown()
 
 export const containerAppsListByResourceGroupPathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsListByResourceGroupParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsListByResourceGroupPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsListByResourceGroupPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+});
 
 export const containerAppsListByResourceGroupQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsListByResourceGroup200Response = zod.object({
-  "value": zod.array(zod.unknown().describe('Container App.')).describe('Collection of resources.'),
-  "nextLink": zod.string().optional().describe('Link to next page of resources.')
-}).describe('Container App collection ARM resource.')
+export const containerAppsListByResourceGroup200Response = zod
+  .object({
+    value: zod
+      .array(zod.unknown().describe("Container App."))
+      .describe("Collection of resources."),
+    nextLink: zod
+      .string()
+      .optional()
+      .describe("Link to next page of resources."),
+  })
+  .describe("Container App collection ARM resource.");
 
-export const containerAppsListByResourceGroupDefaultResponse = zod.unknown()
-
+export const containerAppsListByResourceGroupDefaultResponse = zod.unknown();
 
 /**
  * @summary Get the properties of a Container App.
@@ -66,25 +83,31 @@ export const containerAppsListByResourceGroupDefaultResponse = zod.unknown()
 
 export const containerAppsGetPathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsGetParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsGetPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsGetPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsGetQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsGet200Response = zod.unknown().describe('Container App.')
+export const containerAppsGet200Response = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsGetDefaultResponse = zod.unknown()
-
+export const containerAppsGetDefaultResponse = zod.unknown();
 
 /**
  * Create or update a Container App.
@@ -93,29 +116,39 @@ export const containerAppsGetDefaultResponse = zod.unknown()
 
 export const containerAppsCreateOrUpdatePathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsCreateOrUpdateParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsCreateOrUpdatePathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsCreateOrUpdatePathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsCreateOrUpdateQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsCreateOrUpdateBody = zod.unknown().describe('Container App.')
+export const containerAppsCreateOrUpdateBody = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsCreateOrUpdate200Response = zod.unknown().describe('Container App.')
+export const containerAppsCreateOrUpdate200Response = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsCreateOrUpdate201Response = zod.unknown().describe('Container App.')
+export const containerAppsCreateOrUpdate201Response = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsCreateOrUpdateDefaultResponse = zod.unknown()
-
+export const containerAppsCreateOrUpdateDefaultResponse = zod.unknown();
 
 /**
  * Delete a Container App.
@@ -124,23 +157,27 @@ export const containerAppsCreateOrUpdateDefaultResponse = zod.unknown()
 
 export const containerAppsDeletePathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsDeleteParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsDeletePathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsDeletePathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsDeleteQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsDeleteDefaultResponse = zod.unknown()
-
+export const containerAppsDeleteDefaultResponse = zod.unknown();
 
 /**
  * Patches a Container App using JSON Merge Patch
@@ -149,27 +186,33 @@ export const containerAppsDeleteDefaultResponse = zod.unknown()
 
 export const containerAppsUpdatePathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsUpdateParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsUpdatePathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsUpdatePathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsUpdateQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsUpdateBody = zod.unknown().describe('Container App.')
+export const containerAppsUpdateBody = zod.unknown().describe("Container App.");
 
-export const containerAppsUpdate200Response = zod.unknown().describe('Container App.')
+export const containerAppsUpdate200Response = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsUpdateDefaultResponse = zod.unknown()
-
+export const containerAppsUpdateDefaultResponse = zod.unknown();
 
 /**
  * @summary Analyzes a custom hostname for a Container App
@@ -177,48 +220,129 @@ export const containerAppsUpdateDefaultResponse = zod.unknown()
 
 export const containerAppsListCustomHostNameAnalysisPathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsListCustomHostNameAnalysisParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsListCustomHostNameAnalysisPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsListCustomHostNameAnalysisPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsListCustomHostNameAnalysisQueryParams = zod.object({
-  "customHostname": zod.string().optional().describe('Custom hostname.'),
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  customHostname: zod.string().optional().describe("Custom hostname."),
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsListCustomHostNameAnalysis200Response = zod.object({
-  "hostName": zod.string().optional().describe('Host name that was analyzed'),
-  "isHostnameAlreadyVerified": zod.boolean().optional().describe('<code>true<\/code> if hostname is already verified; otherwise, <code>false<\/code>.'),
-  "customDomainVerificationTest": zod.enum(['Passed', 'Failed', 'Skipped']).optional().describe('DNS verification test result.'),
-  "customDomainVerificationFailureInfo": zod.object({
-  "code": zod.string().optional().describe('Standardized string to programmatically identify the error.'),
-  "message": zod.string().optional().describe('Detailed error description and debugging information.'),
-  "target": zod.string().optional().describe('Detailed error description and debugging information.'),
-  "details": zod.array(zod.object({
-  "code": zod.string().optional().describe('Standardized string to programmatically identify the error.'),
-  "message": zod.string().optional().describe('Detailed error description and debugging information.'),
-  "target": zod.string().optional().describe('Detailed error description and debugging information.')
-}).describe('Detailed errors.')).optional().describe('Details or the error')
-}).optional().describe('Raw failure information if DNS verification fails.'),
-  "hasConflictOnManagedEnvironment": zod.boolean().optional().describe('<code>true<\/code> if there is a conflict on the Container App\'s managed environment; otherwise, <code>false<\/code>.'),
-  "conflictWithEnvironmentCustomDomain": zod.boolean().optional().describe('<code>true<\/code> if there is a conflict on the Container App\'s managed environment level custom domain; otherwise, <code>false<\/code>.'),
-  "conflictingContainerAppResourceId": zod.string().optional().describe('Name of the conflicting Container App on the Managed Environment if it\'s within the same subscription.'),
-  "cNameRecords": zod.array(zod.string()).optional().describe('CName records visible for this hostname.'),
-  "txtRecords": zod.array(zod.string()).optional().describe('TXT records visible for this hostname.'),
-  "aRecords": zod.array(zod.string()).optional().describe('A records visible for this hostname.'),
-  "alternateCNameRecords": zod.array(zod.string()).optional().describe('Alternate CName records visible for this hostname.'),
-  "alternateTxtRecords": zod.array(zod.string()).optional().describe('Alternate TXT records visible for this hostname.')
-}).describe('Custom domain analysis.')
+export const containerAppsListCustomHostNameAnalysis200Response = zod
+  .object({
+    hostName: zod.string().optional().describe("Host name that was analyzed"),
+    isHostnameAlreadyVerified: zod
+      .boolean()
+      .optional()
+      .describe(
+        "<code>true<\/code> if hostname is already verified; otherwise, <code>false<\/code>.",
+      ),
+    customDomainVerificationTest: zod
+      .enum(["Passed", "Failed", "Skipped"])
+      .optional()
+      .describe("DNS verification test result."),
+    customDomainVerificationFailureInfo: zod
+      .object({
+        code: zod
+          .string()
+          .optional()
+          .describe(
+            "Standardized string to programmatically identify the error.",
+          ),
+        message: zod
+          .string()
+          .optional()
+          .describe("Detailed error description and debugging information."),
+        target: zod
+          .string()
+          .optional()
+          .describe("Detailed error description and debugging information."),
+        details: zod
+          .array(
+            zod
+              .object({
+                code: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Standardized string to programmatically identify the error.",
+                  ),
+                message: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Detailed error description and debugging information.",
+                  ),
+                target: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Detailed error description and debugging information.",
+                  ),
+              })
+              .describe("Detailed errors."),
+          )
+          .optional()
+          .describe("Details or the error"),
+      })
+      .optional()
+      .describe("Raw failure information if DNS verification fails."),
+    hasConflictOnManagedEnvironment: zod
+      .boolean()
+      .optional()
+      .describe(
+        "<code>true<\/code> if there is a conflict on the Container App's managed environment; otherwise, <code>false<\/code>.",
+      ),
+    conflictWithEnvironmentCustomDomain: zod
+      .boolean()
+      .optional()
+      .describe(
+        "<code>true<\/code> if there is a conflict on the Container App's managed environment level custom domain; otherwise, <code>false<\/code>.",
+      ),
+    conflictingContainerAppResourceId: zod
+      .string()
+      .optional()
+      .describe(
+        "Name of the conflicting Container App on the Managed Environment if it's within the same subscription.",
+      ),
+    cNameRecords: zod
+      .array(zod.string())
+      .optional()
+      .describe("CName records visible for this hostname."),
+    txtRecords: zod
+      .array(zod.string())
+      .optional()
+      .describe("TXT records visible for this hostname."),
+    aRecords: zod
+      .array(zod.string())
+      .optional()
+      .describe("A records visible for this hostname."),
+    alternateCNameRecords: zod
+      .array(zod.string())
+      .optional()
+      .describe("Alternate CName records visible for this hostname."),
+    alternateTxtRecords: zod
+      .array(zod.string())
+      .optional()
+      .describe("Alternate TXT records visible for this hostname."),
+  })
+  .describe("Custom domain analysis.");
 
-export const containerAppsListCustomHostNameAnalysisDefaultResponse = zod.unknown()
-
+export const containerAppsListCustomHostNameAnalysisDefaultResponse =
+  zod.unknown();
 
 /**
  * @summary List secrets for a container app
@@ -226,32 +350,54 @@ export const containerAppsListCustomHostNameAnalysisDefaultResponse = zod.unknow
 
 export const containerAppsListSecretsPathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsListSecretsParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsListSecretsPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsListSecretsPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsListSecretsQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsListSecrets200Response = zod.object({
-  "value": zod.array(zod.object({
-  "name": zod.string().optional().describe('Secret Name.'),
-  "value": zod.string().optional().describe('Secret Value.'),
-  "identity": zod.string().optional().describe('Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.'),
-  "keyVaultUrl": zod.string().optional().describe('Azure Key Vault URL pointing to the secret referenced by the container app.')
-}).describe('Container App Secret.')).describe('Collection of resources.')
-}).describe('Container App Secrets Collection ARM resource.')
+export const containerAppsListSecrets200Response = zod
+  .object({
+    value: zod
+      .array(
+        zod
+          .object({
+            name: zod.string().optional().describe("Secret Name."),
+            value: zod.string().optional().describe("Secret Value."),
+            identity: zod
+              .string()
+              .optional()
+              .describe(
+                "Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.",
+              ),
+            keyVaultUrl: zod
+              .string()
+              .optional()
+              .describe(
+                "Azure Key Vault URL pointing to the secret referenced by the container app.",
+              ),
+          })
+          .describe("Container App Secret."),
+      )
+      .describe("Collection of resources."),
+  })
+  .describe("Container App Secrets Collection ARM resource.");
 
-export const containerAppsListSecretsDefaultResponse = zod.unknown()
-
+export const containerAppsListSecretsDefaultResponse = zod.unknown();
 
 /**
  * @summary Get auth token for a container app
@@ -259,25 +405,31 @@ export const containerAppsListSecretsDefaultResponse = zod.unknown()
 
 export const containerAppsGetAuthTokenPathResourceGroupNameMax = 90;
 
-
-
 export const containerAppsGetAuthTokenParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsGetAuthTokenPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsGetAuthTokenPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod.string().describe("Name of the Container App."),
+});
 
 export const containerAppsGetAuthTokenQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsGetAuthToken200Response = zod.unknown().describe('Container App Auth Token.')
+export const containerAppsGetAuthToken200Response = zod
+  .unknown()
+  .describe("Container App Auth Token.");
 
-export const containerAppsGetAuthTokenDefaultResponse = zod.unknown()
-
+export const containerAppsGetAuthTokenDefaultResponse = zod.unknown();
 
 /**
  * @summary Start a container app
@@ -285,26 +437,38 @@ export const containerAppsGetAuthTokenDefaultResponse = zod.unknown()
 
 export const containerAppsStartPathResourceGroupNameMax = 90;
 
-export const containerAppsStartPathContainerAppNameRegExp = new RegExp('^[-\\w\\._\\(\\)]+$');
-
+export const containerAppsStartPathContainerAppNameRegExp = new RegExp(
+  "^[-\\w\\._\\(\\)]+$",
+);
 
 export const containerAppsStartParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsStartPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().regex(containerAppsStartPathContainerAppNameRegExp).describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsStartPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod
+    .string()
+    .regex(containerAppsStartPathContainerAppNameRegExp)
+    .describe("Name of the Container App."),
+});
 
 export const containerAppsStartQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsStart200Response = zod.unknown().describe('Container App.')
+export const containerAppsStart200Response = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsStartDefaultResponse = zod.unknown()
-
+export const containerAppsStartDefaultResponse = zod.unknown();
 
 /**
  * @summary Stop a container app
@@ -312,22 +476,35 @@ export const containerAppsStartDefaultResponse = zod.unknown()
 
 export const containerAppsStopPathResourceGroupNameMax = 90;
 
-export const containerAppsStopPathContainerAppNameRegExp = new RegExp('^[-\\w\\._\\(\\)]+$');
-
+export const containerAppsStopPathContainerAppNameRegExp = new RegExp(
+  "^[-\\w\\._\\(\\)]+$",
+);
 
 export const containerAppsStopParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(containerAppsStopPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "containerAppName": zod.string().regex(containerAppsStopPathContainerAppNameRegExp).describe('Name of the Container App.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(containerAppsStopPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  containerAppName: zod
+    .string()
+    .regex(containerAppsStopPathContainerAppNameRegExp)
+    .describe("Name of the Container App."),
+});
 
 export const containerAppsStopQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const containerAppsStop200Response = zod.unknown().describe('Container App.')
+export const containerAppsStop200Response = zod
+  .unknown()
+  .describe("Container App.");
 
-export const containerAppsStopDefaultResponse = zod.unknown()
+export const containerAppsStopDefaultResponse = zod.unknown();

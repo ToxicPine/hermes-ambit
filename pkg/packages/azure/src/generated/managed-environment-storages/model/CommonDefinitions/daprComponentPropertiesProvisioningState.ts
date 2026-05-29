@@ -8,14 +8,14 @@
 /**
  * Provisioning state of the Dapr Component.
  */
-export type DaprComponentPropertiesProvisioningState = typeof DaprComponentPropertiesProvisioningState[keyof typeof DaprComponentPropertiesProvisioningState];
-
+export type DaprComponentPropertiesProvisioningState =
+  (typeof DaprComponentPropertiesProvisioningState)[keyof typeof DaprComponentPropertiesProvisioningState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const DaprComponentPropertiesProvisioningState = {
-  Succeeded: 'Succeeded',
-  Failed: 'Failed',
-  Canceled: 'Canceled',
-  InProgress: 'InProgress',
-  Deleting: 'Deleting',
+  Succeeded: "Succeeded",
+  Failed: "Failed",
+  Canceled: "Canceled",
+  InProgress: "InProgress",
+  Deleting: "Deleting",
 } as const;

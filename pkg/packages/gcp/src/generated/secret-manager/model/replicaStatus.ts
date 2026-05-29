@@ -4,7 +4,7 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { CustomerManagedEncryptionStatus } from './customerManagedEncryptionStatus';
+import type { CustomerManagedEncryptionStatus } from "./customerManagedEncryptionStatus";
 
 /**
  * Describes the status of a user-managed replica for the SecretVersion.

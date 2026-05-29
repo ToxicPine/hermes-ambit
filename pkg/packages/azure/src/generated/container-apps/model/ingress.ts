@@ -4,14 +4,14 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { IngressTransport } from './ingressTransport';
-import type { TrafficWeight } from './trafficWeight';
-import type { CustomDomain } from './CommonDefinitions/customDomain';
-import type { IpSecurityRestrictionRule } from './ipSecurityRestrictionRule';
-import type { IngressStickySessions } from './ingressStickySessions';
-import type { IngressClientCertificateMode } from './ingressClientCertificateMode';
-import type { CorsPolicy } from './corsPolicy';
-import type { IngressPortMapping } from './ingressPortMapping';
+import type { IngressTransport } from "./ingressTransport";
+import type { TrafficWeight } from "./trafficWeight";
+import type { CustomDomain } from "./CommonDefinitions/customDomain";
+import type { IpSecurityRestrictionRule } from "./ipSecurityRestrictionRule";
+import type { IngressStickySessions } from "./ingressStickySessions";
+import type { IngressClientCertificateMode } from "./ingressClientCertificateMode";
+import type { CorsPolicy } from "./corsPolicy";
+import type { IngressPortMapping } from "./ingressPortMapping";
 
 /**
  * Container App Ingress configuration.

@@ -13,10 +13,7 @@ import type {
   GcpDeployment,
   GcpDeploymentRef,
 } from "@cardelli/gcp";
-import {
-  type CloudError,
-  type HomeManagerPatch,
-} from "@cardelli/shared";
+import { type CloudError, type HomeManagerModule } from "@cardelli/shared";
 import { Effect } from "effect";
 
 import type { AppProfile } from "./app-profile.js";
@@ -127,7 +124,6 @@ export type ProviderDiscoveryTarget =
 export type GcpProviderTarget = {
   readonly provider: "gcp";
   readonly profile: string;
-  readonly deployment: string;
   readonly user: string;
   readonly ref: GcpDeploymentRef;
   readonly deploymentSpec?: GcpDeployment;
@@ -137,12 +133,10 @@ export type GcpProviderTarget = {
 export type AzureProviderTarget = {
   readonly provider: "azure";
   readonly profile: string;
-  readonly deployment: string;
   readonly user: string;
   readonly ref: AzureDeploymentRef;
   readonly deploymentSpec?: AzureDeployment;
   readonly tenantId: string;
-  readonly openaiCompatibleEndpoint?: string;
 };
 
 export type ProviderTarget = GcpProviderTarget | AzureProviderTarget;
@@ -214,8 +208,8 @@ export type ProviderRunner = {
     ProviderOperationResult<ProviderStatusSummary>,
     CloudError
   >;
-  readonly applyHomeManagerPatch?: (
-    patch: HomeManagerPatch,
+  readonly writeHomeManagerModule?: (
+    module: HomeManagerModule,
   ) => Effect.Effect<
     ProviderOperationResult<ProviderStatusSummary>,
     CloudError
@@ -281,7 +275,6 @@ const gcpTargetFromProfile = (
   return {
     provider: "gcp",
     profile: profile.name,
-    deployment: profile.deployment,
     user: fields["user"] ?? profile.user,
     ref: {
       name: profile.deployment,
@@ -316,20 +309,18 @@ const azureResourceGroupFromProfile = (
   fields: Readonly<Record<string, string>> = {},
 ): AzureResourceGroupRef => ({
   subscriptionId: fields["subscription"] ?? profile.azure.subscriptionId,
-  resourceGroupName: fields["resource-group"] ?? profile.azure.resourceGroupName,
+  resourceGroupName:
+    fields["resource-group"] ?? profile.azure.resourceGroupName,
 });
 
 const azureTargetFromProfile = (
   profile: Extract<AppProfile, { readonly provider: "azure" }>,
   fields: Readonly<Record<string, string>> = {},
 ): AzureProviderTarget => {
-  const openaiCompatibleEndpoint =
-    fields["endpoint"] ?? profile.azure.openaiCompatibleEndpoint;
   const deployment = azureDeploymentFromProfile(profile, fields);
   return {
     provider: "azure",
     profile: profile.name,
-    deployment: profile.deployment,
     user: fields["user"] ?? profile.user,
     tenantId: fields["tenant"] ?? profile.tenantId,
     ref: {
@@ -338,7 +329,6 @@ const azureTargetFromProfile = (
       resourceGroupName: deployment.resourceGroupName,
     },
     deploymentSpec: deployment,
-    ...(openaiCompatibleEndpoint ? { openaiCompatibleEndpoint } : {}),
   };
 };
 
@@ -396,7 +386,7 @@ export const discoveryTargetFromProfile = (
 export const modelTargetFromProfile = (
   profile: AppProfile,
   fields: Readonly<Record<string, string>> = {},
-): ProviderModelTarget | AppError => {
+): ProviderModelTarget => {
   if (profile.provider === "gcp") {
     const quotaProjectId = fields["quota-project"] ?? profile.quotaProjectId;
     return {
@@ -407,16 +397,11 @@ export const modelTargetFromProfile = (
     };
   }
 
-  const endpoint = fields["endpoint"] ?? profile.azure.openaiCompatibleEndpoint;
-  if (!endpoint) {
-    return missingAzureModelEndpoint();
-  }
-
   return {
     provider: "azure",
     profile: profile.name,
     tenantId: fields["tenant"] ?? profile.tenantId,
-    endpoint,
+    endpoint: fields["endpoint"] ?? profile.azure.openaiCompatibleEndpoint,
   };
 };
 
@@ -437,22 +422,18 @@ const providerConfigRead = (
 
 const gcpAuth = (target: { readonly quotaProjectId?: string }) =>
   makeGcpApplicationDefaultAuthContext({
-    ...(target.quotaProjectId
-      ? { quotaProjectId: target.quotaProjectId }
-      : {}),
+    ...(target.quotaProjectId ? { quotaProjectId: target.quotaProjectId } : {}),
   });
 
 const gcpAuthForRequest = (
   target: { readonly quotaProjectId?: string },
   credentials: LocalCredentialRequest,
 ) =>
-  credentials.mode && credentials.mode !== "auto"
-    ? undefined
-    : gcpAuth(target);
+  credentials.mode && credentials.mode !== "auto" ? undefined : gcpAuth(target);
 
-const gcpAuthSummary = (
-  target: { readonly quotaProjectId?: string },
-): ProviderAuthSummary => ({
+const gcpAuthSummary = (target: {
+  readonly quotaProjectId?: string;
+}): ProviderAuthSummary => ({
   ...(target.quotaProjectId ? { quotaProjectId: target.quotaProjectId } : {}),
 });
 
@@ -533,18 +514,15 @@ const gcpRunner = (
               app.deploy(deployment),
               summarizeGcpStatus,
             ),
-          applyHomeManagerPatch: (patch: HomeManagerPatch) =>
+          writeHomeManagerModule: (module: HomeManagerModule) =>
             mapProviderOperationResult(
-              homeManagerApp.applyPatch(deployment, target.user, patch),
+              homeManagerApp.writeModule(deployment, target.user, module),
               summarizeGcpStatus,
             ),
         }
       : {}),
     status: () =>
-      mapProviderOperationResult(
-        app.status(target.ref),
-        summarizeGcpStatus,
-      ),
+      mapProviderOperationResult(app.status(target.ref), summarizeGcpStatus),
     listSecrets: () => app.listRuntimeSecrets(target.ref),
     putSecret: (name, value) =>
       mapProviderOperationResult(
@@ -557,15 +535,9 @@ const gcpRunner = (
         summarizeGcpStatus,
       ),
     restart: () =>
-      mapProviderOperationResult(
-        app.restart(target.ref),
-        summarizeGcpStatus,
-      ),
+      mapProviderOperationResult(app.restart(target.ref), summarizeGcpStatus),
     destroy: () =>
-      mapProviderOperationResult(
-        app.destroy(target.ref),
-        summarizeGcpStatus,
-      ),
+      mapProviderOperationResult(app.destroy(target.ref), summarizeGcpStatus),
   };
 };
 
@@ -700,18 +672,15 @@ const azureRunner = (
               homeManagerApp.readConfig(deployment, target.user),
               providerConfigRead,
             ),
-          applyHomeManagerPatch: (patch: HomeManagerPatch) =>
+          writeHomeManagerModule: (module: HomeManagerModule) =>
             mapProviderOperationResult(
-              homeManagerApp.applyPatch(deployment, target.user, patch),
+              homeManagerApp.writeModule(deployment, target.user, module),
               summarizeAzureStatus,
             ),
         }
       : {}),
     status: () =>
-      mapProviderOperationResult(
-        app.status(target.ref),
-        summarizeAzureStatus,
-      ),
+      mapProviderOperationResult(app.status(target.ref), summarizeAzureStatus),
     listSecrets: () => app.listRuntimeSecrets(target.ref),
     putSecret: (name, value) =>
       mapProviderOperationResult(
@@ -724,15 +693,9 @@ const azureRunner = (
         summarizeAzureStatus,
       ),
     restart: () =>
-      mapProviderOperationResult(
-        app.restart(target.ref),
-        summarizeAzureStatus,
-      ),
+      mapProviderOperationResult(app.restart(target.ref), summarizeAzureStatus),
     destroy: () =>
-      mapProviderOperationResult(
-        app.destroy(target.ref),
-        summarizeAzureStatus,
-      ),
+      mapProviderOperationResult(app.destroy(target.ref), summarizeAzureStatus),
     ...(deployment
       ? {
           destroyWithStatePurge: () =>
@@ -803,10 +766,8 @@ export const makeDefaultProviderModelRunner: ProviderModelRunnerFactory = (
     ? gcpModelRunner(target, request)
     : azureModelRunner(target, request);
 
-export const makeDefaultProviderDiscoveryRunner: ProviderDiscoveryRunnerFactory = (
-  target,
-  request,
-) =>
-  target.provider === "gcp"
-    ? gcpDiscoveryRunner(target, request)
-    : azureDiscoveryRunner(target, request);
+export const makeDefaultProviderDiscoveryRunner: ProviderDiscoveryRunnerFactory =
+  (target, request) =>
+    target.provider === "gcp"
+      ? gcpDiscoveryRunner(target, request)
+      : azureDiscoveryRunner(target, request);

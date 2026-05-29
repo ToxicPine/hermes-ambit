@@ -4,8 +4,8 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2CloudStorageSource } from './googleCloudRunV2CloudStorageSource';
-import type { GoogleCloudRunV2InlinedSource } from './googleCloudRunV2InlinedSource';
+import type { GoogleCloudRunV2CloudStorageSource } from "./googleCloudRunV2CloudStorageSource";
+import type { GoogleCloudRunV2InlinedSource } from "./googleCloudRunV2InlinedSource";
 
 /**
  * Source type for the container.

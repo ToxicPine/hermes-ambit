@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2Overrides } from './googleCloudRunV2Overrides';
+import type { GoogleCloudRunV2Overrides } from "./googleCloudRunV2Overrides";
 
 /**
  * Request message to create a new Execution of a Job.

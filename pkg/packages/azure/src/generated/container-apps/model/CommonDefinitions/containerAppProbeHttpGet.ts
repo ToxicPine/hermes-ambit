@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ContainerAppProbeHttpGetHttpHeadersItem } from './containerAppProbeHttpGetHttpHeadersItem';
-import type { ContainerAppProbeHttpGetScheme } from './containerAppProbeHttpGetScheme';
+import type { ContainerAppProbeHttpGetHttpHeadersItem } from "./containerAppProbeHttpGetHttpHeadersItem";
+import type { ContainerAppProbeHttpGetScheme } from "./containerAppProbeHttpGetScheme";
 
 /**
  * HTTPGet specifies the http request to perform.

@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModel } from './googleCloudAiplatformV1beta1PublisherModel';
+import type { GoogleCloudAiplatformV1beta1PublisherModel } from "./googleCloudAiplatformV1beta1PublisherModel";
 
 /**
  * Response message for ModelGardenService.ListPublisherModels.

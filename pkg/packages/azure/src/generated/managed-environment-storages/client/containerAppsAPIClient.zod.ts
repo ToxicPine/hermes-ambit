@@ -4,8 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * Get all storages for a managedEnvironment.
@@ -14,27 +13,35 @@ import * as zod from 'zod';
 
 export const managedEnvironmentsStoragesListPathResourceGroupNameMax = 90;
 
-
-
 export const managedEnvironmentsStoragesListParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(managedEnvironmentsStoragesListPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "environmentName": zod.string().describe('Name of the Environment.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(managedEnvironmentsStoragesListPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  environmentName: zod.string().describe("Name of the Environment."),
+});
 
 export const managedEnvironmentsStoragesListQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const managedEnvironmentsStoragesList200Response = zod.object({
-  "value": zod.array(zod.unknown().describe('Storage resource for managedEnvironment.')).describe('Collection of storage resources.')
-}).describe('Collection of Storage for Environments')
+export const managedEnvironmentsStoragesList200Response = zod
+  .object({
+    value: zod
+      .array(zod.unknown().describe("Storage resource for managedEnvironment."))
+      .describe("Collection of storage resources."),
+  })
+  .describe("Collection of Storage for Environments");
 
-export const managedEnvironmentsStoragesListDefaultResponse = zod.unknown()
-
+export const managedEnvironmentsStoragesListDefaultResponse = zod.unknown();
 
 /**
  * Get storage for a managedEnvironment.
@@ -43,26 +50,32 @@ export const managedEnvironmentsStoragesListDefaultResponse = zod.unknown()
 
 export const managedEnvironmentsStoragesGetPathResourceGroupNameMax = 90;
 
-
-
 export const managedEnvironmentsStoragesGetParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(managedEnvironmentsStoragesGetPathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "environmentName": zod.string().describe('Name of the Environment.'),
-  "storageName": zod.string().describe('Name of the storage.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(managedEnvironmentsStoragesGetPathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  environmentName: zod.string().describe("Name of the Environment."),
+  storageName: zod.string().describe("Name of the storage."),
+});
 
 export const managedEnvironmentsStoragesGetQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const managedEnvironmentsStoragesGet200Response = zod.unknown().describe('Storage resource for managedEnvironment.')
+export const managedEnvironmentsStoragesGet200Response = zod
+  .unknown()
+  .describe("Storage resource for managedEnvironment.");
 
-export const managedEnvironmentsStoragesGetDefaultResponse = zod.unknown()
-
+export const managedEnvironmentsStoragesGetDefaultResponse = zod.unknown();
 
 /**
  * Create or update storage for a managedEnvironment.
@@ -71,30 +84,41 @@ export const managedEnvironmentsStoragesGetDefaultResponse = zod.unknown()
 
 export const managedEnvironmentsStoragesCreateOrUpdatePathResourceGroupNameMax = 90;
 
-
-
 export const managedEnvironmentsStoragesCreateOrUpdateParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(managedEnvironmentsStoragesCreateOrUpdatePathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "environmentName": zod.string().describe('Name of the Environment.'),
-  "storageName": zod.string().describe('Name of the storage.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(managedEnvironmentsStoragesCreateOrUpdatePathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  environmentName: zod.string().describe("Name of the Environment."),
+  storageName: zod.string().describe("Name of the storage."),
+});
 
 export const managedEnvironmentsStoragesCreateOrUpdateQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const managedEnvironmentsStoragesCreateOrUpdateBody = zod.unknown().describe('Storage resource for managedEnvironment.')
+export const managedEnvironmentsStoragesCreateOrUpdateBody = zod
+  .unknown()
+  .describe("Storage resource for managedEnvironment.");
 
-export const managedEnvironmentsStoragesCreateOrUpdate200Response = zod.unknown().describe('Storage resource for managedEnvironment.')
+export const managedEnvironmentsStoragesCreateOrUpdate200Response = zod
+  .unknown()
+  .describe("Storage resource for managedEnvironment.");
 
-export const managedEnvironmentsStoragesCreateOrUpdate201Response = zod.unknown().describe('Storage resource for managedEnvironment.')
+export const managedEnvironmentsStoragesCreateOrUpdate201Response = zod
+  .unknown()
+  .describe("Storage resource for managedEnvironment.");
 
-export const managedEnvironmentsStoragesCreateOrUpdateDefaultResponse = zod.unknown()
-
+export const managedEnvironmentsStoragesCreateOrUpdateDefaultResponse =
+  zod.unknown();
 
 /**
  * Delete storage for a managedEnvironment.
@@ -103,20 +127,25 @@ export const managedEnvironmentsStoragesCreateOrUpdateDefaultResponse = zod.unkn
 
 export const managedEnvironmentsStoragesDeletePathResourceGroupNameMax = 90;
 
-
-
 export const managedEnvironmentsStoragesDeleteParams = zod.object({
-  "subscriptionId": zod.string().min(1).describe('The ID of the target subscription.'),
-  "resourceGroupName": zod.string().min(1).max(managedEnvironmentsStoragesDeletePathResourceGroupNameMax).describe('The name of the resource group. The name is case insensitive.'),
-  "environmentName": zod.string().describe('Name of the Environment.'),
-  "storageName": zod.string().describe('Name of the storage.')
-})
-
-
-
+  subscriptionId: zod
+    .string()
+    .min(1)
+    .describe("The ID of the target subscription."),
+  resourceGroupName: zod
+    .string()
+    .min(1)
+    .max(managedEnvironmentsStoragesDeletePathResourceGroupNameMax)
+    .describe("The name of the resource group. The name is case insensitive."),
+  environmentName: zod.string().describe("Name of the Environment."),
+  storageName: zod.string().describe("Name of the storage."),
+});
 
 export const managedEnvironmentsStoragesDeleteQueryParams = zod.object({
-  "api-version": zod.string().min(1).describe('The API version to use for this operation.')
-})
+  "api-version": zod
+    .string()
+    .min(1)
+    .describe("The API version to use for this operation."),
+});
 
-export const managedEnvironmentsStoragesDeleteDefaultResponse = zod.unknown()
+export const managedEnvironmentsStoragesDeleteDefaultResponse = zod.unknown();

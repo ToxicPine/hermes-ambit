@@ -4,13 +4,13 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionViewRestApi } from './googleCloudAiplatformV1beta1PublisherModelCallToActionViewRestApi';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences } from './googleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenNotebooks } from './googleCloudAiplatformV1beta1PublisherModelCallToActionOpenNotebooks';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenFineTuningPipelines } from './googleCloudAiplatformV1beta1PublisherModelCallToActionOpenFineTuningPipelines';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy } from './googleCloudAiplatformV1beta1PublisherModelCallToActionDeploy';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployVertex } from './googleCloudAiplatformV1beta1PublisherModelCallToActionDeployVertex';
-import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployGke } from './googleCloudAiplatformV1beta1PublisherModelCallToActionDeployGke';
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionViewRestApi } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionViewRestApi";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenNotebooks } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionOpenNotebooks";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenFineTuningPipelines } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionOpenFineTuningPipelines";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionDeploy";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployVertex } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionDeployVertex";
+import type { GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployGke } from "./googleCloudAiplatformV1beta1PublisherModelCallToActionDeployGke";
 
 /**
  * Actions could take on this Publisher Model.

@@ -8,12 +8,12 @@
 /**
  * Optional. The sandbox environment to host this Revision.
  */
-export type GoogleCloudRunV2RevisionTemplateExecutionEnvironment = typeof GoogleCloudRunV2RevisionTemplateExecutionEnvironment[keyof typeof GoogleCloudRunV2RevisionTemplateExecutionEnvironment];
-
+export type GoogleCloudRunV2RevisionTemplateExecutionEnvironment =
+  (typeof GoogleCloudRunV2RevisionTemplateExecutionEnvironment)[keyof typeof GoogleCloudRunV2RevisionTemplateExecutionEnvironment];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2RevisionTemplateExecutionEnvironment = {
-  EXECUTION_ENVIRONMENT_UNSPECIFIED: 'EXECUTION_ENVIRONMENT_UNSPECIFIED',
-  EXECUTION_ENVIRONMENT_GEN1: 'EXECUTION_ENVIRONMENT_GEN1',
-  EXECUTION_ENVIRONMENT_GEN2: 'EXECUTION_ENVIRONMENT_GEN2',
+  EXECUTION_ENVIRONMENT_UNSPECIFIED: "EXECUTION_ENVIRONMENT_UNSPECIFIED",
+  EXECUTION_ENVIRONMENT_GEN1: "EXECUTION_ENVIRONMENT_GEN1",
+  EXECUTION_ENVIRONMENT_GEN2: "EXECUTION_ENVIRONMENT_GEN2",
 } as const;

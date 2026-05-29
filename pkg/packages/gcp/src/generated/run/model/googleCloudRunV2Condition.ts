@@ -4,11 +4,11 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ConditionState } from './googleCloudRunV2ConditionState';
-import type { GoogleCloudRunV2ConditionSeverity } from './googleCloudRunV2ConditionSeverity';
-import type { GoogleCloudRunV2ConditionReason } from './googleCloudRunV2ConditionReason';
-import type { GoogleCloudRunV2ConditionRevisionReason } from './googleCloudRunV2ConditionRevisionReason';
-import type { GoogleCloudRunV2ConditionExecutionReason } from './googleCloudRunV2ConditionExecutionReason';
+import type { GoogleCloudRunV2ConditionState } from "./googleCloudRunV2ConditionState";
+import type { GoogleCloudRunV2ConditionSeverity } from "./googleCloudRunV2ConditionSeverity";
+import type { GoogleCloudRunV2ConditionReason } from "./googleCloudRunV2ConditionReason";
+import type { GoogleCloudRunV2ConditionRevisionReason } from "./googleCloudRunV2ConditionRevisionReason";
+import type { GoogleCloudRunV2ConditionExecutionReason } from "./googleCloudRunV2ConditionExecutionReason";
 
 /**
  * Defines a status condition for a resource.

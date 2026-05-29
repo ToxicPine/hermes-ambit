@@ -1,9 +1,11 @@
 import { readFileSync } from "node:fs";
 import { extname } from "node:path";
 
+import { hermesDeploymentNameSchema } from "@cardelli/shared";
 import { parse as parseYaml } from "yaml";
 import { z } from "zod";
 
+import { profileNameSchema } from "./app-profile.js";
 import type {
   AppError,
   CommandIntent,
@@ -19,6 +21,7 @@ const gcpConfigSchema = z
     region: z.string().min(1).optional(),
     serviceAccount: z.string().min(1).optional(),
     quotaProject: z.string().min(1).optional(),
+    model: z.string().min(1).optional(),
     state: z.literal("nfs").optional(),
     stateServer: z.string().min(1).optional(),
     statePath: z.string().min(1).optional(),
@@ -36,6 +39,7 @@ const azureConfigSchema = z
     environmentId: z.string().min(1).optional(),
     storageName: z.string().min(1).optional(),
     endpoint: z.string().min(1).optional(),
+    model: z.string().min(1).optional(),
     state: z.literal("azure-files").optional(),
     stateDataPath: z.string().min(1).optional(),
     stateNixPath: z.string().min(1).optional(),
@@ -44,9 +48,9 @@ const azureConfigSchema = z
 
 const deployerConfigSchema = z
   .object({
-    profile: z.string().min(1).optional(),
+    profile: profileNameSchema.optional(),
     provider: providerKindSchema.optional(),
-    deployment: z.string().min(1).optional(),
+    deployment: hermesDeploymentNameSchema.optional(),
     user: z.string().min(1).optional(),
     gcp: gcpConfigSchema.optional(),
     azure: azureConfigSchema.optional(),
@@ -78,9 +82,7 @@ const parseConfigText = (path: string, text: string): unknown => {
   return extension === ".json" ? JSON.parse(text) : parseYaml(text);
 };
 
-export const readDeployerConfig = (
-  path: string,
-): DeployerConfig | AppError => {
+export const readDeployerConfig = (path: string): DeployerConfig | AppError => {
   let text: string;
   try {
     text = readFileSync(path, "utf8");
@@ -166,6 +168,7 @@ const gcpConfigFields = [
   ["region", "region"],
   ["serviceAccount", "service-account"],
   ["quotaProject", "quota-project"],
+  ["model", "model"],
   ["state", "state"],
   ["stateServer", "state-server"],
   ["statePath", "state-path"],
@@ -184,6 +187,7 @@ const azureConfigFields = [
   ["environmentId", "environment-id"],
   ["storageName", "storage-name"],
   ["endpoint", "endpoint"],
+  ["model", "model"],
   ["state", "state"],
   ["stateDataPath", "state-data-path"],
   ["stateNixPath", "state-nix-path"],
@@ -231,7 +235,11 @@ const mergeGlobals = (
 
   return {
     ...baseGlobals,
-    ...(globals.profile ? {} : config.profile ? { profile: config.profile } : {}),
+    ...(globals.profile
+      ? {}
+      : config.profile
+        ? { profile: config.profile }
+        : {}),
     ...(provider ? { provider } : {}),
     ...(globals.deployment
       ? {}

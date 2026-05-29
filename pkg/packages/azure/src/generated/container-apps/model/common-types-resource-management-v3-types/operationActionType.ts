@@ -8,10 +8,10 @@
 /**
  * Enum. Indicates the action type. "Internal" refers to actions that are for internal only APIs.
  */
-export type OperationActionType = typeof OperationActionType[keyof typeof OperationActionType];
-
+export type OperationActionType =
+  (typeof OperationActionType)[keyof typeof OperationActionType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const OperationActionType = {
-  Internal: 'Internal',
+  Internal: "Internal",
 } as const;

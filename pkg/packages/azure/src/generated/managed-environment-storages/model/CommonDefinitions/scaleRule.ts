@@ -4,10 +4,10 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { QueueScaleRule } from './queueScaleRule';
-import type { CustomScaleRule } from './customScaleRule';
-import type { HttpScaleRule } from './httpScaleRule';
-import type { TcpScaleRule } from './tcpScaleRule';
+import type { QueueScaleRule } from "./queueScaleRule";
+import type { CustomScaleRule } from "./customScaleRule";
+import type { HttpScaleRule } from "./httpScaleRule";
+import type { TcpScaleRule } from "./tcpScaleRule";
 
 /**
  * Container App container scaling rule.

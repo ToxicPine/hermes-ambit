@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { VolumeStorageType } from './volumeStorageType';
-import type { SecretVolumeItem } from './secretVolumeItem';
+import type { VolumeStorageType } from "./volumeStorageType";
+import type { SecretVolumeItem } from "./secretVolumeItem";
 
 /**
  * Volume definitions for the Container App.

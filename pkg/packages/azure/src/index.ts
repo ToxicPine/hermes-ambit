@@ -17,9 +17,7 @@ export {
   readAzureHomeManagerConfig,
   updateAzureHomeManager,
 } from "./home-manager.js";
-export {
-  listAzureFoundryOpenAICompatibleModels,
-} from "./models.js";
+export { listAzureFoundryOpenAICompatibleModels } from "./models.js";
 export type {
   AzureFoundryOpenAICompatibleAuthContext,
   AzureFoundryOpenAICompatibleModels,

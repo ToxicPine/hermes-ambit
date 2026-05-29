@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { DaprSecret } from './daprSecret';
+import type { DaprSecret } from "./daprSecret";
 
 /**
  * Dapr component Secrets Collection for ListSecrets Action.

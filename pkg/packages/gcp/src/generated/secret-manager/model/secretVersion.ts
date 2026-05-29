@@ -4,9 +4,9 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { SecretVersionState } from './secretVersionState';
-import type { ReplicationStatus } from './replicationStatus';
-import type { CustomerManagedEncryptionStatus } from './customerManagedEncryptionStatus';
+import type { SecretVersionState } from "./secretVersionState";
+import type { ReplicationStatus } from "./replicationStatus";
+import type { CustomerManagedEncryptionStatus } from "./customerManagedEncryptionStatus";
 
 /**
  * A secret version resource in the Secret Manager API.

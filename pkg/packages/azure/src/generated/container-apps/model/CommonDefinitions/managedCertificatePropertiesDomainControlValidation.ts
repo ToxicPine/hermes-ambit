@@ -8,12 +8,12 @@
 /**
  * Selected type of domain control validation for managed certificates.
  */
-export type ManagedCertificatePropertiesDomainControlValidation = typeof ManagedCertificatePropertiesDomainControlValidation[keyof typeof ManagedCertificatePropertiesDomainControlValidation];
-
+export type ManagedCertificatePropertiesDomainControlValidation =
+  (typeof ManagedCertificatePropertiesDomainControlValidation)[keyof typeof ManagedCertificatePropertiesDomainControlValidation];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ManagedCertificatePropertiesDomainControlValidation = {
-  CNAME: 'CNAME',
-  HTTP: 'HTTP',
-  TXT: 'TXT',
+  CNAME: "CNAME",
+  HTTP: "HTTP",
+  TXT: "TXT",
 } as const;

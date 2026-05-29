@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ContainerApp } from './containerApp';
+import type { ContainerApp } from "./containerApp";
 
 /**
  * Container App collection ARM resource.

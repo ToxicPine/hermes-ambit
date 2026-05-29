@@ -8,12 +8,15 @@
 /**
  * The allocation type for this traffic target.
  */
-export type GoogleCloudRunV2TrafficTargetStatusType = typeof GoogleCloudRunV2TrafficTargetStatusType[keyof typeof GoogleCloudRunV2TrafficTargetStatusType];
-
+export type GoogleCloudRunV2TrafficTargetStatusType =
+  (typeof GoogleCloudRunV2TrafficTargetStatusType)[keyof typeof GoogleCloudRunV2TrafficTargetStatusType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2TrafficTargetStatusType = {
-  TRAFFIC_TARGET_ALLOCATION_TYPE_UNSPECIFIED: 'TRAFFIC_TARGET_ALLOCATION_TYPE_UNSPECIFIED',
-  TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST: 'TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST',
-  TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION: 'TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION',
+  TRAFFIC_TARGET_ALLOCATION_TYPE_UNSPECIFIED:
+    "TRAFFIC_TARGET_ALLOCATION_TYPE_UNSPECIFIED",
+  TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST:
+    "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST",
+  TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION:
+    "TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION",
 } as const;

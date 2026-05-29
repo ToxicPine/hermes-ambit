@@ -4,8 +4,8 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2VpcAccessEgress } from './googleCloudRunV2VpcAccessEgress';
-import type { GoogleCloudRunV2NetworkInterface } from './googleCloudRunV2NetworkInterface';
+import type { GoogleCloudRunV2VpcAccessEgress } from "./googleCloudRunV2VpcAccessEgress";
+import type { GoogleCloudRunV2NetworkInterface } from "./googleCloudRunV2NetworkInterface";
 
 /**
  * VPC Access settings. For more information on sending traffic to a VPC network, visit https://cloud.google.com/run/docs/configuring/connecting-vpc.

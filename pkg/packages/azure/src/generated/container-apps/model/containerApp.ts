@@ -4,11 +4,11 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { TrackedResource } from './common-types-resource-management-v5-types/trackedResource';
-import type { ExtendedLocation } from './CommonDefinitions/extendedLocation';
-import type { ManagedServiceIdentity } from './common-types-resource-management-v3-managedidentity/managedServiceIdentity';
-import type { ContainerAppKind } from './containerAppKind';
-import type { ContainerAppProperties } from './containerAppProperties';
+import type { TrackedResource } from "./common-types-resource-management-v5-types/trackedResource";
+import type { ExtendedLocation } from "./CommonDefinitions/extendedLocation";
+import type { ManagedServiceIdentity } from "./common-types-resource-management-v3-managedidentity/managedServiceIdentity";
+import type { ContainerAppKind } from "./containerAppKind";
+import type { ContainerAppProperties } from "./containerAppProperties";
 
 /**
  * Container App.

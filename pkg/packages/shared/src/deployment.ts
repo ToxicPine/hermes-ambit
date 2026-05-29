@@ -1,10 +1,7 @@
 import { Effect } from "effect";
 
 import { emitCloudEvent } from "./log.js";
-import type {
-  DeploymentIdentity,
-  DeploymentDriver,
-} from "./model.js";
+import type { DeploymentIdentity, DeploymentDriver } from "./model.js";
 
 export const makeDeployment = <
   PlanInput extends DeploymentIdentity,

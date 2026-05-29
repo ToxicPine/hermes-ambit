@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { IngressStickySessionsAffinity } from './ingressStickySessionsAffinity';
+import type { IngressStickySessionsAffinity } from "./ingressStickySessionsAffinity";
 
 /**
  * Sticky Sessions for Single Revision Mode

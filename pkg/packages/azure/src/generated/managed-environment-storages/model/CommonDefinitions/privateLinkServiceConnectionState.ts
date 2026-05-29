@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { PrivateEndpointServiceConnectionStatus } from './privateEndpointServiceConnectionStatus';
+import type { PrivateEndpointServiceConnectionStatus } from "./privateEndpointServiceConnectionStatus";
 
 /**
  * A collection of information about the state of the connection between service consumer and provider.

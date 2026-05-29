@@ -8,13 +8,13 @@
 /**
  * Output only. The current state of the SecretVersion.
  */
-export type SecretVersionState = typeof SecretVersionState[keyof typeof SecretVersionState];
-
+export type SecretVersionState =
+  (typeof SecretVersionState)[keyof typeof SecretVersionState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SecretVersionState = {
-  STATE_UNSPECIFIED: 'STATE_UNSPECIFIED',
-  ENABLED: 'ENABLED',
-  DISABLED: 'DISABLED',
-  DESTROYED: 'DESTROYED',
+  STATE_UNSPECIFIED: "STATE_UNSPECIFIED",
+  ENABLED: "ENABLED",
+  DISABLED: "DISABLED",
+  DESTROYED: "DESTROYED",
 } as const;

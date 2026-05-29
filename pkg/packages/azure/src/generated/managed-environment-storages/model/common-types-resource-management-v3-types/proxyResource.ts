@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Resource } from './resource';
+import type { Resource } from "./resource";
 
 /**
  * The resource model definition for a Azure Resource Manager proxy resource. It will not have tags and a location

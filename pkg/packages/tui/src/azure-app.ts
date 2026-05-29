@@ -17,7 +17,7 @@ import {
   type AzureFoundryOpenAICompatibleModels,
   type AzureStatus,
 } from "@cardelli/azure";
-import type { CloudError, HomeManagerPatch } from "@cardelli/shared";
+import type { CloudError, HomeManagerModule } from "@cardelli/shared";
 import { Effect } from "effect";
 
 import type {
@@ -62,21 +62,15 @@ export const summarizeAzureStatus = (
 ): AzureStatusSummary => {
   return {
     deployed: status.deployed,
-    ...(status.endpoint
-      ? { endpoint: status.endpoint }
-      : {}),
+    ...(status.endpoint ? { endpoint: status.endpoint } : {}),
     ...(status.image ? { image: status.image } : {}),
     ...(status.latestReadyRevision
       ? {
           latestReadyRevision: status.latestReadyRevision,
         }
       : {}),
-    ...(status.latestRevision
-      ? { latestRevision: status.latestRevision }
-      : {}),
-    ...(status.runningStatus
-      ? { runningStatus: status.runningStatus }
-      : {}),
+    ...(status.latestRevision ? { latestRevision: status.latestRevision } : {}),
+    ...(status.runningStatus ? { runningStatus: status.runningStatus } : {}),
     ...(status.provisioningState
       ? { provisioningState: status.provisioningState }
       : {}),
@@ -113,29 +107,27 @@ export const makeAzureApp = (auth: AzureAuthContext) => {
       deployment.previewDeploy(input),
     deploy: (input: AzureDeployment): Effect.Effect<AzureStatus, CloudError> =>
       deployment.deploy(input),
-    status: (input: AzureDeploymentRef): Effect.Effect<AzureStatus, CloudError> =>
-      deployment.status(input),
+    status: (
+      input: AzureDeploymentRef,
+    ): Effect.Effect<AzureStatus, CloudError> => deployment.status(input),
     discover: (
       boundary: AzureResourceGroupRef,
     ): Effect.Effect<
       ProviderOperationResult<ProviderDiscoverySummary>,
       CloudError
     > =>
-      mapProviderOperationResult(
-        deployment.discover(boundary),
-        (raw) => ({
-          boundary,
-          deployments: raw.map(summarizeAzureDiscoveryDeployment),
-        }),
-      ),
-    validateSetup: (
-      input: AzureDeployment,
-    ): Effect.Effect<void, CloudError> =>
+      mapProviderOperationResult(deployment.discover(boundary), (raw) => ({
+        boundary,
+        deployments: raw.map(summarizeAzureDiscoveryDeployment),
+      })),
+    validateSetup: (input: AzureDeployment): Effect.Effect<void, CloudError> =>
       deployment.validateSetup(input),
-    restart: (input: AzureDeploymentRef): Effect.Effect<AzureStatus, CloudError> =>
-      deployment.restart(input),
-    destroy: (input: AzureDeploymentRef): Effect.Effect<AzureStatus, CloudError> =>
-      deployment.destroy(input),
+    restart: (
+      input: AzureDeploymentRef,
+    ): Effect.Effect<AzureStatus, CloudError> => deployment.restart(input),
+    destroy: (
+      input: AzureDeploymentRef,
+    ): Effect.Effect<AzureStatus, CloudError> => deployment.destroy(input),
     destroyWithStatePurge: (
       input: AzureDeployment,
       filesAuth: AzureAuthContext,
@@ -168,15 +160,15 @@ export const makeAzureHomeManagerApp = (
     user: string,
   ): Effect.Effect<string | undefined, CloudError> =>
     readAzureHomeManagerConfig(armAuth, filesAuth, input, user),
-  applyPatch: (
+  writeModule: (
     input: AzureDeployment,
     user: string,
-    patch: HomeManagerPatch,
+    module: HomeManagerModule,
   ): Effect.Effect<AzureStatus, CloudError> =>
     updateAzureHomeManager(armAuth, filesAuth, {
       identity: input,
       user,
-      patch,
+      module,
     }),
 });
 

@@ -4,8 +4,8 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType } from './googleCloudAiplatformV1beta1MachineSpecAcceleratorType';
-import type { GoogleCloudAiplatformV1beta1ReservationAffinity } from './googleCloudAiplatformV1beta1ReservationAffinity';
+import type { GoogleCloudAiplatformV1beta1MachineSpecAcceleratorType } from "./googleCloudAiplatformV1beta1MachineSpecAcceleratorType";
+import type { GoogleCloudAiplatformV1beta1ReservationAffinity } from "./googleCloudAiplatformV1beta1ReservationAffinity";
 
 /**
  * Specification of a single machine.

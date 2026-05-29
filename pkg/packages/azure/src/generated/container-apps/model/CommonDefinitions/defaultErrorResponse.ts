@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { DefaultErrorResponseError } from './defaultErrorResponseError';
+import type { DefaultErrorResponseError } from "./defaultErrorResponseError";
 
 /**
  * App Service error response.

@@ -8,10 +8,8 @@ import {
   OperationFailed,
   ResourceConflict,
   emitCloudEvent,
-  homeManagerPatchMarkers,
-  renderManagedBlock,
   type CloudError,
-  type HomeManagerPatch,
+  type HomeManagerModule,
 } from "@cardelli/shared";
 
 import { type GcpAuthContext } from "./client.js";
@@ -43,7 +41,7 @@ import type { GoogleCloudRunV2Service } from "./generated/run/model/googleCloudR
 type GcpHomeManagerUpdate = {
   readonly identity: GcpDeployment;
   readonly user: string;
-  readonly patch: HomeManagerPatch;
+  readonly module: HomeManagerModule;
 };
 
 const utf8Base64Encode = (value: string) => {
@@ -67,26 +65,21 @@ const serviceImage = (
         new OperationFailed({
           operation: "gcp.home-manager.image",
           message:
-            "Could not identify the deployed Hermes container image for the Home Manager patch job.",
+            "Could not identify the deployed Hermes container image for the Home Manager module job.",
         }),
       );
 };
 
 const homeManagerJobEnv = (
   user: string,
-  patch: HomeManagerPatch,
-): readonly GoogleCloudRunV2EnvVar[] => {
-  const markers = homeManagerPatchMarkers(patch);
-  return [
-    { name: "HERMES_AMBIT_USER", value: user },
-    {
-      name: "HERMES_AMBIT_MANAGED_BLOCK_B64",
-      value: utf8Base64Encode(renderManagedBlock(patch)),
-    },
-    { name: "HERMES_AMBIT_MARKER_START", value: markers.start },
-    { name: "HERMES_AMBIT_MARKER_END", value: markers.end },
-  ];
-};
+  module: HomeManagerModule,
+): readonly GoogleCloudRunV2EnvVar[] => [
+  { name: "HERMES_AMBIT_USER", value: user },
+  {
+    name: "HERMES_AMBIT_MANAGED_MODULE_B64",
+    value: utf8Base64Encode(module),
+  },
+];
 
 const desiredHomeManagerJob = (
   update: GcpHomeManagerUpdate,
@@ -143,7 +136,8 @@ const assertOwnedJob = (
   if (!isGcpDeploymentJob(expected, job)) {
     return Effect.fail(
       new ResourceConflict({
-        resource: job.name ?? gcpJobResourceName(gcpHomeManagerJobRef(expected)),
+        resource:
+          job.name ?? gcpJobResourceName(gcpHomeManagerJobRef(expected)),
         message: "Cloud Run job name is already used by another deployment",
       }),
     );
@@ -162,7 +156,8 @@ const requireDeploymentService = (
       return yield* Effect.fail(
         new OperationFailed({
           operation: "gcp.home-manager.service",
-          message: "Cloud Run service must be deployed before config can be updated.",
+          message:
+            "Cloud Run service must be deployed before config can be updated.",
         }),
       );
     }
@@ -170,7 +165,8 @@ const requireDeploymentService = (
       return yield* Effect.fail(
         new ResourceConflict({
           resource: service.name ?? gcpServiceRef(identity).serviceName,
-          message: "Cloud Run service name is already used by another deployment",
+          message:
+            "Cloud Run service name is already used by another deployment",
         }),
       );
     }
@@ -208,10 +204,7 @@ export const updateGcpHomeManager = (
   update: GcpHomeManagerUpdate,
 ): Effect.Effect<GcpStatus, CloudError> =>
   Effect.gen(function* () {
-    yield* validateGcpNfsState(
-      "gcp.home-manager.state",
-      update.identity.state,
-    );
+    yield* validateGcpNfsState("gcp.home-manager.state", update.identity.state);
     yield* emitCloudEvent({
       level: "info",
       scope: "config",
@@ -226,7 +219,7 @@ export const updateGcpHomeManager = (
         containerOverrides: [
           {
             name: HERMES_CONTAINER_NAME,
-            env: [...homeManagerJobEnv(update.user, update.patch)],
+            env: [...homeManagerJobEnv(update.user, update.module)],
           },
         ],
       },

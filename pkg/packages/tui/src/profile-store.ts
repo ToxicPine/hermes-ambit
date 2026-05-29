@@ -9,7 +9,13 @@ import {
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
-import { appProfileSchema, validateProfileName, type AppProfile } from "./app-profile.js";
+import { z } from "zod";
+
+import {
+  appProfileSchema,
+  validateProfileName,
+  type AppProfile,
+} from "./app-profile.js";
 import type { AppError } from "./types.js";
 
 export type ProfileStore = {
@@ -31,12 +37,15 @@ export type FileProfileStoreOptions = {
 const profileFileName = (name: string) => `${name}.json`;
 const activeProfileFileName = "active_profile";
 
+const nodeErrorSchema = z
+  .object({
+    code: z.string(),
+  })
+  .passthrough();
+
 const errorCode = (cause: unknown): string | undefined => {
-  if (cause !== null && typeof cause === "object" && "code" in cause) {
-    const code = cause.code;
-    return typeof code === "string" ? code : undefined;
-  }
-  return undefined;
+  const parsed = nodeErrorSchema.safeParse(cause);
+  return parsed.success ? parsed.data.code : undefined;
 };
 
 const profileReadFailed = (message: string): AppError => ({
@@ -59,9 +68,11 @@ export const defaultProfileRoot = (
   homeDirectory = homedir(),
 ): string => {
   const configured = env.HERMES_AMBIT_HOME?.trim();
-  return resolve(configured && configured.length > 0
-    ? join(configured, "profiles")
-    : join(homeDirectory, ".hermes-ambit", "profiles"));
+  return resolve(
+    configured && configured.length > 0
+      ? join(configured, "profiles")
+      : join(homeDirectory, ".hermes-ambit", "profiles"),
+  );
 };
 
 const profilePath = (rootDir: string, profileName: string): string =>

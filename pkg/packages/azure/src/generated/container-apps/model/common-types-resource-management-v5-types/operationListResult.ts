@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { Operation } from './operation';
+import type { Operation } from "./operation";
 
 /**
  * A list of REST API operations supported by an Azure Resource Provider. It contains an URL link to get the next set of results.

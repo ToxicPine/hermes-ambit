@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2HTTPHeader } from './googleCloudRunV2HTTPHeader';
+import type { GoogleCloudRunV2HTTPHeader } from "./googleCloudRunV2HTTPHeader";
 
 /**
  * HTTPGetAction describes an action based on HTTP Get requests.

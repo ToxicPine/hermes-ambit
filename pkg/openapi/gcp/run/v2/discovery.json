@@ -634,11 +634,7 @@
             "Operation still in progress.",
             "Operation finished."
           ],
-          "enum": [
-            "OPERATION_STATE_UNSPECIFIED",
-            "IN_PROGRESS",
-            "FINISHED"
-          ]
+          "enum": ["OPERATION_STATE_UNSPECIFIED", "IN_PROGRESS", "FINISHED"]
         },
         "imageExportStatuses": {
           "description": "The status of each image export job.",
@@ -663,11 +659,7 @@
             "Job still in progress.",
             "Job finished."
           ],
-          "enum": [
-            "EXPORT_JOB_STATE_UNSPECIFIED",
-            "IN_PROGRESS",
-            "FINISHED"
-          ]
+          "enum": ["EXPORT_JOB_STATE_UNSPECIFIED", "IN_PROGRESS", "FINISHED"]
         },
         "status": {
           "description": "The status of the export task if done.",
@@ -1617,11 +1609,7 @@
             "Explicitly set the EmptyDir to be in memory. Uses tmpfs.",
             "Explicitly sets the EmptyDir to be a disk."
           ],
-          "enum": [
-            "MEDIUM_UNSPECIFIED",
-            "MEMORY",
-            "DISK"
-          ]
+          "enum": ["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"]
         },
         "sizeLimit": {
           "description": "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https://cloud.google.com/run/docs/configuring/in-memory-volumes#configure-volume. Info in Kubernetes: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir",
@@ -1780,12 +1768,7 @@
             "Warning severity.",
             "Info severity."
           ],
-          "enum": [
-            "SEVERITY_UNSPECIFIED",
-            "ERROR",
-            "WARNING",
-            "INFO"
-          ]
+          "enum": ["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"]
         },
         "reason": {
           "description": "Output only. A common (service-level) reason for this condition.",
@@ -3482,11 +3465,7 @@
             "Scale based on traffic between min and max instances.",
             "Scale to exactly min instances and ignore max instances."
           ],
-          "enum": [
-            "SCALING_MODE_UNSPECIFIED",
-            "AUTOMATIC",
-            "MANUAL"
-          ]
+          "enum": ["SCALING_MODE_UNSPECIFIED", "AUTOMATIC", "MANUAL"]
         },
         "maxInstanceCount": {
           "description": "Optional. total max instances for the service. This number of instances is divided among all revisions with specified traffic based on the percent of traffic they are receiving.",
@@ -4512,11 +4491,7 @@
             "Use the \"gsutil\" tool to download the source file.",
             "Use the Cloud Storage Fetcher tool to download the source file."
           ],
-          "enum": [
-            "SOURCE_FETCHER_UNSPECIFIED",
-            "GSUTIL",
-            "GCS_FETCHER"
-          ]
+          "enum": ["SOURCE_FETCHER_UNSPECIFIED", "GSUTIL", "GCS_FETCHER"]
         }
       }
     },
@@ -5432,10 +5407,7 @@
             "Not a verifiable build (the default).",
             "Build must be verified."
           ],
-          "enum": [
-            "NOT_VERIFIED",
-            "VERIFIED"
-          ]
+          "enum": ["NOT_VERIFIED", "VERIFIED"]
         },
         "machineType": {
           "description": "Compute Engine machine type on which to run the build.",
@@ -5448,14 +5420,7 @@
             "Highcpu e2 machine with 32 CPUs.",
             "E2 machine with 1 CPU."
           ],
-          "enumDeprecated": [
-            false,
-            true,
-            true,
-            false,
-            false,
-            false
-          ],
+          "enumDeprecated": [false, true, true, false, false, false],
           "enum": [
             "UNSPECIFIED",
             "N1_HIGHCPU_8",
@@ -5477,10 +5442,7 @@
             "Fails the build if error in substitutions checks, like missing a substitution in the template or in the map.",
             "Do not fail the build if error in substitutions checks."
           ],
-          "enum": [
-            "MUST_MATCH",
-            "ALLOW_LOOSE"
-          ]
+          "enum": ["MUST_MATCH", "ALLOW_LOOSE"]
         },
         "dynamicSubstitutions": {
           "description": "Option to specify whether or not to apply bash style string operations to the substitutions. NOTE: this is always enabled for triggered builds and cannot be overridden in the build configuration file.",
@@ -5498,11 +5460,7 @@
             "Build logs should be streamed to Cloud Storage.",
             "Build logs should not be streamed to Cloud Storage; they will be written when the build is completed."
           ],
-          "enum": [
-            "STREAM_DEFAULT",
-            "STREAM_ON",
-            "STREAM_OFF"
-          ]
+          "enum": ["STREAM_DEFAULT", "STREAM_ON", "STREAM_OFF"]
         },
         "workerPool": {
           "description": "This field deprecated; please use `pool.name` instead.",
@@ -5524,14 +5482,7 @@
             "Build logs are stored in Cloud Logging. Selecting this option will not allow [logs streaming](https://cloud.google.com/sdk/gcloud/reference/builds/log).",
             "Turn off all logging. No build logs will be captured."
           ],
-          "enumDeprecated": [
-            false,
-            false,
-            false,
-            true,
-            false,
-            false
-          ],
+          "enumDeprecated": [false, false, false, true, false, false],
           "enum": [
             "LOGGING_UNSPECIFIED",
             "LEGACY",
@@ -5687,11 +5638,7 @@
             "Build is approved.",
             "Build is rejected."
           ],
-          "enum": [
-            "DECISION_UNSPECIFIED",
-            "APPROVED",
-            "REJECTED"
-          ]
+          "enum": ["DECISION_UNSPECIFIED", "APPROVED", "REJECTED"]
         },
         "comment": {
           "description": "Optional. An optional comment for this manual approval result.",
@@ -5776,12 +5723,7 @@
             "e.g. automated detection of possible issues with the build.",
             "e.g. alerts that a feature used in the build is pending removal"
           ],
-          "enum": [
-            "PRIORITY_UNSPECIFIED",
-            "INFO",
-            "WARNING",
-            "ALERT"
-          ]
+          "enum": ["PRIORITY_UNSPECIFIED", "INFO", "WARNING", "ALERT"]
         }
       }
     },
@@ -5943,9 +5885,7 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "GoogleCloudRunV2Metadata"
               },
@@ -5969,9 +5909,7 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "GoogleCloudRunV2Metadata"
               },
@@ -5995,9 +5933,7 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "response": {
                 "$ref": "GoogleCloudRunV2Metadata"
               },
@@ -6021,9 +5957,7 @@
                   "type": "string"
                 }
               },
-              "parameterOrder": [
-                "name"
-              ],
+              "parameterOrder": ["name"],
               "request": {
                 "$ref": "GoogleCloudRunV2ExportImageRequest"
               },
@@ -6075,9 +6009,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleLongrunningListOperationsResponse"
                   },
@@ -6102,9 +6034,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleLongrunningOperation"
                   },
@@ -6129,9 +6059,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleProtobufEmpty"
                   },
@@ -6155,9 +6083,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleLongrunningWaitOperationRequest"
                   },
@@ -6189,9 +6115,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "GoogleCloudRunV2SubmitBuildRequest"
                   },
@@ -6231,9 +6155,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "GoogleCloudRunV2Instance"
                   },
@@ -6276,9 +6198,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2Instance"
                   },
@@ -6314,9 +6234,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleLongrunningOperation"
                   },
@@ -6339,9 +6257,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleCloudRunV2Instance"
                   },
@@ -6382,9 +6298,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "response": {
                     "$ref": "GoogleCloudRunV2ListInstancesResponse"
                   },
@@ -6409,9 +6323,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2StopInstanceRequest"
                   },
@@ -6438,9 +6350,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2StartInstanceRequest"
                   },
@@ -6473,9 +6383,7 @@
                       "format": "int32"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "response": {
                     "$ref": "GoogleIamV1Policy"
                   },
@@ -6500,9 +6408,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1SetIamPolicyRequest"
                   },
@@ -6529,9 +6435,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1TestIamPermissionsRequest"
                   },
@@ -6573,9 +6477,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "GoogleCloudRunV2Job"
                   },
@@ -6602,9 +6504,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleCloudRunV2Job"
                   },
@@ -6645,9 +6545,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "response": {
                     "$ref": "GoogleCloudRunV2ListJobsResponse"
                   },
@@ -6682,9 +6580,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2Job"
                   },
@@ -6721,9 +6617,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleLongrunningOperation"
                   },
@@ -6747,9 +6641,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2RunJobRequest"
                   },
@@ -6782,9 +6674,7 @@
                       "format": "int32"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "response": {
                     "$ref": "GoogleIamV1Policy"
                   },
@@ -6809,9 +6699,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1SetIamPolicyRequest"
                   },
@@ -6838,9 +6726,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1TestIamPermissionsRequest"
                   },
@@ -6879,10 +6765,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name",
-                        "operationId"
-                      ],
+                      "parameterOrder": ["name", "operationId"],
                       "response": {
                         "$ref": "GoogleCloudRunV2ExportStatusResponse"
                       },
@@ -6906,9 +6789,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "GoogleCloudRunV2Execution"
                       },
@@ -6949,9 +6830,7 @@
                           "type": "boolean"
                         }
                       },
-                      "parameterOrder": [
-                        "parent"
-                      ],
+                      "parameterOrder": ["parent"],
                       "response": {
                         "$ref": "GoogleCloudRunV2ListExecutionsResponse"
                       },
@@ -6986,9 +6865,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "GoogleLongrunningOperation"
                       },
@@ -7012,9 +6889,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "request": {
                         "$ref": "GoogleCloudRunV2CancelExecutionRequest"
                       },
@@ -7045,9 +6920,7 @@
                               "type": "string"
                             }
                           },
-                          "parameterOrder": [
-                            "name"
-                          ],
+                          "parameterOrder": ["name"],
                           "response": {
                             "$ref": "GoogleCloudRunV2Task"
                           },
@@ -7088,9 +6961,7 @@
                               "type": "boolean"
                             }
                           },
-                          "parameterOrder": [
-                            "parent"
-                          ],
+                          "parameterOrder": ["parent"],
                           "response": {
                             "$ref": "GoogleCloudRunV2ListTasksResponse"
                           },
@@ -7133,9 +7004,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "GoogleCloudRunV2Service"
                   },
@@ -7162,9 +7031,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleCloudRunV2Service"
                   },
@@ -7205,9 +7072,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "response": {
                     "$ref": "GoogleCloudRunV2ListServicesResponse"
                   },
@@ -7253,9 +7118,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2Service"
                   },
@@ -7292,9 +7155,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleLongrunningOperation"
                   },
@@ -7324,9 +7185,7 @@
                       "format": "int32"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "response": {
                     "$ref": "GoogleIamV1Policy"
                   },
@@ -7351,9 +7210,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1SetIamPolicyRequest"
                   },
@@ -7380,9 +7237,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1TestIamPermissionsRequest"
                   },
@@ -7421,10 +7276,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name",
-                        "operationId"
-                      ],
+                      "parameterOrder": ["name", "operationId"],
                       "response": {
                         "$ref": "GoogleCloudRunV2ExportStatusResponse"
                       },
@@ -7448,9 +7300,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "GoogleCloudRunV2Revision"
                       },
@@ -7491,9 +7341,7 @@
                           "type": "boolean"
                         }
                       },
-                      "parameterOrder": [
-                        "parent"
-                      ],
+                      "parameterOrder": ["parent"],
                       "response": {
                         "$ref": "GoogleCloudRunV2ListRevisionsResponse"
                       },
@@ -7528,9 +7376,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "GoogleLongrunningOperation"
                       },
@@ -7570,9 +7416,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "request": {
                     "$ref": "GoogleCloudRunV2WorkerPool"
                   },
@@ -7599,9 +7443,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleCloudRunV2WorkerPool"
                   },
@@ -7642,9 +7484,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "parent"
-                  ],
+                  "parameterOrder": ["parent"],
                   "response": {
                     "$ref": "GoogleCloudRunV2ListWorkerPoolsResponse"
                   },
@@ -7690,9 +7530,7 @@
                       "type": "boolean"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "request": {
                     "$ref": "GoogleCloudRunV2WorkerPool"
                   },
@@ -7729,9 +7567,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "name"
-                  ],
+                  "parameterOrder": ["name"],
                   "response": {
                     "$ref": "GoogleLongrunningOperation"
                   },
@@ -7761,9 +7597,7 @@
                       "format": "int32"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "response": {
                     "$ref": "GoogleIamV1Policy"
                   },
@@ -7788,9 +7622,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1SetIamPolicyRequest"
                   },
@@ -7817,9 +7649,7 @@
                       "type": "string"
                     }
                   },
-                  "parameterOrder": [
-                    "resource"
-                  ],
+                  "parameterOrder": ["resource"],
                   "request": {
                     "$ref": "GoogleIamV1TestIamPermissionsRequest"
                   },
@@ -7851,9 +7681,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "GoogleCloudRunV2Revision"
                       },
@@ -7894,9 +7722,7 @@
                           "type": "boolean"
                         }
                       },
-                      "parameterOrder": [
-                        "parent"
-                      ],
+                      "parameterOrder": ["parent"],
                       "response": {
                         "$ref": "GoogleCloudRunV2ListRevisionsResponse"
                       },
@@ -7931,9 +7757,7 @@
                           "type": "string"
                         }
                       },
-                      "parameterOrder": [
-                        "name"
-                      ],
+                      "parameterOrder": ["name"],
                       "response": {
                         "$ref": "GoogleLongrunningOperation"
                       },
@@ -7989,11 +7813,7 @@
       "type": "string",
       "description": "Data format for response.",
       "default": "json",
-      "enum": [
-        "json",
-        "media",
-        "proto"
-      ],
+      "enum": ["json", "media", "proto"],
       "enumDescriptions": [
         "Responses with Content-Type of application/json",
         "Media download with context-dependent Content-Type",
@@ -8045,14 +7865,8 @@
     "$.xgafv": {
       "type": "string",
       "description": "V1 error format.",
-      "enum": [
-        "1",
-        "2"
-      ],
-      "enumDescriptions": [
-        "v1 error format",
-        "v2 error format"
-      ],
+      "enum": ["1", "2"],
+      "enumDescriptions": ["v1 error format", "v2 error format"],
       "location": "query"
     }
   },

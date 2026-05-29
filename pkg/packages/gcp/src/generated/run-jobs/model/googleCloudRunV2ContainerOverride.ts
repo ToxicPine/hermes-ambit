@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2EnvVar } from './googleCloudRunV2EnvVar';
+import type { GoogleCloudRunV2EnvVar } from "./googleCloudRunV2EnvVar";
 
 /**
  * Per-container override specification.

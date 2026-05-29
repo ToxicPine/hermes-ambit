@@ -1,9 +1,6 @@
 import type { Effect } from "effect";
 
-import type {
-  CloudError,
-  DeploymentIdentity,
-} from "@cardelli/shared";
+import type { CloudError, DeploymentIdentity } from "@cardelli/shared";
 
 export type GcpDeploymentRef = DeploymentIdentity & {
   readonly projectId: string;
@@ -53,7 +50,9 @@ export type GcpDeployer = {
   readonly previewDeploy: (
     input: GcpDeployment,
   ) => Effect.Effect<GcpDeployPreview, CloudError>;
-  readonly deploy: (input: GcpDeployment) => Effect.Effect<GcpStatus, CloudError>;
+  readonly deploy: (
+    input: GcpDeployment,
+  ) => Effect.Effect<GcpStatus, CloudError>;
   readonly status: (
     input: GcpDeploymentRef,
   ) => Effect.Effect<GcpStatus, CloudError>;

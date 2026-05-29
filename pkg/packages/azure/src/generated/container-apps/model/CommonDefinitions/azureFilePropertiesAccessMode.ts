@@ -8,11 +8,11 @@
 /**
  * Access mode for storage
  */
-export type AzureFilePropertiesAccessMode = typeof AzureFilePropertiesAccessMode[keyof typeof AzureFilePropertiesAccessMode];
-
+export type AzureFilePropertiesAccessMode =
+  (typeof AzureFilePropertiesAccessMode)[keyof typeof AzureFilePropertiesAccessMode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const AzureFilePropertiesAccessMode = {
-  ReadOnly: 'ReadOnly',
-  ReadWrite: 'ReadWrite',
+  ReadOnly: "ReadOnly",
+  ReadWrite: "ReadWrite",
 } as const;

@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { PrivateLinkResource } from './privateLinkResource';
+import type { PrivateLinkResource } from "./privateLinkResource";
 
 /**
  * A list of private link resources

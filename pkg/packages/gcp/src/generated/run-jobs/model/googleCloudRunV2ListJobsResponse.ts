@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2Job } from './googleCloudRunV2Job';
+import type { GoogleCloudRunV2Job } from "./googleCloudRunV2Job";
 
 /**
  * Response message containing a list of Jobs.

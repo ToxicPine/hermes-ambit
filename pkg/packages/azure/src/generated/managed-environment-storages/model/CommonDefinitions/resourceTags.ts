@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ResourceTagsTags } from './resourceTagsTags';
+import type { ResourceTagsTags } from "./resourceTagsTags";
 
 /**
  * List of key value pairs that describe the resource. This will overwrite the existing tags.

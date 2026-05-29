@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2BuildConfigEnvironmentVariables } from './googleCloudRunV2BuildConfigEnvironmentVariables';
+import type { GoogleCloudRunV2BuildConfigEnvironmentVariables } from "./googleCloudRunV2BuildConfigEnvironmentVariables";
 
 /**
  * Describes the Build step of the function that builds a container from the given source.

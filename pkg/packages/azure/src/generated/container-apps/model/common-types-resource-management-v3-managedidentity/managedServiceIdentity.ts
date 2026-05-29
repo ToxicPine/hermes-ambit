@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ManagedServiceIdentityType } from './managedServiceIdentityType';
-import type { UserAssignedIdentities } from './userAssignedIdentities';
+import type { ManagedServiceIdentityType } from "./managedServiceIdentityType";
+import type { UserAssignedIdentities } from "./userAssignedIdentities";
 
 /**
  * Managed service identity (system assigned and/or user assigned identities)

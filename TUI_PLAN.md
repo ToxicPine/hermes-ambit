@@ -173,6 +173,7 @@ GCP identity arguments:
 ```text
 --project <project-id>
 --region <region>
+--model <gemini-model-id>
 --service-account <email>
 --quota-project <project-id>
 --state <nfs>
@@ -190,6 +191,8 @@ Azure identity arguments:
 --environment-id <managed-environment-resource-id>
 --state <azure-files>
 --storage-name <container-app-environment-storage-name>
+--endpoint <azure-openai-compatible-endpoint>
+--model <foundry-deployment-name>
 ```
 
 Initial implementation can support only the state modes actually implemented.
@@ -199,8 +202,8 @@ error code, not silently fall back.
 Cross-check against the current generated Container Apps surfaces: app volumes
 consume `storageType`, `storageName`, and optional mount `subPath`. The deployer
 also generates and uses the managed-environment storage GET surface to resolve
-the Azure Files account/share behind `--storage-name` when applying Home Manager
-patches through the persistent user volume. Setup should still ask for the
+the Azure Files account/share behind `--storage-name` when writing the managed
+Home Manager module through the persistent user volume. Setup should still ask for the
 Container Apps environment storage name, not a raw storage account and file share
 tuple. For v1, the managed environment ID must stay inside the selected
 subscription and resource group; allowing cross-boundary environment storage
@@ -284,9 +287,10 @@ TUI flow rules:
 - Lifecycle mutations show a typed preview and ask for confirmation. Explicit
   config and secret edits are already scoped commands and should not grow a
   second generic confirmation layer.
-- TUI should use provider-specific forms. GCP deployment implies Google-hosted
-  model access by default. Azure deployment implies Azure-hosted model access by
-  default. Cross-cloud model routing is not a v1 normal path.
+- TUI should use provider-specific forms. GCP deployment requires a
+  Google-hosted model selection. Azure deployment requires an Azure-hosted
+  endpoint and deployment-name selection. Cross-cloud model routing is not a v1
+  normal path.
 - Escape/back can leave a flow without applying partial cloud mutations.
 
 TUI screens should mirror Hermes' mental model where relevant:
@@ -314,16 +318,16 @@ Valid examples:
 ```text
 hermes-ambit setup
 hermes-ambit setup --provider gcp --deployment personal-agent
-hermes-ambit setup --no-input --provider gcp --deployment personal-agent --project my-project --region us-central1 --state nfs --state-server 10.0.0.8 --state-path /exports/hermes
-hermes-ambit setup --no-input --provider azure --deployment work-agent --subscription <id> --tenant <tenant-id> --resource-group hermes --location eastus --environment-id <id> --state azure-files --storage-name <name>
+hermes-ambit setup --no-input --provider gcp --deployment personal-agent --project my-project --region us-central1 --model gemini-model-id --state nfs --state-server 10.0.0.8 --state-path /exports/hermes
+hermes-ambit setup --no-input --provider azure --deployment work-agent --subscription <id> --tenant <tenant-id> --resource-group hermes --location eastus --environment-id <id> --state azure-files --storage-name <name> --endpoint https://my-resource.openai.azure.com --model my-gpt-deployment
 hermes-ambit auth check --provider azure --tenant <tenant-id> --subscription <id>
 hermes-ambit discover --provider gcp --project my-project --region us-central1
 hermes-ambit models list --provider gcp --region us-central1
-hermes-ambit deploy --provider azure --deployment work-agent --subscription <id> --tenant <tenant-id> --resource-group hermes --location eastus --environment-id <id> --storage-name <name>
+hermes-ambit deploy --provider azure --deployment work-agent --subscription <id> --tenant <tenant-id> --resource-group hermes --location eastus --environment-id <id> --storage-name <name> --endpoint https://my-resource.openai.azure.com --model my-gpt-deployment
 hermes-ambit status --profile work
 hermes-ambit status --provider gcp --deployment personal-agent --watch
 hermes-ambit config show --profile work
-hermes-ambit config set model.default gemini-3-flash-preview --profile work
+hermes-ambit config set model.default gemini-model-id --profile work
 hermes-ambit secrets set GOOGLE_API_KEY --profile work
 hermes-ambit restart --profile work
 hermes-ambit destroy --profile work --retain-state
@@ -376,7 +380,7 @@ Valid:
 hermes-ambit auth check --provider gcp --json
 hermes-ambit discover --provider azure --tenant <tenant-id> --subscription <id> --resource-group hermes --json
 hermes-ambit models list --provider gcp --region us-central1 --json
-hermes-ambit deploy --provider gcp --deployment personal-agent --project my-project --region us-central1 --state-server 10.0.0.8 --state-path /exports/hermes --json
+hermes-ambit deploy --provider gcp --deployment personal-agent --project my-project --region us-central1 --model gemini-model-id --state-server 10.0.0.8 --state-path /exports/hermes --json
 hermes-ambit status --provider azure --deployment work-agent --tenant <tenant-id> --subscription <id> --resource-group hermes --json
 hermes-ambit config show --profile work --json
 hermes-ambit secrets list --profile work --json
@@ -647,7 +651,7 @@ Rules:
   needs a deliberate Cloud Run output channel; do not fake it with a parallel
   local config store.
 - `set` supports CLI and JSON only when key/value are supplied, and rolls the
-  runtime after the provider-backed Home Manager patch is applied. `restart`
+  runtime after the provider-backed managed Home Manager module is written. `restart`
   remains a manual lifecycle command for reloading the current config/secrets.
   Do not expose a separate `config sync` command unless the deployer grows a
   real desired-state source for it to reconcile.
@@ -657,7 +661,7 @@ Rules:
   Nix editor.
 - Azure has a provider user-volume path via managed-environment storage plus
   Azure Files. GCP uses a provider-managed Cloud Run Job that mounts the same
-  durable `/data` NFS volume, applies the managed Home Manager patch inside that
+  durable `/data` NFS volume, writes the managed Home Manager module inside that
   mounted filesystem, waits for the Job run, then rolls the service.
 - Azure Foundry runtime access follows upstream Hermes' current API-key path:
   write endpoint/model settings to Home Manager and wire `AZURE_FOUNDRY_API_KEY`
@@ -681,6 +685,7 @@ Initial settable keys should stay narrow:
 
 ```text
 model.default
+model.api_mode
 gateway.host
 gateway.port
 agent.max_turns
@@ -954,8 +959,8 @@ Keep one local profile shape that stores intent, not credentials:
 
 ```ts
 type AppProfile =
-  | { provider: "gcp"; name: string; deployment: string; user: string; quotaProjectId?: string; gcp: GcpDeployment }
-  | { provider: "azure"; name: string; deployment: string; user: string; tenantId: string; azure: AzureDeployment & { openaiCompatibleEndpoint?: string } };
+  | { provider: "gcp"; name: string; deployment: string; user: string; quotaProjectId?: string; gcp: GcpDeployment & { model: string } }
+  | { provider: "azure"; name: string; deployment: string; user: string; tenantId: string; azure: AzureDeployment & { openaiCompatibleEndpoint: string; modelDeployment: string } };
 ```
 
 This is enough for `setup --no-input`, TUI resume, and command defaults. Auth
@@ -963,10 +968,10 @@ storage can be separate and opaque. Profile auth metadata should be limited to
 stable provider identity needed to construct token-provider contexts, such as a
 GCP quota project or Azure tenant, not token material.
 
-Azure's OpenAI-compatible model endpoint is profile intent, not provider
-credential material and not part of the ARM deployment spec. Persisting it in the
-Azure profile lets `models`, `doctor`, and `config set model.default` work from
-the profile without repeating `--endpoint`.
+Azure's OpenAI-compatible model endpoint and deployment name are profile intent,
+not provider credential material and not part of the ARM deployment spec.
+Persisting them in the Azure profile lets `deploy`, `models`, `doctor`, and
+`config set model.default` work without repeating model-specific fields.
 
 ### Provider Modules
 
@@ -1029,9 +1034,9 @@ Shared helpers:
 - `profileFromDraft(draft)`
 
 The TUI can edit the draft step by step. Interactive CLI can ask for missing
-fields. `setup --no-input` calls `draftFromArgs`, `validateDraft`, read-only
-provider validation, and then `profileFromDraft`; if anything is missing or the
-provider check fails, it fails without writing the profile.
+fields. `setup --no-input` calls `draftFromArgs`, `validateDraft`,
+`profileFromDraft`, and then read-only provider validation; if anything is
+missing or the provider check fails, it fails without writing the profile.
 
 This follows the Hermes CLI pattern without copying its complexity: Hermes has
 one provider/model setup path reused by setup and model commands. Here, one
@@ -1040,16 +1045,16 @@ setup draft path should be reused by TUI, CLI prompts, and non-interactive CLI.
 ### Hermes Config Helpers
 
 Keep this narrow. The TUI needs functions that turn user choices into a
-Home Manager patch:
+Home Manager module:
 
 ```ts
-renderHermesPatch(input: HermesConfigSelection): HomeManagerPatch
-mergeManagedPatch(existing: string, patch: HomeManagerPatch): string
+renderHermesModule(input: HermesConfigSelection): HomeManagerModule
 ```
 
-Home Manager patching should be the same kind of operation for both platforms:
-take a typed Hermes config selection and render the managed Nix block. Provider
-differences belong in what can be selected, not in how patches are applied.
+Home Manager config should be the same kind of operation for both platforms:
+take a typed Hermes config selection and render the complete managed Nix module.
+Provider differences belong in what can be selected, not in how the module is
+written.
 
 Use a common settable surface for options both providers support, then let each
 provider extend it. ILLUSTRATIVE ONLY: names, enum values, and field shapes must
@@ -1076,8 +1081,6 @@ type GcpHermesSettable = CommonHermesSettable & {
     readonly provider: "gcp";
     readonly service: "gemini";
     readonly routeFamily: "developer-api";
-    readonly projectId: string;
-    readonly region: string;
     readonly model: string;
   };
 };
@@ -1231,4 +1234,4 @@ type InputMode = "interactive" | "nonInteractive";
   provider API for deleting that backing export.
 - Whether Azure setup should later grow storage provisioning arguments. Current
   setup keeps account/share names out of the profile and resolves them through
-  the managed-environment storage API when applying Home Manager patches.
+  the managed-environment storage API when writing managed Home Manager modules.

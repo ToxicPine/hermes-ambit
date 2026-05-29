@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { InitContainer } from './initContainer';
-import type { Container } from './container';
-import type { Volume } from './volume';
+import type { InitContainer } from "./initContainer";
+import type { Container } from "./container";
+import type { Volume } from "./volume";
 
 /**
  * Container Apps Job versioned application definition. Defines the desired state of an immutable revision. Any changes to this section Will result in a new revision being created

@@ -8,16 +8,16 @@
 /**
  * Output only. A reason for the execution condition.
  */
-export type GoogleCloudRunV2ConditionExecutionReason = typeof GoogleCloudRunV2ConditionExecutionReason[keyof typeof GoogleCloudRunV2ConditionExecutionReason];
-
+export type GoogleCloudRunV2ConditionExecutionReason =
+  (typeof GoogleCloudRunV2ConditionExecutionReason)[keyof typeof GoogleCloudRunV2ConditionExecutionReason];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2ConditionExecutionReason = {
-  EXECUTION_REASON_UNDEFINED: 'EXECUTION_REASON_UNDEFINED',
-  JOB_STATUS_SERVICE_POLLING_ERROR: 'JOB_STATUS_SERVICE_POLLING_ERROR',
-  NON_ZERO_EXIT_CODE: 'NON_ZERO_EXIT_CODE',
-  CANCELLED: 'CANCELLED',
-  CANCELLING: 'CANCELLING',
-  DELETED: 'DELETED',
-  DELAYED_START_PENDING: 'DELAYED_START_PENDING',
+  EXECUTION_REASON_UNDEFINED: "EXECUTION_REASON_UNDEFINED",
+  JOB_STATUS_SERVICE_POLLING_ERROR: "JOB_STATUS_SERVICE_POLLING_ERROR",
+  NON_ZERO_EXIT_CODE: "NON_ZERO_EXIT_CODE",
+  CANCELLED: "CANCELLED",
+  CANCELLING: "CANCELLING",
+  DELETED: "DELETED",
+  DELAYED_START_PENDING: "DELAYED_START_PENDING",
 } as const;

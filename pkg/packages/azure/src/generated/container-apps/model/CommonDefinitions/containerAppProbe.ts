@@ -4,9 +4,9 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ContainerAppProbeHttpGet } from './containerAppProbeHttpGet';
-import type { ContainerAppProbeTcpSocket } from './containerAppProbeTcpSocket';
-import type { ContainerAppProbeType } from './containerAppProbeType';
+import type { ContainerAppProbeHttpGet } from "./containerAppProbeHttpGet";
+import type { ContainerAppProbeTcpSocket } from "./containerAppProbeTcpSocket";
+import type { ContainerAppProbeType } from "./containerAppProbeType";
 
 /**
  * Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.

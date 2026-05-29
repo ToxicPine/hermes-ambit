@@ -6,8 +6,8 @@
  */
 
 export type SecretmanagerProjectsSecretsDeleteParams = {
-/**
- * Optional. Etag of the Secret. The request succeeds if it matches the etag of the currently stored secret object. If the etag is omitted, the request succeeds.
- */
-etag?: string;
+  /**
+   * Optional. Etag of the Secret. The request succeeds if it matches the etag of the currently stored secret object. If the etag is omitted, the request succeeds.
+   */
+  etag?: string;
 };

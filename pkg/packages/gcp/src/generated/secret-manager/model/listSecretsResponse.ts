@@ -4,7 +4,7 @@
  * Secret Manager API
  * OpenAPI spec version: v1
  */
-import type { Secret } from './secret';
+import type { Secret } from "./secret";
 
 /**
  * Response message for SecretManagerService.ListSecrets.

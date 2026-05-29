@@ -8,15 +8,15 @@
 /**
  * Provisioning state of the certificate.
  */
-export type ManagedCertificatePropertiesProvisioningState = typeof ManagedCertificatePropertiesProvisioningState[keyof typeof ManagedCertificatePropertiesProvisioningState];
-
+export type ManagedCertificatePropertiesProvisioningState =
+  (typeof ManagedCertificatePropertiesProvisioningState)[keyof typeof ManagedCertificatePropertiesProvisioningState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ManagedCertificatePropertiesProvisioningState = {
-  Succeeded: 'Succeeded',
-  Failed: 'Failed',
-  Canceled: 'Canceled',
-  DeleteFailed: 'DeleteFailed',
-  Pending: 'Pending',
-  Deleting: 'Deleting',
+  Succeeded: "Succeeded",
+  Failed: "Failed",
+  Canceled: "Canceled",
+  DeleteFailed: "DeleteFailed",
+  Pending: "Pending",
+  Deleting: "Deleting",
 } as const;

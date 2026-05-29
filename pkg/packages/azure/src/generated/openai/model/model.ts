@@ -4,11 +4,11 @@
  * Azure Foundry OpenAI-Compatible Models API
  * OpenAPI spec version: 2024-10-21
  */
-import type { TypeDiscriminator } from './typeDiscriminator';
-import type { FineTuningState } from './fineTuningState';
-import type { Capabilities } from './capabilities';
-import type { LifeCycleStatus } from './lifeCycleStatus';
-import type { Deprecation } from './deprecation';
+import type { TypeDiscriminator } from "./typeDiscriminator";
+import type { FineTuningState } from "./fineTuningState";
+import type { Capabilities } from "./capabilities";
+import type { LifeCycleStatus } from "./lifeCycleStatus";
+import type { Deprecation } from "./deprecation";
 
 export interface Model {
   id?: string;

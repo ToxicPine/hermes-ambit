@@ -1,5 +1,8 @@
+import { z } from "zod";
+
 const azureSpecsRev = "03635f9c9be65a2d2ca84f07b187173660d541e3";
-const gcpRunDiscoveryUrl = "https://run.googleapis.com/$discovery/rest?version=v2";
+const gcpRunDiscoveryUrl =
+  "https://run.googleapis.com/$discovery/rest?version=v2";
 const gcpSecretManagerDiscoveryUrl =
   "https://secretmanager.googleapis.com/$discovery/rest?version=v1";
 const gcpAiplatformDiscoveryUrl =
@@ -7,8 +10,7 @@ const gcpAiplatformDiscoveryUrl =
 
 const containerAppsPath =
   "specification/app/resource-manager/Microsoft.App/ContainerApps/stable/2025-07-01";
-const azureSpecsBase =
-  `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/${azureSpecsRev}`;
+const azureSpecsBase = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/${azureSpecsRev}`;
 
 const containerAppExamples = [
   "ContainerApps_CreateOrUpdate.json",
@@ -49,16 +51,19 @@ const specs = [
   },
   {
     source: "specification/common-types/resource-management/v3/types.json",
-    output: "openapi/azure/specification/common-types/resource-management/v3/types.json",
+    output:
+      "openapi/azure/specification/common-types/resource-management/v3/types.json",
   },
   {
-    source: "specification/common-types/resource-management/v3/managedidentity.json",
+    source:
+      "specification/common-types/resource-management/v3/managedidentity.json",
     output:
       "openapi/azure/specification/common-types/resource-management/v3/managedidentity.json",
   },
   {
     source: "specification/common-types/resource-management/v5/types.json",
-    output: "openapi/azure/specification/common-types/resource-management/v5/types.json",
+    output:
+      "openapi/azure/specification/common-types/resource-management/v5/types.json",
   },
 ];
 
@@ -68,13 +73,16 @@ for (const spec of specs) {
     throw new Error(`failed to fetch ${spec.source}: ${response.status}`);
   }
 
-  await Bun.write(spec.output, `${JSON.stringify(await response.json(), null, 2)}\n`);
+  await Bun.write(
+    spec.output,
+    `${JSON.stringify(await response.json(), null, 2)}\n`,
+  );
 }
 
 for (const example of containerAppExamples) {
   await Bun.write(
     `openapi/azure/${containerAppsPath}/examples/${example}`,
-    "{\n  \"parameters\": {},\n  \"responses\": {}\n}\n",
+    '{\n  "parameters": {},\n  "responses": {}\n}\n',
   );
 }
 
@@ -199,8 +207,7 @@ const discoverySchemaToOpenApi = (schema: DiscoverySchema): OpenApiSchema => {
 const operationId = (method: DiscoveryMethod) =>
   method.id.replace(/[^A-Za-z0-9_]/g, "_");
 
-const openApiPath = (path: string) =>
-  `/${path.replaceAll("{+", "{")}`;
+const openApiPath = (path: string) => `/${path.replaceAll("{+", "{")}`;
 
 const responseSchema = (method: DiscoveryMethod) =>
   method.response
@@ -414,7 +421,10 @@ const discoveryToOpenApi = (
     },
     servers: [
       {
-        url: discovery.baseUrl ?? discovery.rootUrl ?? "https://run.googleapis.com/",
+        url:
+          discovery.baseUrl ??
+          discovery.rootUrl ??
+          "https://run.googleapis.com/",
       },
     ],
     paths,
@@ -429,11 +439,14 @@ const discoveryToOpenApi = (
   };
 };
 
+const discoveryDocumentSchema = z
+  .object({
+    version: z.string(),
+  })
+  .passthrough();
+
 const isDiscoveryDocument = (value: unknown): value is DiscoveryDocument =>
-  value !== null &&
-  typeof value === "object" &&
-  "version" in value &&
-  typeof value.version === "string";
+  discoveryDocumentSchema.safeParse(value).success;
 
 const fetchDiscovery = async (name: string, url: string) => {
   const response = await fetch(url);
@@ -619,7 +632,14 @@ const azureOpenAICompatibleModelsOpenApi = {
       },
       FineTuningState: {
         type: "string",
-        enum: ["created", "pending", "running", "succeeded", "cancelled", "failed"],
+        enum: [
+          "created",
+          "pending",
+          "running",
+          "succeeded",
+          "cancelled",
+          "failed",
+        ],
       },
       LifeCycleStatus: {
         type: "string",
@@ -703,7 +723,10 @@ await Bun.write(
 await Bun.write(
   "openapi/gcp/aiplatform/v1beta1/openapi.json",
   `${JSON.stringify(
-    discoveryToOpenApi(gcpAiplatformDiscovery, shouldGenerateGcpAiplatformMethod),
+    discoveryToOpenApi(
+      gcpAiplatformDiscovery,
+      shouldGenerateGcpAiplatformMethod,
+    ),
     null,
     2,
   )}\n`,

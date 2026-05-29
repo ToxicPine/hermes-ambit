@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { Effect, Either } from "effect";
 import {
   CloudLog,
+  HERMES_CONTAINER_NAME,
   RUNTIME_SECRET_NAME_MESSAGE,
+  UNIVERSAL_HERMES_IMAGE,
   type CloudEvent,
 } from "@cardelli/shared";
 
@@ -70,12 +72,15 @@ describe("Azure deployment planning", () => {
     }
   });
 
-  test("fails before cloud mutation while the universal image is a placeholder", async () => {
-    let called = false;
+  test("plans a create with the universal runtime image", async () => {
+    const seenRequests: string[] = [];
     const originalFetch = globalThis.fetch;
-    globalThis.fetch = async () => {
-      called = true;
-      return new Response("{}", { status: 200 });
+    globalThis.fetch = async (input) => {
+      const url = String(input);
+      seenRequests.push(url);
+      return new Response("{}", {
+        status: url.includes("/storages/") ? 200 : 404,
+      });
     };
 
     try {
@@ -83,17 +88,22 @@ describe("Azure deployment planning", () => {
         Effect.either(makeAzureDriver(auth).plan(deployment)),
       );
 
-      expect(Either.isLeft(result)).toBe(true);
-      if (Either.isLeft(result)) {
-        expect(result.left.message).toContain("UNIVERSAL_HERMES_IMAGE");
+      expect(Either.isRight(result)).toBe(true);
+      if (Either.isRight(result)) {
+        expect(result.right.action).toBe("create");
+        expect(
+          result.right.containerApp.properties?.template?.containers?.find(
+            (container) => container.name === HERMES_CONTAINER_NAME,
+          )?.image,
+        ).toBe(UNIVERSAL_HERMES_IMAGE);
       }
-      expect(called).toBe(false);
+      expect(seenRequests.some((url) => url.includes("/storages/"))).toBe(true);
     } finally {
       globalThis.fetch = originalFetch;
     }
   });
 
-  test("rejects incomplete Azure Files state before the image gate", async () => {
+  test("rejects incomplete Azure Files state before cloud reads", async () => {
     let called = false;
     const originalFetch = globalThis.fetch;
     globalThis.fetch = async () => {
@@ -144,9 +154,7 @@ describe("Azure deployment planning", () => {
       expect(Either.isLeft(result)).toBe(true);
       if (Either.isLeft(result)) {
         expect(result.left._tag).toBe("RemediationRequired");
-        expect(result.left.message).toContain(
-          "environment storage must exist",
-        );
+        expect(result.left.message).toContain("environment storage must exist");
         if (result.left._tag === "RemediationRequired") {
           expect(result.left.remediation.type).toBe("url");
         }
@@ -243,10 +251,11 @@ describe("Azure deployment planning", () => {
         principalId: "principal-id",
         tenantId: "tenant-id",
         userAssignedIdentities: {
-          "/subscriptions/subscription/resourceGroups/resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/model-access": {
-            clientId: "client-id",
-            principalId: "principal-id",
-          },
+          "/subscriptions/subscription/resourceGroups/resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/model-access":
+            {
+              clientId: "client-id",
+              principalId: "principal-id",
+            },
         },
       },
     } satisfies ContainerApp;
@@ -499,9 +508,7 @@ describe("Azure deployment planning", () => {
 
       expect(updates.length).toBe(1);
       expect(updates[0]?.body).toContain('"name":"azure-foundry-api-key"');
-      expect(updates[0]?.body).toContain(
-        '"secretRef":"azure-foundry-api-key"',
-      );
+      expect(updates[0]?.body).toContain('"secretRef":"azure-foundry-api-key"');
       expect(updates[0]?.body).toContain('"name":"AZURE_FOUNDRY_API_KEY"');
 
       const update = seenRequests.findIndex(
@@ -624,10 +631,8 @@ describe("Azure deployment planning", () => {
           updateAzureHomeManager(auth, auth, {
             identity: deployment,
             user: "user",
-            patch: {
-              section: "model",
-              block: "programs.hermes-agent.settings.model.default = \"gpt-5\";",
-            },
+            module:
+              '{ lib, ... }:\n{\n  programs.hermes-agent.settings.model.default = "gpt-5";\n}\n',
           }),
         ),
       );
@@ -686,7 +691,9 @@ describe("Azure deployment planning", () => {
 
       expect(Either.isLeft(result)).toBe(true);
       expect(seenRequests.length).toBe(1);
-      expect(seenRequests[0]?.url).toContain("/managedEnvironments/environment");
+      expect(seenRequests[0]?.url).toContain(
+        "/managedEnvironments/environment",
+      );
       expect(
         seenRequests.some(
           (request) =>

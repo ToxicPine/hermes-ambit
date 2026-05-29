@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2TrafficTargetType } from './googleCloudRunV2TrafficTargetType';
+import type { GoogleCloudRunV2TrafficTargetType } from "./googleCloudRunV2TrafficTargetType";
 
 /**
  * Holds a single traffic routing entry for the Service. Allocations can be done to a specific Revision name, or pointing to the latest Ready Revision.

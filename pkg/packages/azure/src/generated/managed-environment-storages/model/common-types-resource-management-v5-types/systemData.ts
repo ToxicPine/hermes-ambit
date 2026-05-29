@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { SystemDataCreatedByType } from './systemDataCreatedByType';
-import type { SystemDataLastModifiedByType } from './systemDataLastModifiedByType';
+import type { SystemDataCreatedByType } from "./systemDataCreatedByType";
+import type { SystemDataLastModifiedByType } from "./systemDataLastModifiedByType";
 
 /**
  * Metadata pertaining to creation and last modification of the resource.

@@ -8,12 +8,12 @@
 /**
  * Optional. The scaling mode for the service.
  */
-export type GoogleCloudRunV2ServiceScalingScalingMode = typeof GoogleCloudRunV2ServiceScalingScalingMode[keyof typeof GoogleCloudRunV2ServiceScalingScalingMode];
-
+export type GoogleCloudRunV2ServiceScalingScalingMode =
+  (typeof GoogleCloudRunV2ServiceScalingScalingMode)[keyof typeof GoogleCloudRunV2ServiceScalingScalingMode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GoogleCloudRunV2ServiceScalingScalingMode = {
-  SCALING_MODE_UNSPECIFIED: 'SCALING_MODE_UNSPECIFIED',
-  AUTOMATIC: 'AUTOMATIC',
-  MANUAL: 'MANUAL',
+  SCALING_MODE_UNSPECIFIED: "SCALING_MODE_UNSPECIFIED",
+  AUTOMATIC: "AUTOMATIC",
+  MANUAL: "MANUAL",
 } as const;

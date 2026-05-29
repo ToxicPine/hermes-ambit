@@ -34,6 +34,7 @@ const providerFieldShapes: Readonly<Record<string, ProviderFieldShape>> = {
   region: { providers: ["gcp"] },
   "service-account": { providers: ["gcp"] },
   "quota-project": { providers: ["gcp"] },
+  model: { providers: ["gcp", "azure"] },
   "state-server": { providers: ["gcp"] },
   "state-path": { providers: ["gcp"] },
   subscription: { providers: ["azure"] },
@@ -102,7 +103,10 @@ const withoutFields = (
   return next;
 };
 
-const stateBaseChildPath = (basePath: string, child: "data" | "nix"): string => {
+const stateBaseChildPath = (
+  basePath: string,
+  child: "data" | "nix",
+): string => {
   const base = basePath.replace(/\/+$/, "");
   return base.length === 0 ? `/${child}` : `${base}/${child}`;
 };
@@ -198,6 +202,7 @@ export const draftFromProfile = (profile: AppProfile): SetupDraft => ({
           ...(profile.quotaProjectId
             ? { "quota-project": profile.quotaProjectId }
             : {}),
+          model: profile.gcp.model,
           state: "nfs",
           "state-server": profile.gcp.state.server,
           "state-data-path": profile.gcp.state.dataPath,
@@ -209,9 +214,8 @@ export const draftFromProfile = (profile: AppProfile): SetupDraft => ({
           "resource-group": profile.azure.resourceGroupName,
           location: profile.azure.location,
           "environment-id": profile.azure.environmentId,
-          ...(profile.azure.openaiCompatibleEndpoint
-            ? { endpoint: profile.azure.openaiCompatibleEndpoint }
-            : {}),
+          endpoint: profile.azure.openaiCompatibleEndpoint,
+          model: profile.azure.modelDeployment,
           state: "azure-files",
           "storage-name": profile.azure.state.storageName,
           "state-data-path": profile.azure.state.dataSubPath,
@@ -228,7 +232,8 @@ export const validateDraft = (draft: SetupDraft): readonly AppError[] => {
   if (!draft.provider) {
     errors.push({
       code: "args.missing",
-      message: "Missing required provider. Use --provider gcp or --provider azure.",
+      message:
+        "Missing required provider. Use --provider gcp or --provider azure.",
     });
   }
   if (!draft.deployment) {
@@ -260,7 +265,7 @@ export const validateDraft = (draft: SetupDraft): readonly AppError[] => {
     );
   }
   if (draft.provider === "gcp") {
-    for (const field of ["project", "region", "state-server"]) {
+    for (const field of ["project", "region", "model", "state-server"]) {
       if (!draft.fields[field]) {
         errors.push({
           code: "args.missing",
@@ -284,6 +289,8 @@ export const validateDraft = (draft: SetupDraft): readonly AppError[] => {
       "location",
       "environment-id",
       "storage-name",
+      "endpoint",
+      "model",
     ]) {
       if (!draft.fields[field]) {
         errors.push({
@@ -334,6 +341,7 @@ const gcpDraftFields = (draft: SetupDraft): readonly SetupDraftField[] => {
     draftField(draft, "region", "GCP region", true),
     draftField(draft, "service-account", "Cloud Run service account", false),
     draftField(draft, "quota-project", "Quota project", false),
+    draftField(draft, "model", "Gemini model", true),
     draftField(draft, "state-server", "NFS server", true),
     ...(sharedStatePath
       ? [draftField(draft, "state-path", "NFS state base path", true)]
@@ -352,7 +360,8 @@ const azureDraftFields = (draft: SetupDraft): readonly SetupDraftField[] => [
   draftField(draft, "location", "Azure location", true),
   draftField(draft, "environment-id", "Container Apps environment", true),
   draftField(draft, "storage-name", "Environment storage", true),
-  draftField(draft, "endpoint", "Foundry OpenAI-compatible endpoint", false),
+  draftField(draft, "endpoint", "Foundry OpenAI-compatible endpoint", true),
+  draftField(draft, "model", "Foundry deployment name", true),
   draftField(draft, "state-data-path", "State data subpath", false),
   draftField(draft, "state-nix-path", "State Nix subpath", false),
 ];
@@ -407,8 +416,7 @@ export const setSetupDraftField = (
     );
   }
   if (key === "provider") {
-    const provider =
-      value === "gcp" || value === "azure" ? value : undefined;
+    const provider = value === "gcp" || value === "azure" ? value : undefined;
     const fields = provider === draft.provider ? draft.fields : {};
     return makeDraft(
       draft.profileName,
@@ -442,10 +450,7 @@ export const setSetupDraftField = (
       draft.provider,
       draft.deployment,
       draft.user,
-      putField(draft.fields, key, value, [
-        "state-data-path",
-        "state-nix-path",
-      ]),
+      putField(draft.fields, key, value, ["state-data-path", "state-nix-path"]),
     );
   }
   if (key === "state-data-path" || key === "state-nix-path") {
@@ -479,7 +484,15 @@ export const profileFromDraft = (draft: SetupDraft): AppProfile | undefined => {
     const stateServer = draft.fields["state-server"];
     const dataPath = gcpStateDataPath(draft.fields);
     const nixPath = gcpStateNixPath(draft.fields);
-    if (!projectId || !region || !stateServer || !dataPath || !nixPath) {
+    const model = draft.fields["model"];
+    if (
+      !projectId ||
+      !region ||
+      !model ||
+      !stateServer ||
+      !dataPath ||
+      !nixPath
+    ) {
       return undefined;
     }
 
@@ -497,6 +510,7 @@ export const profileFromDraft = (draft: SetupDraft): AppProfile | undefined => {
         ...(draft.fields["service-account"]
           ? { serviceAccount: draft.fields["service-account"] }
           : {}),
+        model,
         state: {
           server: stateServer,
           dataPath,
@@ -512,13 +526,17 @@ export const profileFromDraft = (draft: SetupDraft): AppProfile | undefined => {
   const location = draft.fields["location"];
   const environmentId = draft.fields["environment-id"];
   const storageName = draft.fields["storage-name"];
+  const endpoint = draft.fields["endpoint"];
+  const model = draft.fields["model"];
   if (
     !tenantId ||
     !subscriptionId ||
     !resourceGroupName ||
     !location ||
     !environmentId ||
-    !storageName
+    !storageName ||
+    !endpoint ||
+    !model
   ) {
     return undefined;
   }
@@ -534,9 +552,8 @@ export const profileFromDraft = (draft: SetupDraft): AppProfile | undefined => {
       resourceGroupName,
       location,
       environmentId,
-      ...(draft.fields["endpoint"]
-        ? { openaiCompatibleEndpoint: draft.fields["endpoint"] }
-        : {}),
+      openaiCompatibleEndpoint: endpoint,
+      modelDeployment: model,
       state: {
         storageName,
         dataSubPath: azureStateDataSubPath(draft.fields),

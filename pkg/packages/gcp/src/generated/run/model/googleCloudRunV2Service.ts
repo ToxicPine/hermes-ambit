@@ -4,18 +4,18 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2ServiceLabels } from './googleCloudRunV2ServiceLabels';
-import type { GoogleCloudRunV2ServiceAnnotations } from './googleCloudRunV2ServiceAnnotations';
-import type { GoogleCloudRunV2ServiceIngress } from './googleCloudRunV2ServiceIngress';
-import type { GoogleCloudRunV2ServiceLaunchStage } from './googleCloudRunV2ServiceLaunchStage';
-import type { GoogleCloudRunV2BinaryAuthorization } from './googleCloudRunV2BinaryAuthorization';
-import type { GoogleCloudRunV2RevisionTemplate } from './googleCloudRunV2RevisionTemplate';
-import type { GoogleCloudRunV2TrafficTarget } from './googleCloudRunV2TrafficTarget';
-import type { GoogleCloudRunV2ServiceScaling } from './googleCloudRunV2ServiceScaling';
-import type { GoogleCloudRunV2MultiRegionSettings } from './googleCloudRunV2MultiRegionSettings';
-import type { GoogleCloudRunV2Condition } from './googleCloudRunV2Condition';
-import type { GoogleCloudRunV2TrafficTargetStatus } from './googleCloudRunV2TrafficTargetStatus';
-import type { GoogleCloudRunV2BuildConfig } from './googleCloudRunV2BuildConfig';
+import type { GoogleCloudRunV2ServiceLabels } from "./googleCloudRunV2ServiceLabels";
+import type { GoogleCloudRunV2ServiceAnnotations } from "./googleCloudRunV2ServiceAnnotations";
+import type { GoogleCloudRunV2ServiceIngress } from "./googleCloudRunV2ServiceIngress";
+import type { GoogleCloudRunV2ServiceLaunchStage } from "./googleCloudRunV2ServiceLaunchStage";
+import type { GoogleCloudRunV2BinaryAuthorization } from "./googleCloudRunV2BinaryAuthorization";
+import type { GoogleCloudRunV2RevisionTemplate } from "./googleCloudRunV2RevisionTemplate";
+import type { GoogleCloudRunV2TrafficTarget } from "./googleCloudRunV2TrafficTarget";
+import type { GoogleCloudRunV2ServiceScaling } from "./googleCloudRunV2ServiceScaling";
+import type { GoogleCloudRunV2MultiRegionSettings } from "./googleCloudRunV2MultiRegionSettings";
+import type { GoogleCloudRunV2Condition } from "./googleCloudRunV2Condition";
+import type { GoogleCloudRunV2TrafficTargetStatus } from "./googleCloudRunV2TrafficTargetStatus";
+import type { GoogleCloudRunV2BuildConfig } from "./googleCloudRunV2BuildConfig";
 
 /**
  * Service acts as a top-level container that manages a set of configurations and revision templates which implement a network service. Service exists to provide a singular abstraction which can be access controlled, reasoned about, and which encapsulates software lifecycle decisions such as rollout policy and team resource ownership.

@@ -8,13 +8,13 @@
 /**
  * Ingress transport protocol
  */
-export type IngressTransport = typeof IngressTransport[keyof typeof IngressTransport];
-
+export type IngressTransport =
+  (typeof IngressTransport)[keyof typeof IngressTransport];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IngressTransport = {
-  auto: 'auto',
-  http: 'http',
-  http2: 'http2',
-  tcp: 'tcp',
+  auto: "auto",
+  http: "http",
+  http2: "http2",
+  tcp: "tcp",
 } as const;

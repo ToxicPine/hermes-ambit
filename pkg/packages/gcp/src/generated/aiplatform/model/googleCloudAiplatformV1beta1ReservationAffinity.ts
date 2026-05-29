@@ -4,7 +4,7 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType } from './googleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType';
+import type { GoogleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType } from "./googleCloudAiplatformV1beta1ReservationAffinityReservationAffinityType";
 
 /**
  * A ReservationAffinity can be used to configure a Vertex AI resource (e.g., a DeployedModel) to draw its Compute Engine resources from a Shared Reservation, or exclusively from on-demand capacity.

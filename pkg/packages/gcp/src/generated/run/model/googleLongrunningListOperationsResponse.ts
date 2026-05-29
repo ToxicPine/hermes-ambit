@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleLongrunningOperation } from './googleLongrunningOperation';
+import type { GoogleLongrunningOperation } from "./googleLongrunningOperation";
 
 /**
  * The response message for Operations.ListOperations.

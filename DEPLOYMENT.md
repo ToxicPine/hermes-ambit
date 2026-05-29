@@ -67,6 +67,7 @@ hermes-ambit setup \
   --deployment personal-agent \
   --project my-gcp-project \
   --region us-central1 \
+  --model gemini-model-id \
   --state nfs \
   --state-server 10.0.0.10 \
   --state-path /exports/hermes \
@@ -75,6 +76,9 @@ hermes-ambit setup \
 
 Use `--quota-project` when user credentials need an explicit billing/quota
 project.
+
+GCP deploys require `--model` so the created runtime is configured for the
+provider model path as part of `deploy`.
 
 Use `--service-account` when the runtime needs provider-backed secrets such as
 `GOOGLE_API_KEY`. The deployer only grants Secret Manager accessor permissions
@@ -103,12 +107,15 @@ hermes-ambit setup \
   --environment-id /subscriptions/.../resourceGroups/hermes/providers/Microsoft.App/managedEnvironments/hermes-env \
   --storage-name hermes \
   --endpoint https://my-resource.openai.azure.com \
+  --model my-gpt-deployment \
   --no-input
 ```
 
-The Azure endpoint is optional for deployment itself, but include it in the
-profile when you want model discovery and model config commands to work without
-repeating it. You can still pass `--endpoint` per command:
+Azure deploys require both `--endpoint` and `--model` so the created runtime is
+configured for the Foundry OpenAI-compatible model path. Include both in the
+profile when you want deploy, model discovery, and model config commands to work
+without repeating provider-specific model fields. You can still pass
+`--endpoint` per command:
 
 ```sh
 hermes-ambit models --profile default --endpoint https://my-resource.openai.azure.com
@@ -128,7 +135,9 @@ OpenAI base URL. Model discovery uses the resource root, while
 
 Secret values stay in provider secret stores and are exposed to the runtime as
 environment variables. Updating or deleting a secret also updates the runtime
-environment revision.
+environment revision. Updating config writes the provider-backed managed Home
+Manager module and rolls the runtime so startup rebuilds from the persistent
+user config.
 
 `destroy` removes the provider deployment and provider-owned runtime secrets
 that were wired into it. Durable state follows the explicit retain/purge choice.
@@ -139,9 +148,8 @@ managed module hash so config changes can be correlated with runtime rolls.
 
 ```sh
 hermes-ambit secrets set GOOGLE_API_KEY --profile default
-hermes-ambit config set model.default gemini-3-flash-preview --profile default
-hermes-ambit config set model.default gpt-5-mini --profile default
-hermes-ambit restart --profile default
+hermes-ambit config set model.default gemini-model-id --profile default
+hermes-ambit config set model.default my-gpt-deployment --profile default
 ```
 
 Azure Foundry model access currently uses the Hermes runtime's supported API-key
@@ -158,10 +166,10 @@ Provider-specific model config remains explicit:
 - Azure writes Hermes `model.provider = "azure-foundry"` and keeps endpoint,
   deployment, and API mode as Azure-specific settings.
 
-## Current Image Constant
+## Runtime Image
 
 The deployer uses `UNIVERSAL_HERMES_IMAGE` from
-`pkg/packages/shared/src/constants.ts`. That value is still a placeholder until
-the universal runtime image is published, so real cloud deploys need that
-constant set to the published image URL first. Provider planning fails before
-cloud mutation while the placeholder is still present.
+`pkg/packages/shared/src/constants.ts`. The checked-in value is the fixed GHCR
+runtime image URL used by both providers. `.github/workflows/publish-runtime-image.yml`
+builds the Nix container image, tags it as that GHCR image, and publishes both
+`latest` and the commit SHA tag.

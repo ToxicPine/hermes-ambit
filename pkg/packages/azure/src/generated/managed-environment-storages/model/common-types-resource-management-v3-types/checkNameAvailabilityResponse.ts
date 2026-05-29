@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CheckNameAvailabilityResponseReason } from './checkNameAvailabilityResponseReason';
+import type { CheckNameAvailabilityResponseReason } from "./checkNameAvailabilityResponseReason";
 
 /**
  * The check availability result.

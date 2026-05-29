@@ -4,7 +4,7 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2EnvVarSource } from './googleCloudRunV2EnvVarSource';
+import type { GoogleCloudRunV2EnvVarSource } from "./googleCloudRunV2EnvVarSource";
 
 /**
  * EnvVar represents an environment variable present in a Container.

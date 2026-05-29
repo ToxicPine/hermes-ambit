@@ -1,6 +1,4 @@
-{
-  sources ? import ./npins,
-}:
+{ sources ? import ./npins }:
 {
   lib,
   pkgs,
@@ -10,7 +8,9 @@
 let
   nixpkgs-unstable = import sources.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
-    config = pkgs.config or { };
+    config = (pkgs.config or { }) // {
+      allowUnfree = true;
+    };
   };
   hermes = import ../hermes {
     pkgs = nixpkgs-unstable;
@@ -34,11 +34,12 @@ in
     ];
 
     packages = with pkgs; [
+      nixpkgs-unstable.codex
+      openssh
       curl
       git
-      openssh
+      gh
       tmux
-      vim
     ];
 
     activation.cacheHomeManagerGeneration = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -62,6 +63,44 @@ in
 
   programs = {
     home-manager.enable = true;
+
+    hermes-agent = {
+      enable = true;
+
+      packageOverrides = {
+        ffmpeg = pkgs.ffmpeg-headless;
+        dependencyGroups = [
+          "cli"
+          "pty"
+          "mcp"
+          "acp"
+          "web"
+          "messaging"
+        ];
+      };
+
+      settings = {
+        gateway = {
+          host = "::";
+          port = 8080;
+        };
+
+        model = {
+          default = "gpt-5.5";
+          provider = "openai-codex";
+          base_url = "https://chatgpt.com/backend-api/codex";
+        };
+
+        approvals.mode = "off";
+        security = {
+          tirith_enabled = false;
+          redact_secrets = false;
+        };
+        terminal.backend = "local";
+
+        platforms.telegram.extra = { };
+      };
+    };
 
     bash = {
       enable = true;

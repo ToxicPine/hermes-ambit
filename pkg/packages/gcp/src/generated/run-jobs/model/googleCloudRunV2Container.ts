@@ -4,13 +4,13 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import type { GoogleCloudRunV2SourceCode } from './googleCloudRunV2SourceCode';
-import type { GoogleCloudRunV2EnvVar } from './googleCloudRunV2EnvVar';
-import type { GoogleCloudRunV2ResourceRequirements } from './googleCloudRunV2ResourceRequirements';
-import type { GoogleCloudRunV2ContainerPort } from './googleCloudRunV2ContainerPort';
-import type { GoogleCloudRunV2VolumeMount } from './googleCloudRunV2VolumeMount';
-import type { GoogleCloudRunV2Probe } from './googleCloudRunV2Probe';
-import type { GoogleCloudRunV2BuildInfo } from './googleCloudRunV2BuildInfo';
+import type { GoogleCloudRunV2SourceCode } from "./googleCloudRunV2SourceCode";
+import type { GoogleCloudRunV2EnvVar } from "./googleCloudRunV2EnvVar";
+import type { GoogleCloudRunV2ResourceRequirements } from "./googleCloudRunV2ResourceRequirements";
+import type { GoogleCloudRunV2ContainerPort } from "./googleCloudRunV2ContainerPort";
+import type { GoogleCloudRunV2VolumeMount } from "./googleCloudRunV2VolumeMount";
+import type { GoogleCloudRunV2Probe } from "./googleCloudRunV2Probe";
+import type { GoogleCloudRunV2BuildInfo } from "./googleCloudRunV2BuildInfo";
 
 /**
  * A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.

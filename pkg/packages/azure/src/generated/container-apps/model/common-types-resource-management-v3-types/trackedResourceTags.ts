@@ -8,4 +8,4 @@
 /**
  * Resource tags.
  */
-export type TrackedResourceTags = {[key: string]: string};
+export type TrackedResourceTags = { [key: string]: string };

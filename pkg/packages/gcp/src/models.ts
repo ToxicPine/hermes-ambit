@@ -58,7 +58,10 @@ const gcpPublisherModelsUrl = (
   params?: GcpPublisherModelsListParams,
 ) => {
   const url = new URL(
-    getAiplatformPublishersModelsListUrl(gcpPublisherName(ref.publisher), params),
+    getAiplatformPublishersModelsListUrl(
+      gcpPublisherName(ref.publisher),
+      params,
+    ),
   );
   url.hostname = `${ref.region}-aiplatform.googleapis.com`;
   return url.toString();

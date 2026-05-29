@@ -4,1062 +4,5505 @@
  * Cloud Run Admin API
  * OpenAPI spec version: v2
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * Creates a Job.
  */
-export const runProjectsLocationsJobsCreatePathParentRegExp = new RegExp('^projects\/[^\/]+\/locations\/[^\/]+$');
-
+export const runProjectsLocationsJobsCreatePathParentRegExp = new RegExp(
+  "^projects\/[^\/]+\/locations\/[^\/]+$",
+);
 
 export const runProjectsLocationsJobsCreateParams = zod.object({
-  "parent": zod.string().regex(runProjectsLocationsJobsCreatePathParentRegExp).describe('Required. The location and project in which this Job should be created. Format: projects\/{project}\/locations\/{location}, where {project} can be project id or number.')
-})
+  parent: zod
+    .string()
+    .regex(runProjectsLocationsJobsCreatePathParentRegExp)
+    .describe(
+      "Required. The location and project in which this Job should be created. Format: projects\/{project}\/locations\/{location}, where {project} can be project id or number.",
+    ),
+});
 
 export const runProjectsLocationsJobsCreateQueryParams = zod.object({
-  "jobId": zod.string().optional().describe('Optional. The unique identifier for the Job. The name of the job becomes {parent}\/jobs\/{job_id}. If not provided, the server will generate a unique `job_id`.'),
-  "validateOnly": zod.boolean().optional().describe('Indicates that the request should be validated and default values populated, without persisting the request or creating any resources.')
-})
+  jobId: zod
+    .string()
+    .optional()
+    .describe(
+      "Optional. The unique identifier for the Job. The name of the job becomes {parent}\/jobs\/{job_id}. If not provided, the server will generate a unique `job_id`.",
+    ),
+  validateOnly: zod
+    .boolean()
+    .optional()
+    .describe(
+      "Indicates that the request should be validated and default values populated, without persisting the request or creating any resources.",
+    ),
+});
 
-export const runProjectsLocationsJobsCreateBody = zod.object({
-  "name": zod.string().optional().describe('The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}'),
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "client": zod.string().optional().describe('Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Arbitrary version identifier for the API client.'),
-  "launchStage": zod.enum(['LAUNCH_STAGE_UNSPECIFIED', 'UNIMPLEMENTED', 'PRELAUNCH', 'EARLY_ACCESS', 'ALPHA', 'BETA', 'GA', 'DEPRECATED']).optional().describe('The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.'),
-  "binaryAuthorization": zod.object({
-  "useDefault": zod.boolean().optional().describe('Optional. If True, indicates to use the default project\'s binary authorization policy. If False, binary authorization will be disabled.'),
-  "policy": zod.string().optional().describe('Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`'),
-  "breakglassJustification": zod.string().optional().describe('Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass')
-}).optional().describe('Settings for Binary Authorization feature.'),
-  "template": zod.object({
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "parallelism": zod.number().optional().describe('Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.'),
-  "taskCount": zod.number().optional().describe('Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.'),
-  "template": zod.object({
-  "containers": zod.array(zod.object({
-  "name": zod.string().optional().describe('Name of the container specified as a DNS_LABEL (RFC 1123).'),
-  "image": zod.string().optional().describe('Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.'),
-  "sourceCode": zod.object({
-  "cloudStorageSource": zod.object({
-  "bucket": zod.string().optional().describe('Required. The Cloud Storage bucket name.'),
-  "object": zod.string().optional().describe('Required. The Cloud Storage object name.'),
-  "generation": zod.string().optional().describe('Optional. The Cloud Storage object generation.')
-}).optional().describe('Cloud Storage source.'),
-  "inlinedSource": zod.object({
-  "sources": zod.array(zod.object({
-  "filename": zod.string().optional().describe('Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.'),
-  "content": zod.string().optional().describe('Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.')
-}).describe('Source file.')).optional().describe('Required. Input only. The source code.')
-}).optional().describe('Inlined source.')
-}).optional().describe('Source type for the container.'),
-  "command": zod.array(zod.string()).optional().describe('Entrypoint array. Not executed within a shell. The docker image\'s ENTRYPOINT is used if this is not provided.'),
-  "args": zod.array(zod.string()).optional().describe('Arguments to the entrypoint. The docker image\'s CMD is used if this is not provided.'),
-  "env": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Name of the environment variable. Must not exceed 32768 characters.'),
-  "value": zod.string().optional().describe('Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.'),
-  "valueSource": zod.object({
-  "secretKeyRef": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest version, an integer for a specific version, or a version alias.')
-}).optional().describe('SecretEnvVarSource represents a source for the value of an EnvVar.')
-}).optional().describe('EnvVarSource represents a source for the value of an EnvVar.')
-}).describe('EnvVar represents an environment variable present in a Container.')).optional().describe('List of environment variables to set in the container.'),
-  "resources": zod.object({
-  "limits": zod.record(zod.string(), zod.string()).optional().describe('Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are \'1\', \'2\', \'4\', and \'8\'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported \'memory\' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported \'nvidia.com\/gpu\' value is \'1\'.'),
-  "cpuIdle": zod.boolean().optional().describe('Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.'),
-  "startupCpuBoost": zod.boolean().optional().describe('Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.')
-}).optional().describe('ResourceRequirements describes the compute resource requirements.'),
-  "ports": zod.array(zod.object({
-  "name": zod.string().optional().describe('If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".'),
-  "containerPort": zod.number().optional().describe('Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.')
-}).describe('ContainerPort represents a network port in a single container.')).optional().describe('List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.'),
-  "volumeMounts": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. This must match the Name of a Volume.'),
-  "mountPath": zod.string().optional().describe('Required. Path within the container at which the volume should be mounted. Must not contain \':\'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run'),
-  "subPath": zod.string().optional().describe('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to \"\" (volume\'s root). This field is currently rejected in Secret volume mounts.')
-}).describe('VolumeMount describes a mounting of a Volume within a container.')).optional().describe('Volume to mount into the container\'s filesystem.'),
-  "workingDir": zod.string().optional().describe('Container\'s working directory. If not specified, the container runtime\'s default will be used, which might be configured in the container image.'),
-  "livenessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "startupProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "readinessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "dependsOn": zod.array(zod.string()).optional().describe('Names of the containers that must start before this container.'),
-  "baseImageUri": zod.string().optional().describe('Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.'),
-  "buildInfo": zod.object({
-  "functionTarget": zod.string().optional().describe('Output only. Entry point of the function when the image is a Cloud Run function.'),
-  "sourceLocation": zod.string().optional().describe('Output only. Source code location of the image.')
-}).optional().describe('Build information of the image.')
-}).describe('A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.')).optional().describe('Holds the single container that defines the unit of execution for this task.'),
-  "volumes": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Volume\'s name.'),
-  "secret": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.'),
-  "items": zod.array(zod.object({
-  "path": zod.string().optional().describe('Required. The relative path of the secret in the container.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest value, or an integer or a secret alias for a specific version.'),
-  "mode": zod.number().optional().describe('Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume\'s default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.')
-}).describe('VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount\'s mount_path.')).optional().describe('If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.'),
-  "defaultMode": zod.number().optional().describe('Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.')
-}).optional().describe('The secret\'s value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.'),
-  "cloudSqlInstance": zod.object({
-  "instances": zod.array(zod.string()).optional().describe('A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance\'s \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format=\'value(connectionName)\' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.')
-}).optional().describe('Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.'),
-  "emptyDir": zod.object({
-  "medium": zod.enum(['MEDIUM_UNSPECIFIED', 'MEMORY', 'DISK']).optional().describe('The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional'),
-  "sizeLimit": zod.string().optional().describe('Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir')
-}).optional().describe('In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).'),
-  "nfs": zod.object({
-  "server": zod.string().optional().describe('Hostname or IP address of the NFS server'),
-  "path": zod.string().optional().describe('Path that is exported by the NFS server.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.')
-}).optional().describe('Represents an NFS mount.'),
-  "gcs": zod.object({
-  "bucket": zod.string().optional().describe('Cloud Storage Bucket name.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.'),
-  "mountOptions": zod.array(zod.string()).optional().describe('A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".')
-}).optional().describe('Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.')
-}).describe('Volume represents a named volume in a container.')).optional().describe('Optional. A list of Volumes to make available to containers.'),
-  "maxRetries": zod.number().optional().describe('Number of retries allowed per Task, before marking this Task failed. Defaults to 3.'),
-  "timeout": zod.string().optional().describe('Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.'),
-  "serviceAccount": zod.string().optional().describe('Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project\'s default service account.'),
-  "executionEnvironment": zod.enum(['EXECUTION_ENVIRONMENT_UNSPECIFIED', 'EXECUTION_ENVIRONMENT_GEN1', 'EXECUTION_ENVIRONMENT_GEN2']).optional().describe('Optional. The execution environment being used to host this Task.'),
-  "encryptionKey": zod.string().optional().describe('A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek'),
-  "vpcAccess": zod.object({
-  "connector": zod.string().optional().describe('VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.'),
-  "egress": zod.enum(['VPC_EGRESS_UNSPECIFIED', 'ALL_TRAFFIC', 'PRIVATE_RANGES_ONLY']).optional().describe('Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.'),
-  "networkInterfaces": zod.array(zod.object({
-  "network": zod.string().optional().describe('Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.'),
-  "subnetwork": zod.string().optional().describe('Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.'),
-  "tags": zod.array(zod.string()).optional().describe('Optional. Network tags applied to this Cloud Run resource.')
-}).describe('Direct VPC egress settings.')).optional().describe('Optional. Direct VPC egress settings. Currently only single network interface is supported.')
-}).optional().describe('VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.'),
-  "nodeSelector": zod.object({
-  "accelerator": zod.string().optional().describe('Required. GPU accelerator type to attach to an instance.')
-}).optional().describe('Hardware constraints configuration.'),
-  "gpuZonalRedundancyDisabled": zod.boolean().optional().describe('Optional. True if GPU zonal redundancy is disabled on this task template.')
-}).optional().describe('TaskTemplate describes the data a task should have when created from a template.'),
-  "client": zod.string().optional().describe('Optional. Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Optional. Arbitrary version identifier for the API client.')
-}).optional().describe('ExecutionTemplate describes the data an execution should have when created from a template.'),
-  "terminalCondition": zod.object({
-  "type": zod.string().optional().describe('type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.'),
-  "state": zod.enum(['STATE_UNSPECIFIED', 'CONDITION_PENDING', 'CONDITION_RECONCILING', 'CONDITION_FAILED', 'CONDITION_SUCCEEDED']).optional().describe('State of the condition.'),
-  "message": zod.string().optional().describe('Human readable message indicating details about the current status.'),
-  "lastTransitionTime": zod.string().optional().describe('Last time the condition transitioned from one status to another.'),
-  "severity": zod.enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO']).optional().describe('How to interpret failures of this condition, one of Error, Warning, Info'),
-  "reason": zod.enum(['COMMON_REASON_UNDEFINED', 'UNKNOWN', 'REVISION_FAILED', 'PROGRESS_DEADLINE_EXCEEDED', 'CONTAINER_MISSING', 'CONTAINER_PERMISSION_DENIED', 'CONTAINER_IMAGE_UNAUTHORIZED', 'CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED', 'ENCRYPTION_KEY_PERMISSION_DENIED', 'ENCRYPTION_KEY_CHECK_FAILED', 'SECRETS_ACCESS_CHECK_FAILED', 'WAITING_FOR_OPERATION', 'IMMEDIATE_RETRY', 'POSTPONED_RETRY', 'INTERNAL', 'VPC_NETWORK_NOT_FOUND']).optional().describe('Output only. A common (service-level) reason for this condition.'),
-  "revisionReason": zod.enum(['REVISION_REASON_UNDEFINED', 'PENDING', 'RESERVE', 'RETIRED', 'RETIRING', 'RECREATING', 'HEALTH_CHECK_CONTAINER_ERROR', 'CUSTOMIZED_PATH_RESPONSE_PENDING', 'MIN_INSTANCES_NOT_PROVISIONED', 'ACTIVE_REVISION_LIMIT_REACHED', 'NO_DEPLOYMENT', 'HEALTH_CHECK_SKIPPED', 'MIN_INSTANCES_WARMING']).optional().describe('Output only. A reason for the revision condition.'),
-  "executionReason": zod.enum(['EXECUTION_REASON_UNDEFINED', 'JOB_STATUS_SERVICE_POLLING_ERROR', 'NON_ZERO_EXIT_CODE', 'CANCELLED', 'CANCELLING', 'DELETED', 'DELAYED_START_PENDING']).optional().describe('Output only. A reason for the execution condition.')
-}).optional().describe('Defines a status condition for a resource.'),
-  "latestCreatedExecution": zod.object({
-  "name": zod.string().optional().describe('Name of the execution.'),
-  "createTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "completionTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "deleteTime": zod.string().optional().describe('The deletion time of the execution. It is only populated as a response to a Delete request.'),
-  "completionStatus": zod.enum(['COMPLETION_STATUS_UNSPECIFIED', 'EXECUTION_SUCCEEDED', 'EXECUTION_FAILED', 'EXECUTION_RUNNING', 'EXECUTION_PENDING', 'EXECUTION_CANCELLED']).optional().describe('Status for the execution completion.')
-}).optional().describe('Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.'),
-  "startExecutionToken": zod.string().optional().describe('A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.'),
-  "runExecutionToken": zod.string().optional().describe('A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.'),
-  "etag": zod.string().optional().describe('Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.')
-}).describe('Job represents the configuration of a single job, which references a container image that is run to completion.')
+export const runProjectsLocationsJobsCreateBody = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}",
+      ),
+    labels: zod
+      .record(zod.string(), zod.string())
+      .optional()
+      .describe(
+        "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.",
+      ),
+    annotations: zod
+      .record(zod.string(), zod.string())
+      .optional()
+      .describe(
+        "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+      ),
+    client: zod
+      .string()
+      .optional()
+      .describe("Arbitrary identifier for the API client."),
+    clientVersion: zod
+      .string()
+      .optional()
+      .describe("Arbitrary version identifier for the API client."),
+    launchStage: zod
+      .enum([
+        "LAUNCH_STAGE_UNSPECIFIED",
+        "UNIMPLEMENTED",
+        "PRELAUNCH",
+        "EARLY_ACCESS",
+        "ALPHA",
+        "BETA",
+        "GA",
+        "DEPRECATED",
+      ])
+      .optional()
+      .describe(
+        "The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.",
+      ),
+    binaryAuthorization: zod
+      .object({
+        useDefault: zod
+          .boolean()
+          .optional()
+          .describe(
+            "Optional. If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.",
+          ),
+        policy: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`",
+          ),
+        breakglassJustification: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass",
+          ),
+      })
+      .optional()
+      .describe("Settings for Binary Authorization feature."),
+    template: zod
+      .object({
+        labels: zod
+          .record(zod.string(), zod.string())
+          .optional()
+          .describe(
+            "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.",
+          ),
+        annotations: zod
+          .record(zod.string(), zod.string())
+          .optional()
+          .describe(
+            "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+          ),
+        parallelism: zod
+          .number()
+          .optional()
+          .describe(
+            "Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.",
+          ),
+        taskCount: zod
+          .number()
+          .optional()
+          .describe(
+            "Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.",
+          ),
+        template: zod
+          .object({
+            containers: zod
+              .array(
+                zod
+                  .object({
+                    name: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Name of the container specified as a DNS_LABEL (RFC 1123).",
+                      ),
+                    image: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.",
+                      ),
+                    sourceCode: zod
+                      .object({
+                        cloudStorageSource: zod
+                          .object({
+                            bucket: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. The Cloud Storage bucket name.",
+                              ),
+                            object: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. The Cloud Storage object name.",
+                              ),
+                            generation: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. The Cloud Storage object generation.",
+                              ),
+                          })
+                          .optional()
+                          .describe("Cloud Storage source."),
+                        inlinedSource: zod
+                          .object({
+                            sources: zod
+                              .array(
+                                zod
+                                  .object({
+                                    filename: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        'Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
+                                      ),
+                                    content: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
+                                      ),
+                                  })
+                                  .describe("Source file."),
+                              )
+                              .optional()
+                              .describe(
+                                "Required. Input only. The source code.",
+                              ),
+                          })
+                          .optional()
+                          .describe("Inlined source."),
+                      })
+                      .optional()
+                      .describe("Source type for the container."),
+                    command: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.",
+                      ),
+                    args: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Arguments to the entrypoint. The docker image's CMD is used if this is not provided.",
+                      ),
+                    env: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Name of the environment variable. Must not exceed 32768 characters.",
+                              ),
+                            value: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                'Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
+                              ),
+                            valueSource: zod
+                              .object({
+                                secretKeyRef: zod
+                                  .object({
+                                    secret: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.",
+                                      ),
+                                    version: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "SecretEnvVarSource represents a source for the value of an EnvVar.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "EnvVarSource represents a source for the value of an EnvVar.",
+                              ),
+                          })
+                          .describe(
+                            "EnvVar represents an environment variable present in a Container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "List of environment variables to set in the container.",
+                      ),
+                    resources: zod
+                      .object({
+                        limits: zod
+                          .record(zod.string(), zod.string())
+                          .optional()
+                          .describe(
+                            "Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported 'memory' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported 'nvidia.com\/gpu' value is '1'.",
+                          ),
+                        cpuIdle: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.",
+                          ),
+                        startupCpuBoost: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "ResourceRequirements describes the compute resource requirements.",
+                      ),
+                    ports: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                'If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".',
+                              ),
+                            containerPort: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.",
+                              ),
+                          })
+                          .describe(
+                            "ContainerPort represents a network port in a single container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.",
+                      ),
+                    volumeMounts: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. This must match the Name of a Volume.",
+                              ),
+                            mountPath: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run",
+                              ),
+                            subPath: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently rejected in Secret volume mounts.",
+                              ),
+                          })
+                          .describe(
+                            "VolumeMount describes a mounting of a Volume within a container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "Volume to mount into the container's filesystem.",
+                      ),
+                    workingDir: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.",
+                      ),
+                    livenessProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    startupProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    readinessProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    dependsOn: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Names of the containers that must start before this container.",
+                      ),
+                    baseImageUri: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.",
+                      ),
+                    buildInfo: zod
+                      .object({
+                        functionTarget: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Output only. Entry point of the function when the image is a Cloud Run function.",
+                          ),
+                        sourceLocation: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Output only. Source code location of the image.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Build information of the image."),
+                  })
+                  .describe(
+                    "A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.",
+                  ),
+              )
+              .optional()
+              .describe(
+                "Holds the single container that defines the unit of execution for this task.",
+              ),
+            volumes: zod
+              .array(
+                zod
+                  .object({
+                    name: zod
+                      .string()
+                      .optional()
+                      .describe("Required. Volume's name."),
+                    secret: zod
+                      .object({
+                        secret: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.",
+                          ),
+                        items: zod
+                          .array(
+                            zod
+                              .object({
+                                path: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Required. The relative path of the secret in the container.",
+                                  ),
+                                version: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
+                                  ),
+                                mode: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
+                                  ),
+                              })
+                              .describe(
+                                "VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount's mount_path.",
+                              ),
+                          )
+                          .optional()
+                          .describe(
+                            "If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.",
+                          ),
+                        defaultMode: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "The secret's value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.",
+                      ),
+                    cloudSqlInstance: zod
+                      .object({
+                        instances: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            "A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance's \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format='value(connectionName)' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                      ),
+                    emptyDir: zod
+                      .object({
+                        medium: zod
+                          .enum(["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"])
+                          .optional()
+                          .describe(
+                            "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
+                          ),
+                        sizeLimit: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).",
+                      ),
+                    nfs: zod
+                      .object({
+                        server: zod
+                          .string()
+                          .optional()
+                          .describe("Hostname or IP address of the NFS server"),
+                        path: zod
+                          .string()
+                          .optional()
+                          .describe("Path that is exported by the NFS server."),
+                        readOnly: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "If true, the volume will be mounted as read only for all mounts.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Represents an NFS mount."),
+                    gcs: zod
+                      .object({
+                        bucket: zod
+                          .string()
+                          .optional()
+                          .describe("Cloud Storage Bucket name."),
+                        readOnly: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "If true, the volume will be mounted as read only for all mounts.",
+                          ),
+                        mountOptions: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            'A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".',
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.",
+                      ),
+                  })
+                  .describe("Volume represents a named volume in a container."),
+              )
+              .optional()
+              .describe(
+                "Optional. A list of Volumes to make available to containers.",
+              ),
+            maxRetries: zod
+              .number()
+              .optional()
+              .describe(
+                "Number of retries allowed per Task, before marking this Task failed. Defaults to 3.",
+              ),
+            timeout: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.",
+              ),
+            serviceAccount: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project's default service account.",
+              ),
+            executionEnvironment: zod
+              .enum([
+                "EXECUTION_ENVIRONMENT_UNSPECIFIED",
+                "EXECUTION_ENVIRONMENT_GEN1",
+                "EXECUTION_ENVIRONMENT_GEN2",
+              ])
+              .optional()
+              .describe(
+                "Optional. The execution environment being used to host this Task.",
+              ),
+            encryptionKey: zod
+              .string()
+              .optional()
+              .describe(
+                "A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek",
+              ),
+            vpcAccess: zod
+              .object({
+                connector: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.",
+                  ),
+                egress: zod
+                  .enum([
+                    "VPC_EGRESS_UNSPECIFIED",
+                    "ALL_TRAFFIC",
+                    "PRIVATE_RANGES_ONLY",
+                  ])
+                  .optional()
+                  .describe(
+                    "Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.",
+                  ),
+                networkInterfaces: zod
+                  .array(
+                    zod
+                      .object({
+                        network: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.",
+                          ),
+                        subnetwork: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
+                          ),
+                        tags: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            "Optional. Network tags applied to this Cloud Run resource.",
+                          ),
+                      })
+                      .describe("Direct VPC egress settings."),
+                  )
+                  .optional()
+                  .describe(
+                    "Optional. Direct VPC egress settings. Currently only single network interface is supported.",
+                  ),
+              })
+              .optional()
+              .describe(
+                "VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.",
+              ),
+            nodeSelector: zod
+              .object({
+                accelerator: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Required. GPU accelerator type to attach to an instance.",
+                  ),
+              })
+              .optional()
+              .describe("Hardware constraints configuration."),
+            gpuZonalRedundancyDisabled: zod
+              .boolean()
+              .optional()
+              .describe(
+                "Optional. True if GPU zonal redundancy is disabled on this task template.",
+              ),
+          })
+          .optional()
+          .describe(
+            "TaskTemplate describes the data a task should have when created from a template.",
+          ),
+        client: zod
+          .string()
+          .optional()
+          .describe("Optional. Arbitrary identifier for the API client."),
+        clientVersion: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. Arbitrary version identifier for the API client.",
+          ),
+      })
+      .optional()
+      .describe(
+        "ExecutionTemplate describes the data an execution should have when created from a template.",
+      ),
+    terminalCondition: zod
+      .object({
+        type: zod
+          .string()
+          .optional()
+          .describe(
+            'type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.',
+          ),
+        state: zod
+          .enum([
+            "STATE_UNSPECIFIED",
+            "CONDITION_PENDING",
+            "CONDITION_RECONCILING",
+            "CONDITION_FAILED",
+            "CONDITION_SUCCEEDED",
+          ])
+          .optional()
+          .describe("State of the condition."),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "Human readable message indicating details about the current status.",
+          ),
+        lastTransitionTime: zod
+          .string()
+          .optional()
+          .describe(
+            "Last time the condition transitioned from one status to another.",
+          ),
+        severity: zod
+          .enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
+          .optional()
+          .describe(
+            "How to interpret failures of this condition, one of Error, Warning, Info",
+          ),
+        reason: zod
+          .enum([
+            "COMMON_REASON_UNDEFINED",
+            "UNKNOWN",
+            "REVISION_FAILED",
+            "PROGRESS_DEADLINE_EXCEEDED",
+            "CONTAINER_MISSING",
+            "CONTAINER_PERMISSION_DENIED",
+            "CONTAINER_IMAGE_UNAUTHORIZED",
+            "CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED",
+            "ENCRYPTION_KEY_PERMISSION_DENIED",
+            "ENCRYPTION_KEY_CHECK_FAILED",
+            "SECRETS_ACCESS_CHECK_FAILED",
+            "WAITING_FOR_OPERATION",
+            "IMMEDIATE_RETRY",
+            "POSTPONED_RETRY",
+            "INTERNAL",
+            "VPC_NETWORK_NOT_FOUND",
+          ])
+          .optional()
+          .describe(
+            "Output only. A common (service-level) reason for this condition.",
+          ),
+        revisionReason: zod
+          .enum([
+            "REVISION_REASON_UNDEFINED",
+            "PENDING",
+            "RESERVE",
+            "RETIRED",
+            "RETIRING",
+            "RECREATING",
+            "HEALTH_CHECK_CONTAINER_ERROR",
+            "CUSTOMIZED_PATH_RESPONSE_PENDING",
+            "MIN_INSTANCES_NOT_PROVISIONED",
+            "ACTIVE_REVISION_LIMIT_REACHED",
+            "NO_DEPLOYMENT",
+            "HEALTH_CHECK_SKIPPED",
+            "MIN_INSTANCES_WARMING",
+          ])
+          .optional()
+          .describe("Output only. A reason for the revision condition."),
+        executionReason: zod
+          .enum([
+            "EXECUTION_REASON_UNDEFINED",
+            "JOB_STATUS_SERVICE_POLLING_ERROR",
+            "NON_ZERO_EXIT_CODE",
+            "CANCELLED",
+            "CANCELLING",
+            "DELETED",
+            "DELAYED_START_PENDING",
+          ])
+          .optional()
+          .describe("Output only. A reason for the execution condition."),
+      })
+      .optional()
+      .describe("Defines a status condition for a resource."),
+    latestCreatedExecution: zod
+      .object({
+        name: zod.string().optional().describe("Name of the execution."),
+        createTime: zod
+          .string()
+          .optional()
+          .describe("Creation timestamp of the execution."),
+        completionTime: zod
+          .string()
+          .optional()
+          .describe("Creation timestamp of the execution."),
+        deleteTime: zod
+          .string()
+          .optional()
+          .describe(
+            "The deletion time of the execution. It is only populated as a response to a Delete request.",
+          ),
+        completionStatus: zod
+          .enum([
+            "COMPLETION_STATUS_UNSPECIFIED",
+            "EXECUTION_SUCCEEDED",
+            "EXECUTION_FAILED",
+            "EXECUTION_RUNNING",
+            "EXECUTION_PENDING",
+            "EXECUTION_CANCELLED",
+          ])
+          .optional()
+          .describe("Status for the execution completion."),
+      })
+      .optional()
+      .describe(
+        "Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.",
+      ),
+    startExecutionToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.",
+      ),
+    runExecutionToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.",
+      ),
+    etag: zod
+      .string()
+      .optional()
+      .describe(
+        "Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.",
+      ),
+  })
+  .describe(
+    "Job represents the configuration of a single job, which references a container image that is run to completion.",
+  );
 
-export const runProjectsLocationsJobsCreate200Response = zod.object({
-  "name": zod.string().optional().describe('The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.'),
-  "metadata": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.'),
-  "done": zod.boolean().optional().describe('If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.'),
-  "error": zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).optional().describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).'),
-  "response": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.')
-}).describe('This resource represents a long-running operation that is the result of a network API call.')
+export const runProjectsLocationsJobsCreate200Response = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.",
+      ),
+    metadata: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.",
+      ),
+    done: zod
+      .boolean()
+      .optional()
+      .describe(
+        "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.",
+      ),
+    error: zod
+      .object({
+        code: zod
+          .number()
+          .optional()
+          .describe(
+            "The status code, which should be an enum value of google.rpc.Code.",
+          ),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+          ),
+        details: zod
+          .array(
+            zod.record(
+              zod.string(),
+              zod
+                .unknown()
+                .describe(
+                  "Properties of the object. Contains field @type with type URL.",
+                ),
+            ),
+          )
+          .optional()
+          .describe(
+            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+          ),
+      })
+      .optional()
+      .describe(
+        "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+      ),
+    response: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.",
+      ),
+  })
+  .describe(
+    "This resource represents a long-running operation that is the result of a network API call.",
+  );
 
-export const runProjectsLocationsJobsCreateDefaultResponse = zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).')
-
+export const runProjectsLocationsJobsCreateDefaultResponse = zod
+  .object({
+    code: zod
+      .number()
+      .optional()
+      .describe(
+        "The status code, which should be an enum value of google.rpc.Code.",
+      ),
+    message: zod
+      .string()
+      .optional()
+      .describe(
+        "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+      ),
+    details: zod
+      .array(
+        zod.record(
+          zod.string(),
+          zod
+            .unknown()
+            .describe(
+              "Properties of the object. Contains field @type with type URL.",
+            ),
+        ),
+      )
+      .optional()
+      .describe(
+        "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+      ),
+  })
+  .describe(
+    "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+  );
 
 /**
  * Lists Jobs. Results are sorted by creation time, descending.
  */
-export const runProjectsLocationsJobsListPathParentRegExp = new RegExp('^projects\/[^\/]+\/locations\/[^\/]+$');
-
+export const runProjectsLocationsJobsListPathParentRegExp = new RegExp(
+  "^projects\/[^\/]+\/locations\/[^\/]+$",
+);
 
 export const runProjectsLocationsJobsListParams = zod.object({
-  "parent": zod.string().regex(runProjectsLocationsJobsListPathParentRegExp).describe('Required. The location and project to list resources on. Format: projects\/{project}\/locations\/{location}, where {project} can be project id or number.')
-})
+  parent: zod
+    .string()
+    .regex(runProjectsLocationsJobsListPathParentRegExp)
+    .describe(
+      "Required. The location and project to list resources on. Format: projects\/{project}\/locations\/{location}, where {project} can be project id or number.",
+    ),
+});
 
 export const runProjectsLocationsJobsListQueryParams = zod.object({
-  "pageSize": zod.number().optional().describe('Maximum number of Jobs to return in this call.'),
-  "pageToken": zod.string().optional().describe('A page token received from a previous call to ListJobs. All other parameters must match.'),
-  "showDeleted": zod.boolean().optional().describe('If true, returns deleted (but unexpired) resources along with active ones.')
-})
+  pageSize: zod
+    .number()
+    .optional()
+    .describe("Maximum number of Jobs to return in this call."),
+  pageToken: zod
+    .string()
+    .optional()
+    .describe(
+      "A page token received from a previous call to ListJobs. All other parameters must match.",
+    ),
+  showDeleted: zod
+    .boolean()
+    .optional()
+    .describe(
+      "If true, returns deleted (but unexpired) resources along with active ones.",
+    ),
+});
 
-export const runProjectsLocationsJobsList200Response = zod.object({
-  "jobs": zod.array(zod.object({
-  "name": zod.string().optional().describe('The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}'),
-  "uid": zod.string().optional().describe('Output only. Server assigned unique identifier for the Execution. The value is a UUID4 string and guaranteed to remain unchanged until the resource is deleted.'),
-  "generation": zod.string().optional().describe('Output only. A number that monotonically increases every time the user modifies the desired state.'),
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "createTime": zod.string().optional().describe('Output only. The creation time.'),
-  "updateTime": zod.string().optional().describe('Output only. The last-modified time.'),
-  "deleteTime": zod.string().optional().describe('Output only. The deletion time. It is only populated as a response to a Delete request.'),
-  "expireTime": zod.string().optional().describe('Output only. For a deleted resource, the time after which it will be permamently deleted.'),
-  "creator": zod.string().optional().describe('Output only. Email address of the authenticated creator.'),
-  "lastModifier": zod.string().optional().describe('Output only. Email address of the last authenticated modifier.'),
-  "client": zod.string().optional().describe('Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Arbitrary version identifier for the API client.'),
-  "launchStage": zod.enum(['LAUNCH_STAGE_UNSPECIFIED', 'UNIMPLEMENTED', 'PRELAUNCH', 'EARLY_ACCESS', 'ALPHA', 'BETA', 'GA', 'DEPRECATED']).optional().describe('The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.'),
-  "binaryAuthorization": zod.object({
-  "useDefault": zod.boolean().optional().describe('Optional. If True, indicates to use the default project\'s binary authorization policy. If False, binary authorization will be disabled.'),
-  "policy": zod.string().optional().describe('Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`'),
-  "breakglassJustification": zod.string().optional().describe('Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass')
-}).optional().describe('Settings for Binary Authorization feature.'),
-  "template": zod.object({
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "parallelism": zod.number().optional().describe('Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.'),
-  "taskCount": zod.number().optional().describe('Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.'),
-  "template": zod.object({
-  "containers": zod.array(zod.object({
-  "name": zod.string().optional().describe('Name of the container specified as a DNS_LABEL (RFC 1123).'),
-  "image": zod.string().optional().describe('Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.'),
-  "sourceCode": zod.object({
-  "cloudStorageSource": zod.object({
-  "bucket": zod.string().optional().describe('Required. The Cloud Storage bucket name.'),
-  "object": zod.string().optional().describe('Required. The Cloud Storage object name.'),
-  "generation": zod.string().optional().describe('Optional. The Cloud Storage object generation.')
-}).optional().describe('Cloud Storage source.'),
-  "inlinedSource": zod.object({
-  "sources": zod.array(zod.object({
-  "filename": zod.string().optional().describe('Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.'),
-  "content": zod.string().optional().describe('Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.')
-}).describe('Source file.')).optional().describe('Required. Input only. The source code.')
-}).optional().describe('Inlined source.')
-}).optional().describe('Source type for the container.'),
-  "command": zod.array(zod.string()).optional().describe('Entrypoint array. Not executed within a shell. The docker image\'s ENTRYPOINT is used if this is not provided.'),
-  "args": zod.array(zod.string()).optional().describe('Arguments to the entrypoint. The docker image\'s CMD is used if this is not provided.'),
-  "env": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Name of the environment variable. Must not exceed 32768 characters.'),
-  "value": zod.string().optional().describe('Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.'),
-  "valueSource": zod.object({
-  "secretKeyRef": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest version, an integer for a specific version, or a version alias.')
-}).optional().describe('SecretEnvVarSource represents a source for the value of an EnvVar.')
-}).optional().describe('EnvVarSource represents a source for the value of an EnvVar.')
-}).describe('EnvVar represents an environment variable present in a Container.')).optional().describe('List of environment variables to set in the container.'),
-  "resources": zod.object({
-  "limits": zod.record(zod.string(), zod.string()).optional().describe('Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are \'1\', \'2\', \'4\', and \'8\'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported \'memory\' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported \'nvidia.com\/gpu\' value is \'1\'.'),
-  "cpuIdle": zod.boolean().optional().describe('Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.'),
-  "startupCpuBoost": zod.boolean().optional().describe('Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.')
-}).optional().describe('ResourceRequirements describes the compute resource requirements.'),
-  "ports": zod.array(zod.object({
-  "name": zod.string().optional().describe('If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".'),
-  "containerPort": zod.number().optional().describe('Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.')
-}).describe('ContainerPort represents a network port in a single container.')).optional().describe('List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.'),
-  "volumeMounts": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. This must match the Name of a Volume.'),
-  "mountPath": zod.string().optional().describe('Required. Path within the container at which the volume should be mounted. Must not contain \':\'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run'),
-  "subPath": zod.string().optional().describe('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to \"\" (volume\'s root). This field is currently rejected in Secret volume mounts.')
-}).describe('VolumeMount describes a mounting of a Volume within a container.')).optional().describe('Volume to mount into the container\'s filesystem.'),
-  "workingDir": zod.string().optional().describe('Container\'s working directory. If not specified, the container runtime\'s default will be used, which might be configured in the container image.'),
-  "livenessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "startupProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "readinessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "dependsOn": zod.array(zod.string()).optional().describe('Names of the containers that must start before this container.'),
-  "baseImageUri": zod.string().optional().describe('Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.'),
-  "buildInfo": zod.object({
-  "functionTarget": zod.string().optional().describe('Output only. Entry point of the function when the image is a Cloud Run function.'),
-  "sourceLocation": zod.string().optional().describe('Output only. Source code location of the image.')
-}).optional().describe('Build information of the image.')
-}).describe('A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.')).optional().describe('Holds the single container that defines the unit of execution for this task.'),
-  "volumes": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Volume\'s name.'),
-  "secret": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.'),
-  "items": zod.array(zod.object({
-  "path": zod.string().optional().describe('Required. The relative path of the secret in the container.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest value, or an integer or a secret alias for a specific version.'),
-  "mode": zod.number().optional().describe('Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume\'s default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.')
-}).describe('VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount\'s mount_path.')).optional().describe('If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.'),
-  "defaultMode": zod.number().optional().describe('Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.')
-}).optional().describe('The secret\'s value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.'),
-  "cloudSqlInstance": zod.object({
-  "instances": zod.array(zod.string()).optional().describe('A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance\'s \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format=\'value(connectionName)\' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.')
-}).optional().describe('Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.'),
-  "emptyDir": zod.object({
-  "medium": zod.enum(['MEDIUM_UNSPECIFIED', 'MEMORY', 'DISK']).optional().describe('The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional'),
-  "sizeLimit": zod.string().optional().describe('Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir')
-}).optional().describe('In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).'),
-  "nfs": zod.object({
-  "server": zod.string().optional().describe('Hostname or IP address of the NFS server'),
-  "path": zod.string().optional().describe('Path that is exported by the NFS server.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.')
-}).optional().describe('Represents an NFS mount.'),
-  "gcs": zod.object({
-  "bucket": zod.string().optional().describe('Cloud Storage Bucket name.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.'),
-  "mountOptions": zod.array(zod.string()).optional().describe('A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".')
-}).optional().describe('Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.')
-}).describe('Volume represents a named volume in a container.')).optional().describe('Optional. A list of Volumes to make available to containers.'),
-  "maxRetries": zod.number().optional().describe('Number of retries allowed per Task, before marking this Task failed. Defaults to 3.'),
-  "timeout": zod.string().optional().describe('Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.'),
-  "serviceAccount": zod.string().optional().describe('Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project\'s default service account.'),
-  "executionEnvironment": zod.enum(['EXECUTION_ENVIRONMENT_UNSPECIFIED', 'EXECUTION_ENVIRONMENT_GEN1', 'EXECUTION_ENVIRONMENT_GEN2']).optional().describe('Optional. The execution environment being used to host this Task.'),
-  "encryptionKey": zod.string().optional().describe('A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek'),
-  "vpcAccess": zod.object({
-  "connector": zod.string().optional().describe('VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.'),
-  "egress": zod.enum(['VPC_EGRESS_UNSPECIFIED', 'ALL_TRAFFIC', 'PRIVATE_RANGES_ONLY']).optional().describe('Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.'),
-  "networkInterfaces": zod.array(zod.object({
-  "network": zod.string().optional().describe('Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.'),
-  "subnetwork": zod.string().optional().describe('Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.'),
-  "tags": zod.array(zod.string()).optional().describe('Optional. Network tags applied to this Cloud Run resource.')
-}).describe('Direct VPC egress settings.')).optional().describe('Optional. Direct VPC egress settings. Currently only single network interface is supported.')
-}).optional().describe('VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.'),
-  "nodeSelector": zod.object({
-  "accelerator": zod.string().optional().describe('Required. GPU accelerator type to attach to an instance.')
-}).optional().describe('Hardware constraints configuration.'),
-  "gpuZonalRedundancyDisabled": zod.boolean().optional().describe('Optional. True if GPU zonal redundancy is disabled on this task template.')
-}).optional().describe('TaskTemplate describes the data a task should have when created from a template.'),
-  "client": zod.string().optional().describe('Optional. Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Optional. Arbitrary version identifier for the API client.')
-}).optional().describe('ExecutionTemplate describes the data an execution should have when created from a template.'),
-  "observedGeneration": zod.string().optional().describe('Output only. The generation of this Job. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.'),
-  "terminalCondition": zod.object({
-  "type": zod.string().optional().describe('type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.'),
-  "state": zod.enum(['STATE_UNSPECIFIED', 'CONDITION_PENDING', 'CONDITION_RECONCILING', 'CONDITION_FAILED', 'CONDITION_SUCCEEDED']).optional().describe('State of the condition.'),
-  "message": zod.string().optional().describe('Human readable message indicating details about the current status.'),
-  "lastTransitionTime": zod.string().optional().describe('Last time the condition transitioned from one status to another.'),
-  "severity": zod.enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO']).optional().describe('How to interpret failures of this condition, one of Error, Warning, Info'),
-  "reason": zod.enum(['COMMON_REASON_UNDEFINED', 'UNKNOWN', 'REVISION_FAILED', 'PROGRESS_DEADLINE_EXCEEDED', 'CONTAINER_MISSING', 'CONTAINER_PERMISSION_DENIED', 'CONTAINER_IMAGE_UNAUTHORIZED', 'CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED', 'ENCRYPTION_KEY_PERMISSION_DENIED', 'ENCRYPTION_KEY_CHECK_FAILED', 'SECRETS_ACCESS_CHECK_FAILED', 'WAITING_FOR_OPERATION', 'IMMEDIATE_RETRY', 'POSTPONED_RETRY', 'INTERNAL', 'VPC_NETWORK_NOT_FOUND']).optional().describe('Output only. A common (service-level) reason for this condition.'),
-  "revisionReason": zod.enum(['REVISION_REASON_UNDEFINED', 'PENDING', 'RESERVE', 'RETIRED', 'RETIRING', 'RECREATING', 'HEALTH_CHECK_CONTAINER_ERROR', 'CUSTOMIZED_PATH_RESPONSE_PENDING', 'MIN_INSTANCES_NOT_PROVISIONED', 'ACTIVE_REVISION_LIMIT_REACHED', 'NO_DEPLOYMENT', 'HEALTH_CHECK_SKIPPED', 'MIN_INSTANCES_WARMING']).optional().describe('Output only. A reason for the revision condition.'),
-  "executionReason": zod.enum(['EXECUTION_REASON_UNDEFINED', 'JOB_STATUS_SERVICE_POLLING_ERROR', 'NON_ZERO_EXIT_CODE', 'CANCELLED', 'CANCELLING', 'DELETED', 'DELAYED_START_PENDING']).optional().describe('Output only. A reason for the execution condition.')
-}).optional().describe('Defines a status condition for a resource.'),
-  "conditions": zod.array(zod.object({
-  "type": zod.string().optional().describe('type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.'),
-  "state": zod.enum(['STATE_UNSPECIFIED', 'CONDITION_PENDING', 'CONDITION_RECONCILING', 'CONDITION_FAILED', 'CONDITION_SUCCEEDED']).optional().describe('State of the condition.'),
-  "message": zod.string().optional().describe('Human readable message indicating details about the current status.'),
-  "lastTransitionTime": zod.string().optional().describe('Last time the condition transitioned from one status to another.'),
-  "severity": zod.enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO']).optional().describe('How to interpret failures of this condition, one of Error, Warning, Info'),
-  "reason": zod.enum(['COMMON_REASON_UNDEFINED', 'UNKNOWN', 'REVISION_FAILED', 'PROGRESS_DEADLINE_EXCEEDED', 'CONTAINER_MISSING', 'CONTAINER_PERMISSION_DENIED', 'CONTAINER_IMAGE_UNAUTHORIZED', 'CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED', 'ENCRYPTION_KEY_PERMISSION_DENIED', 'ENCRYPTION_KEY_CHECK_FAILED', 'SECRETS_ACCESS_CHECK_FAILED', 'WAITING_FOR_OPERATION', 'IMMEDIATE_RETRY', 'POSTPONED_RETRY', 'INTERNAL', 'VPC_NETWORK_NOT_FOUND']).optional().describe('Output only. A common (service-level) reason for this condition.'),
-  "revisionReason": zod.enum(['REVISION_REASON_UNDEFINED', 'PENDING', 'RESERVE', 'RETIRED', 'RETIRING', 'RECREATING', 'HEALTH_CHECK_CONTAINER_ERROR', 'CUSTOMIZED_PATH_RESPONSE_PENDING', 'MIN_INSTANCES_NOT_PROVISIONED', 'ACTIVE_REVISION_LIMIT_REACHED', 'NO_DEPLOYMENT', 'HEALTH_CHECK_SKIPPED', 'MIN_INSTANCES_WARMING']).optional().describe('Output only. A reason for the revision condition.'),
-  "executionReason": zod.enum(['EXECUTION_REASON_UNDEFINED', 'JOB_STATUS_SERVICE_POLLING_ERROR', 'NON_ZERO_EXIT_CODE', 'CANCELLED', 'CANCELLING', 'DELETED', 'DELAYED_START_PENDING']).optional().describe('Output only. A reason for the execution condition.')
-}).describe('Defines a status condition for a resource.')).optional().describe('Output only. The Conditions of all other associated sub-resources. They contain additional diagnostics information in case the Job does not reach its desired state. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.'),
-  "executionCount": zod.number().optional().describe('Output only. Number of executions created for this job.'),
-  "latestCreatedExecution": zod.object({
-  "name": zod.string().optional().describe('Name of the execution.'),
-  "createTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "completionTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "deleteTime": zod.string().optional().describe('The deletion time of the execution. It is only populated as a response to a Delete request.'),
-  "completionStatus": zod.enum(['COMPLETION_STATUS_UNSPECIFIED', 'EXECUTION_SUCCEEDED', 'EXECUTION_FAILED', 'EXECUTION_RUNNING', 'EXECUTION_PENDING', 'EXECUTION_CANCELLED']).optional().describe('Status for the execution completion.')
-}).optional().describe('Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.'),
-  "reconciling": zod.boolean().optional().describe('Output only. Returns true if the Job is currently being acted upon by the system to bring it into the desired state. When a new Job is created, or an existing one is updated, Cloud Run will asynchronously perform all necessary steps to bring the Job to the desired state. This process is called reconciliation. While reconciliation is in process, `observed_generation` and `latest_succeeded_execution`, will have transient values that might mismatch the intended state: Once reconciliation is over (and this field is false), there are two possible outcomes: reconciliation succeeded and the state matches the Job, or there was an error, and reconciliation failed. This state can be found in `terminal_condition.state`. If reconciliation succeeded, the following fields will match: `observed_generation` and `generation`, `latest_succeeded_execution` and `latest_created_execution`. If reconciliation failed, `observed_generation` and `latest_succeeded_execution` will have the state of the last succeeded execution or empty for newly created Job. Additional information on the failure can be found in `terminal_condition` and `conditions`.'),
-  "satisfiesPzs": zod.boolean().optional().describe('Output only. Reserved for future use.'),
-  "startExecutionToken": zod.string().optional().describe('A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.'),
-  "runExecutionToken": zod.string().optional().describe('A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.'),
-  "etag": zod.string().optional().describe('Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.')
-}).describe('Job represents the configuration of a single job, which references a container image that is run to completion.')).optional().describe('The resulting list of Jobs.'),
-  "nextPageToken": zod.string().optional().describe('A token indicating there are more items than page_size. Use it in the next ListJobs request to continue.')
-}).describe('Response message containing a list of Jobs.')
+export const runProjectsLocationsJobsList200Response = zod
+  .object({
+    jobs: zod
+      .array(
+        zod
+          .object({
+            name: zod
+              .string()
+              .optional()
+              .describe(
+                "The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}",
+              ),
+            uid: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. Server assigned unique identifier for the Execution. The value is a UUID4 string and guaranteed to remain unchanged until the resource is deleted.",
+              ),
+            generation: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. A number that monotonically increases every time the user modifies the desired state.",
+              ),
+            labels: zod
+              .record(zod.string(), zod.string())
+              .optional()
+              .describe(
+                "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.",
+              ),
+            annotations: zod
+              .record(zod.string(), zod.string())
+              .optional()
+              .describe(
+                "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+              ),
+            createTime: zod
+              .string()
+              .optional()
+              .describe("Output only. The creation time."),
+            updateTime: zod
+              .string()
+              .optional()
+              .describe("Output only. The last-modified time."),
+            deleteTime: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. The deletion time. It is only populated as a response to a Delete request.",
+              ),
+            expireTime: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. For a deleted resource, the time after which it will be permamently deleted.",
+              ),
+            creator: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. Email address of the authenticated creator.",
+              ),
+            lastModifier: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. Email address of the last authenticated modifier.",
+              ),
+            client: zod
+              .string()
+              .optional()
+              .describe("Arbitrary identifier for the API client."),
+            clientVersion: zod
+              .string()
+              .optional()
+              .describe("Arbitrary version identifier for the API client."),
+            launchStage: zod
+              .enum([
+                "LAUNCH_STAGE_UNSPECIFIED",
+                "UNIMPLEMENTED",
+                "PRELAUNCH",
+                "EARLY_ACCESS",
+                "ALPHA",
+                "BETA",
+                "GA",
+                "DEPRECATED",
+              ])
+              .optional()
+              .describe(
+                "The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.",
+              ),
+            binaryAuthorization: zod
+              .object({
+                useDefault: zod
+                  .boolean()
+                  .optional()
+                  .describe(
+                    "Optional. If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.",
+                  ),
+                policy: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`",
+                  ),
+                breakglassJustification: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass",
+                  ),
+              })
+              .optional()
+              .describe("Settings for Binary Authorization feature."),
+            template: zod
+              .object({
+                labels: zod
+                  .record(zod.string(), zod.string())
+                  .optional()
+                  .describe(
+                    "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.",
+                  ),
+                annotations: zod
+                  .record(zod.string(), zod.string())
+                  .optional()
+                  .describe(
+                    "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+                  ),
+                parallelism: zod
+                  .number()
+                  .optional()
+                  .describe(
+                    "Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.",
+                  ),
+                taskCount: zod
+                  .number()
+                  .optional()
+                  .describe(
+                    "Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.",
+                  ),
+                template: zod
+                  .object({
+                    containers: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Name of the container specified as a DNS_LABEL (RFC 1123).",
+                              ),
+                            image: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.",
+                              ),
+                            sourceCode: zod
+                              .object({
+                                cloudStorageSource: zod
+                                  .object({
+                                    bucket: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The Cloud Storage bucket name.",
+                                      ),
+                                    object: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The Cloud Storage object name.",
+                                      ),
+                                    generation: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The Cloud Storage object generation.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe("Cloud Storage source."),
+                                inlinedSource: zod
+                                  .object({
+                                    sources: zod
+                                      .array(
+                                        zod
+                                          .object({
+                                            filename: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                'Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
+                                              ),
+                                            content: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
+                                              ),
+                                          })
+                                          .describe("Source file."),
+                                      )
+                                      .optional()
+                                      .describe(
+                                        "Required. Input only. The source code.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe("Inlined source."),
+                              })
+                              .optional()
+                              .describe("Source type for the container."),
+                            command: zod
+                              .array(zod.string())
+                              .optional()
+                              .describe(
+                                "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.",
+                              ),
+                            args: zod
+                              .array(zod.string())
+                              .optional()
+                              .describe(
+                                "Arguments to the entrypoint. The docker image's CMD is used if this is not provided.",
+                              ),
+                            env: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. Name of the environment variable. Must not exceed 32768 characters.",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        'Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
+                                      ),
+                                    valueSource: zod
+                                      .object({
+                                        secretKeyRef: zod
+                                          .object({
+                                            secret: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.",
+                                              ),
+                                            version: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
+                                              ),
+                                          })
+                                          .optional()
+                                          .describe(
+                                            "SecretEnvVarSource represents a source for the value of an EnvVar.",
+                                          ),
+                                      })
+                                      .optional()
+                                      .describe(
+                                        "EnvVarSource represents a source for the value of an EnvVar.",
+                                      ),
+                                  })
+                                  .describe(
+                                    "EnvVar represents an environment variable present in a Container.",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "List of environment variables to set in the container.",
+                              ),
+                            resources: zod
+                              .object({
+                                limits: zod
+                                  .record(zod.string(), zod.string())
+                                  .optional()
+                                  .describe(
+                                    "Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported 'memory' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported 'nvidia.com\/gpu' value is '1'.",
+                                  ),
+                                cpuIdle: zod
+                                  .boolean()
+                                  .optional()
+                                  .describe(
+                                    "Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.",
+                                  ),
+                                startupCpuBoost: zod
+                                  .boolean()
+                                  .optional()
+                                  .describe(
+                                    "Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "ResourceRequirements describes the compute resource requirements.",
+                              ),
+                            ports: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        'If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".',
+                                      ),
+                                    containerPort: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.",
+                                      ),
+                                  })
+                                  .describe(
+                                    "ContainerPort represents a network port in a single container.",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.",
+                              ),
+                            volumeMounts: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. This must match the Name of a Volume.",
+                                      ),
+                                    mountPath: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run",
+                                      ),
+                                    subPath: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently rejected in Secret volume mounts.",
+                                      ),
+                                  })
+                                  .describe(
+                                    "VolumeMount describes a mounting of a Volume within a container.",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Volume to mount into the container's filesystem.",
+                              ),
+                            workingDir: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.",
+                              ),
+                            livenessProbe: zod
+                              .object({
+                                initialDelaySeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                                  ),
+                                timeoutSeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                                  ),
+                                periodSeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                                  ),
+                                failureThreshold: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                                  ),
+                                httpGet: zod
+                                  .object({
+                                    path: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                                      ),
+                                    httpHeaders: zod
+                                      .array(
+                                        zod
+                                          .object({
+                                            name: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Required. The header field name",
+                                              ),
+                                            value: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Optional. The header field value",
+                                              ),
+                                          })
+                                          .describe(
+                                            "HTTPHeader describes a custom header to be used in HTTP probes",
+                                          ),
+                                      )
+                                      .optional()
+                                      .describe(
+                                        "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                                      ),
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "HTTPGetAction describes an action based on HTTP Get requests.",
+                                  ),
+                                tcpSocket: zod
+                                  .object({
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "TCPSocketAction describes an action based on opening a socket",
+                                  ),
+                                grpc: zod
+                                  .object({
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                    service: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "GRPCAction describes an action involving a GRPC port.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                              ),
+                            startupProbe: zod
+                              .object({
+                                initialDelaySeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                                  ),
+                                timeoutSeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                                  ),
+                                periodSeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                                  ),
+                                failureThreshold: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                                  ),
+                                httpGet: zod
+                                  .object({
+                                    path: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                                      ),
+                                    httpHeaders: zod
+                                      .array(
+                                        zod
+                                          .object({
+                                            name: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Required. The header field name",
+                                              ),
+                                            value: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Optional. The header field value",
+                                              ),
+                                          })
+                                          .describe(
+                                            "HTTPHeader describes a custom header to be used in HTTP probes",
+                                          ),
+                                      )
+                                      .optional()
+                                      .describe(
+                                        "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                                      ),
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "HTTPGetAction describes an action based on HTTP Get requests.",
+                                  ),
+                                tcpSocket: zod
+                                  .object({
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "TCPSocketAction describes an action based on opening a socket",
+                                  ),
+                                grpc: zod
+                                  .object({
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                    service: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "GRPCAction describes an action involving a GRPC port.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                              ),
+                            readinessProbe: zod
+                              .object({
+                                initialDelaySeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                                  ),
+                                timeoutSeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                                  ),
+                                periodSeconds: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                                  ),
+                                failureThreshold: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                                  ),
+                                httpGet: zod
+                                  .object({
+                                    path: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                                      ),
+                                    httpHeaders: zod
+                                      .array(
+                                        zod
+                                          .object({
+                                            name: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Required. The header field name",
+                                              ),
+                                            value: zod
+                                              .string()
+                                              .optional()
+                                              .describe(
+                                                "Optional. The header field value",
+                                              ),
+                                          })
+                                          .describe(
+                                            "HTTPHeader describes a custom header to be used in HTTP probes",
+                                          ),
+                                      )
+                                      .optional()
+                                      .describe(
+                                        "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                                      ),
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "HTTPGetAction describes an action based on HTTP Get requests.",
+                                  ),
+                                tcpSocket: zod
+                                  .object({
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "TCPSocketAction describes an action based on opening a socket",
+                                  ),
+                                grpc: zod
+                                  .object({
+                                    port: zod
+                                      .number()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                                      ),
+                                    service: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "GRPCAction describes an action involving a GRPC port.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                              ),
+                            dependsOn: zod
+                              .array(zod.string())
+                              .optional()
+                              .describe(
+                                "Names of the containers that must start before this container.",
+                              ),
+                            baseImageUri: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.",
+                              ),
+                            buildInfo: zod
+                              .object({
+                                functionTarget: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Output only. Entry point of the function when the image is a Cloud Run function.",
+                                  ),
+                                sourceLocation: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Output only. Source code location of the image.",
+                                  ),
+                              })
+                              .optional()
+                              .describe("Build information of the image."),
+                          })
+                          .describe(
+                            "A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "Holds the single container that defines the unit of execution for this task.",
+                      ),
+                    volumes: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe("Required. Volume's name."),
+                            secret: zod
+                              .object({
+                                secret: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.",
+                                  ),
+                                items: zod
+                                  .array(
+                                    zod
+                                      .object({
+                                        path: zod
+                                          .string()
+                                          .optional()
+                                          .describe(
+                                            "Required. The relative path of the secret in the container.",
+                                          ),
+                                        version: zod
+                                          .string()
+                                          .optional()
+                                          .describe(
+                                            "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
+                                          ),
+                                        mode: zod
+                                          .number()
+                                          .optional()
+                                          .describe(
+                                            "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
+                                          ),
+                                      })
+                                      .describe(
+                                        "VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount's mount_path.",
+                                      ),
+                                  )
+                                  .optional()
+                                  .describe(
+                                    "If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.",
+                                  ),
+                                defaultMode: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "The secret's value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.",
+                              ),
+                            cloudSqlInstance: zod
+                              .object({
+                                instances: zod
+                                  .array(zod.string())
+                                  .optional()
+                                  .describe(
+                                    "A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance's \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format='value(connectionName)' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                              ),
+                            emptyDir: zod
+                              .object({
+                                medium: zod
+                                  .enum([
+                                    "MEDIUM_UNSPECIFIED",
+                                    "MEMORY",
+                                    "DISK",
+                                  ])
+                                  .optional()
+                                  .describe(
+                                    "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
+                                  ),
+                                sizeLimit: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).",
+                              ),
+                            nfs: zod
+                              .object({
+                                server: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Hostname or IP address of the NFS server",
+                                  ),
+                                path: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Path that is exported by the NFS server.",
+                                  ),
+                                readOnly: zod
+                                  .boolean()
+                                  .optional()
+                                  .describe(
+                                    "If true, the volume will be mounted as read only for all mounts.",
+                                  ),
+                              })
+                              .optional()
+                              .describe("Represents an NFS mount."),
+                            gcs: zod
+                              .object({
+                                bucket: zod
+                                  .string()
+                                  .optional()
+                                  .describe("Cloud Storage Bucket name."),
+                                readOnly: zod
+                                  .boolean()
+                                  .optional()
+                                  .describe(
+                                    "If true, the volume will be mounted as read only for all mounts.",
+                                  ),
+                                mountOptions: zod
+                                  .array(zod.string())
+                                  .optional()
+                                  .describe(
+                                    'A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".',
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.",
+                              ),
+                          })
+                          .describe(
+                            "Volume represents a named volume in a container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "Optional. A list of Volumes to make available to containers.",
+                      ),
+                    maxRetries: zod
+                      .number()
+                      .optional()
+                      .describe(
+                        "Number of retries allowed per Task, before marking this Task failed. Defaults to 3.",
+                      ),
+                    timeout: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.",
+                      ),
+                    serviceAccount: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project's default service account.",
+                      ),
+                    executionEnvironment: zod
+                      .enum([
+                        "EXECUTION_ENVIRONMENT_UNSPECIFIED",
+                        "EXECUTION_ENVIRONMENT_GEN1",
+                        "EXECUTION_ENVIRONMENT_GEN2",
+                      ])
+                      .optional()
+                      .describe(
+                        "Optional. The execution environment being used to host this Task.",
+                      ),
+                    encryptionKey: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek",
+                      ),
+                    vpcAccess: zod
+                      .object({
+                        connector: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.",
+                          ),
+                        egress: zod
+                          .enum([
+                            "VPC_EGRESS_UNSPECIFIED",
+                            "ALL_TRAFFIC",
+                            "PRIVATE_RANGES_ONLY",
+                          ])
+                          .optional()
+                          .describe(
+                            "Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.",
+                          ),
+                        networkInterfaces: zod
+                          .array(
+                            zod
+                              .object({
+                                network: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.",
+                                  ),
+                                subnetwork: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
+                                  ),
+                                tags: zod
+                                  .array(zod.string())
+                                  .optional()
+                                  .describe(
+                                    "Optional. Network tags applied to this Cloud Run resource.",
+                                  ),
+                              })
+                              .describe("Direct VPC egress settings."),
+                          )
+                          .optional()
+                          .describe(
+                            "Optional. Direct VPC egress settings. Currently only single network interface is supported.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.",
+                      ),
+                    nodeSelector: zod
+                      .object({
+                        accelerator: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Required. GPU accelerator type to attach to an instance.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Hardware constraints configuration."),
+                    gpuZonalRedundancyDisabled: zod
+                      .boolean()
+                      .optional()
+                      .describe(
+                        "Optional. True if GPU zonal redundancy is disabled on this task template.",
+                      ),
+                  })
+                  .optional()
+                  .describe(
+                    "TaskTemplate describes the data a task should have when created from a template.",
+                  ),
+                client: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Optional. Arbitrary identifier for the API client.",
+                  ),
+                clientVersion: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Optional. Arbitrary version identifier for the API client.",
+                  ),
+              })
+              .optional()
+              .describe(
+                "ExecutionTemplate describes the data an execution should have when created from a template.",
+              ),
+            observedGeneration: zod
+              .string()
+              .optional()
+              .describe(
+                "Output only. The generation of this Job. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.",
+              ),
+            terminalCondition: zod
+              .object({
+                type: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    'type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.',
+                  ),
+                state: zod
+                  .enum([
+                    "STATE_UNSPECIFIED",
+                    "CONDITION_PENDING",
+                    "CONDITION_RECONCILING",
+                    "CONDITION_FAILED",
+                    "CONDITION_SUCCEEDED",
+                  ])
+                  .optional()
+                  .describe("State of the condition."),
+                message: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Human readable message indicating details about the current status.",
+                  ),
+                lastTransitionTime: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Last time the condition transitioned from one status to another.",
+                  ),
+                severity: zod
+                  .enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
+                  .optional()
+                  .describe(
+                    "How to interpret failures of this condition, one of Error, Warning, Info",
+                  ),
+                reason: zod
+                  .enum([
+                    "COMMON_REASON_UNDEFINED",
+                    "UNKNOWN",
+                    "REVISION_FAILED",
+                    "PROGRESS_DEADLINE_EXCEEDED",
+                    "CONTAINER_MISSING",
+                    "CONTAINER_PERMISSION_DENIED",
+                    "CONTAINER_IMAGE_UNAUTHORIZED",
+                    "CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED",
+                    "ENCRYPTION_KEY_PERMISSION_DENIED",
+                    "ENCRYPTION_KEY_CHECK_FAILED",
+                    "SECRETS_ACCESS_CHECK_FAILED",
+                    "WAITING_FOR_OPERATION",
+                    "IMMEDIATE_RETRY",
+                    "POSTPONED_RETRY",
+                    "INTERNAL",
+                    "VPC_NETWORK_NOT_FOUND",
+                  ])
+                  .optional()
+                  .describe(
+                    "Output only. A common (service-level) reason for this condition.",
+                  ),
+                revisionReason: zod
+                  .enum([
+                    "REVISION_REASON_UNDEFINED",
+                    "PENDING",
+                    "RESERVE",
+                    "RETIRED",
+                    "RETIRING",
+                    "RECREATING",
+                    "HEALTH_CHECK_CONTAINER_ERROR",
+                    "CUSTOMIZED_PATH_RESPONSE_PENDING",
+                    "MIN_INSTANCES_NOT_PROVISIONED",
+                    "ACTIVE_REVISION_LIMIT_REACHED",
+                    "NO_DEPLOYMENT",
+                    "HEALTH_CHECK_SKIPPED",
+                    "MIN_INSTANCES_WARMING",
+                  ])
+                  .optional()
+                  .describe(
+                    "Output only. A reason for the revision condition.",
+                  ),
+                executionReason: zod
+                  .enum([
+                    "EXECUTION_REASON_UNDEFINED",
+                    "JOB_STATUS_SERVICE_POLLING_ERROR",
+                    "NON_ZERO_EXIT_CODE",
+                    "CANCELLED",
+                    "CANCELLING",
+                    "DELETED",
+                    "DELAYED_START_PENDING",
+                  ])
+                  .optional()
+                  .describe(
+                    "Output only. A reason for the execution condition.",
+                  ),
+              })
+              .optional()
+              .describe("Defines a status condition for a resource."),
+            conditions: zod
+              .array(
+                zod
+                  .object({
+                    type: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        'type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.',
+                      ),
+                    state: zod
+                      .enum([
+                        "STATE_UNSPECIFIED",
+                        "CONDITION_PENDING",
+                        "CONDITION_RECONCILING",
+                        "CONDITION_FAILED",
+                        "CONDITION_SUCCEEDED",
+                      ])
+                      .optional()
+                      .describe("State of the condition."),
+                    message: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Human readable message indicating details about the current status.",
+                      ),
+                    lastTransitionTime: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Last time the condition transitioned from one status to another.",
+                      ),
+                    severity: zod
+                      .enum([
+                        "SEVERITY_UNSPECIFIED",
+                        "ERROR",
+                        "WARNING",
+                        "INFO",
+                      ])
+                      .optional()
+                      .describe(
+                        "How to interpret failures of this condition, one of Error, Warning, Info",
+                      ),
+                    reason: zod
+                      .enum([
+                        "COMMON_REASON_UNDEFINED",
+                        "UNKNOWN",
+                        "REVISION_FAILED",
+                        "PROGRESS_DEADLINE_EXCEEDED",
+                        "CONTAINER_MISSING",
+                        "CONTAINER_PERMISSION_DENIED",
+                        "CONTAINER_IMAGE_UNAUTHORIZED",
+                        "CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED",
+                        "ENCRYPTION_KEY_PERMISSION_DENIED",
+                        "ENCRYPTION_KEY_CHECK_FAILED",
+                        "SECRETS_ACCESS_CHECK_FAILED",
+                        "WAITING_FOR_OPERATION",
+                        "IMMEDIATE_RETRY",
+                        "POSTPONED_RETRY",
+                        "INTERNAL",
+                        "VPC_NETWORK_NOT_FOUND",
+                      ])
+                      .optional()
+                      .describe(
+                        "Output only. A common (service-level) reason for this condition.",
+                      ),
+                    revisionReason: zod
+                      .enum([
+                        "REVISION_REASON_UNDEFINED",
+                        "PENDING",
+                        "RESERVE",
+                        "RETIRED",
+                        "RETIRING",
+                        "RECREATING",
+                        "HEALTH_CHECK_CONTAINER_ERROR",
+                        "CUSTOMIZED_PATH_RESPONSE_PENDING",
+                        "MIN_INSTANCES_NOT_PROVISIONED",
+                        "ACTIVE_REVISION_LIMIT_REACHED",
+                        "NO_DEPLOYMENT",
+                        "HEALTH_CHECK_SKIPPED",
+                        "MIN_INSTANCES_WARMING",
+                      ])
+                      .optional()
+                      .describe(
+                        "Output only. A reason for the revision condition.",
+                      ),
+                    executionReason: zod
+                      .enum([
+                        "EXECUTION_REASON_UNDEFINED",
+                        "JOB_STATUS_SERVICE_POLLING_ERROR",
+                        "NON_ZERO_EXIT_CODE",
+                        "CANCELLED",
+                        "CANCELLING",
+                        "DELETED",
+                        "DELAYED_START_PENDING",
+                      ])
+                      .optional()
+                      .describe(
+                        "Output only. A reason for the execution condition.",
+                      ),
+                  })
+                  .describe("Defines a status condition for a resource."),
+              )
+              .optional()
+              .describe(
+                "Output only. The Conditions of all other associated sub-resources. They contain additional diagnostics information in case the Job does not reach its desired state. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.",
+              ),
+            executionCount: zod
+              .number()
+              .optional()
+              .describe(
+                "Output only. Number of executions created for this job.",
+              ),
+            latestCreatedExecution: zod
+              .object({
+                name: zod
+                  .string()
+                  .optional()
+                  .describe("Name of the execution."),
+                createTime: zod
+                  .string()
+                  .optional()
+                  .describe("Creation timestamp of the execution."),
+                completionTime: zod
+                  .string()
+                  .optional()
+                  .describe("Creation timestamp of the execution."),
+                deleteTime: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "The deletion time of the execution. It is only populated as a response to a Delete request.",
+                  ),
+                completionStatus: zod
+                  .enum([
+                    "COMPLETION_STATUS_UNSPECIFIED",
+                    "EXECUTION_SUCCEEDED",
+                    "EXECUTION_FAILED",
+                    "EXECUTION_RUNNING",
+                    "EXECUTION_PENDING",
+                    "EXECUTION_CANCELLED",
+                  ])
+                  .optional()
+                  .describe("Status for the execution completion."),
+              })
+              .optional()
+              .describe(
+                "Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.",
+              ),
+            reconciling: zod
+              .boolean()
+              .optional()
+              .describe(
+                "Output only. Returns true if the Job is currently being acted upon by the system to bring it into the desired state. When a new Job is created, or an existing one is updated, Cloud Run will asynchronously perform all necessary steps to bring the Job to the desired state. This process is called reconciliation. While reconciliation is in process, `observed_generation` and `latest_succeeded_execution`, will have transient values that might mismatch the intended state: Once reconciliation is over (and this field is false), there are two possible outcomes: reconciliation succeeded and the state matches the Job, or there was an error, and reconciliation failed. This state can be found in `terminal_condition.state`. If reconciliation succeeded, the following fields will match: `observed_generation` and `generation`, `latest_succeeded_execution` and `latest_created_execution`. If reconciliation failed, `observed_generation` and `latest_succeeded_execution` will have the state of the last succeeded execution or empty for newly created Job. Additional information on the failure can be found in `terminal_condition` and `conditions`.",
+              ),
+            satisfiesPzs: zod
+              .boolean()
+              .optional()
+              .describe("Output only. Reserved for future use."),
+            startExecutionToken: zod
+              .string()
+              .optional()
+              .describe(
+                "A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.",
+              ),
+            runExecutionToken: zod
+              .string()
+              .optional()
+              .describe(
+                "A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.",
+              ),
+            etag: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.",
+              ),
+          })
+          .describe(
+            "Job represents the configuration of a single job, which references a container image that is run to completion.",
+          ),
+      )
+      .optional()
+      .describe("The resulting list of Jobs."),
+    nextPageToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A token indicating there are more items than page_size. Use it in the next ListJobs request to continue.",
+      ),
+  })
+  .describe("Response message containing a list of Jobs.");
 
-export const runProjectsLocationsJobsListDefaultResponse = zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).')
-
+export const runProjectsLocationsJobsListDefaultResponse = zod
+  .object({
+    code: zod
+      .number()
+      .optional()
+      .describe(
+        "The status code, which should be an enum value of google.rpc.Code.",
+      ),
+    message: zod
+      .string()
+      .optional()
+      .describe(
+        "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+      ),
+    details: zod
+      .array(
+        zod.record(
+          zod.string(),
+          zod
+            .unknown()
+            .describe(
+              "Properties of the object. Contains field @type with type URL.",
+            ),
+        ),
+      )
+      .optional()
+      .describe(
+        "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+      ),
+  })
+  .describe(
+    "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+  );
 
 /**
  * Gets information about a Job.
  */
-export const runProjectsLocationsJobsGetPathNameRegExp = new RegExp('^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$');
-
+export const runProjectsLocationsJobsGetPathNameRegExp = new RegExp(
+  "^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$",
+);
 
 export const runProjectsLocationsJobsGetParams = zod.object({
-  "name": zod.string().regex(runProjectsLocationsJobsGetPathNameRegExp).describe('Required. The full name of the Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}, where {project} can be project id or number.')
-})
+  name: zod
+    .string()
+    .regex(runProjectsLocationsJobsGetPathNameRegExp)
+    .describe(
+      "Required. The full name of the Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}, where {project} can be project id or number.",
+    ),
+});
 
-export const runProjectsLocationsJobsGet200Response = zod.object({
-  "name": zod.string().optional().describe('The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}'),
-  "uid": zod.string().optional().describe('Output only. Server assigned unique identifier for the Execution. The value is a UUID4 string and guaranteed to remain unchanged until the resource is deleted.'),
-  "generation": zod.string().optional().describe('Output only. A number that monotonically increases every time the user modifies the desired state.'),
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "createTime": zod.string().optional().describe('Output only. The creation time.'),
-  "updateTime": zod.string().optional().describe('Output only. The last-modified time.'),
-  "deleteTime": zod.string().optional().describe('Output only. The deletion time. It is only populated as a response to a Delete request.'),
-  "expireTime": zod.string().optional().describe('Output only. For a deleted resource, the time after which it will be permamently deleted.'),
-  "creator": zod.string().optional().describe('Output only. Email address of the authenticated creator.'),
-  "lastModifier": zod.string().optional().describe('Output only. Email address of the last authenticated modifier.'),
-  "client": zod.string().optional().describe('Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Arbitrary version identifier for the API client.'),
-  "launchStage": zod.enum(['LAUNCH_STAGE_UNSPECIFIED', 'UNIMPLEMENTED', 'PRELAUNCH', 'EARLY_ACCESS', 'ALPHA', 'BETA', 'GA', 'DEPRECATED']).optional().describe('The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.'),
-  "binaryAuthorization": zod.object({
-  "useDefault": zod.boolean().optional().describe('Optional. If True, indicates to use the default project\'s binary authorization policy. If False, binary authorization will be disabled.'),
-  "policy": zod.string().optional().describe('Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`'),
-  "breakglassJustification": zod.string().optional().describe('Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass')
-}).optional().describe('Settings for Binary Authorization feature.'),
-  "template": zod.object({
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "parallelism": zod.number().optional().describe('Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.'),
-  "taskCount": zod.number().optional().describe('Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.'),
-  "template": zod.object({
-  "containers": zod.array(zod.object({
-  "name": zod.string().optional().describe('Name of the container specified as a DNS_LABEL (RFC 1123).'),
-  "image": zod.string().optional().describe('Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.'),
-  "sourceCode": zod.object({
-  "cloudStorageSource": zod.object({
-  "bucket": zod.string().optional().describe('Required. The Cloud Storage bucket name.'),
-  "object": zod.string().optional().describe('Required. The Cloud Storage object name.'),
-  "generation": zod.string().optional().describe('Optional. The Cloud Storage object generation.')
-}).optional().describe('Cloud Storage source.'),
-  "inlinedSource": zod.object({
-  "sources": zod.array(zod.object({
-  "filename": zod.string().optional().describe('Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.'),
-  "content": zod.string().optional().describe('Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.')
-}).describe('Source file.')).optional().describe('Required. Input only. The source code.')
-}).optional().describe('Inlined source.')
-}).optional().describe('Source type for the container.'),
-  "command": zod.array(zod.string()).optional().describe('Entrypoint array. Not executed within a shell. The docker image\'s ENTRYPOINT is used if this is not provided.'),
-  "args": zod.array(zod.string()).optional().describe('Arguments to the entrypoint. The docker image\'s CMD is used if this is not provided.'),
-  "env": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Name of the environment variable. Must not exceed 32768 characters.'),
-  "value": zod.string().optional().describe('Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.'),
-  "valueSource": zod.object({
-  "secretKeyRef": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest version, an integer for a specific version, or a version alias.')
-}).optional().describe('SecretEnvVarSource represents a source for the value of an EnvVar.')
-}).optional().describe('EnvVarSource represents a source for the value of an EnvVar.')
-}).describe('EnvVar represents an environment variable present in a Container.')).optional().describe('List of environment variables to set in the container.'),
-  "resources": zod.object({
-  "limits": zod.record(zod.string(), zod.string()).optional().describe('Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are \'1\', \'2\', \'4\', and \'8\'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported \'memory\' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported \'nvidia.com\/gpu\' value is \'1\'.'),
-  "cpuIdle": zod.boolean().optional().describe('Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.'),
-  "startupCpuBoost": zod.boolean().optional().describe('Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.')
-}).optional().describe('ResourceRequirements describes the compute resource requirements.'),
-  "ports": zod.array(zod.object({
-  "name": zod.string().optional().describe('If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".'),
-  "containerPort": zod.number().optional().describe('Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.')
-}).describe('ContainerPort represents a network port in a single container.')).optional().describe('List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.'),
-  "volumeMounts": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. This must match the Name of a Volume.'),
-  "mountPath": zod.string().optional().describe('Required. Path within the container at which the volume should be mounted. Must not contain \':\'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run'),
-  "subPath": zod.string().optional().describe('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to \"\" (volume\'s root). This field is currently rejected in Secret volume mounts.')
-}).describe('VolumeMount describes a mounting of a Volume within a container.')).optional().describe('Volume to mount into the container\'s filesystem.'),
-  "workingDir": zod.string().optional().describe('Container\'s working directory. If not specified, the container runtime\'s default will be used, which might be configured in the container image.'),
-  "livenessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "startupProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "readinessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "dependsOn": zod.array(zod.string()).optional().describe('Names of the containers that must start before this container.'),
-  "baseImageUri": zod.string().optional().describe('Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.'),
-  "buildInfo": zod.object({
-  "functionTarget": zod.string().optional().describe('Output only. Entry point of the function when the image is a Cloud Run function.'),
-  "sourceLocation": zod.string().optional().describe('Output only. Source code location of the image.')
-}).optional().describe('Build information of the image.')
-}).describe('A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.')).optional().describe('Holds the single container that defines the unit of execution for this task.'),
-  "volumes": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Volume\'s name.'),
-  "secret": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.'),
-  "items": zod.array(zod.object({
-  "path": zod.string().optional().describe('Required. The relative path of the secret in the container.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest value, or an integer or a secret alias for a specific version.'),
-  "mode": zod.number().optional().describe('Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume\'s default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.')
-}).describe('VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount\'s mount_path.')).optional().describe('If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.'),
-  "defaultMode": zod.number().optional().describe('Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.')
-}).optional().describe('The secret\'s value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.'),
-  "cloudSqlInstance": zod.object({
-  "instances": zod.array(zod.string()).optional().describe('A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance\'s \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format=\'value(connectionName)\' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.')
-}).optional().describe('Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.'),
-  "emptyDir": zod.object({
-  "medium": zod.enum(['MEDIUM_UNSPECIFIED', 'MEMORY', 'DISK']).optional().describe('The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional'),
-  "sizeLimit": zod.string().optional().describe('Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir')
-}).optional().describe('In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).'),
-  "nfs": zod.object({
-  "server": zod.string().optional().describe('Hostname or IP address of the NFS server'),
-  "path": zod.string().optional().describe('Path that is exported by the NFS server.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.')
-}).optional().describe('Represents an NFS mount.'),
-  "gcs": zod.object({
-  "bucket": zod.string().optional().describe('Cloud Storage Bucket name.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.'),
-  "mountOptions": zod.array(zod.string()).optional().describe('A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".')
-}).optional().describe('Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.')
-}).describe('Volume represents a named volume in a container.')).optional().describe('Optional. A list of Volumes to make available to containers.'),
-  "maxRetries": zod.number().optional().describe('Number of retries allowed per Task, before marking this Task failed. Defaults to 3.'),
-  "timeout": zod.string().optional().describe('Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.'),
-  "serviceAccount": zod.string().optional().describe('Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project\'s default service account.'),
-  "executionEnvironment": zod.enum(['EXECUTION_ENVIRONMENT_UNSPECIFIED', 'EXECUTION_ENVIRONMENT_GEN1', 'EXECUTION_ENVIRONMENT_GEN2']).optional().describe('Optional. The execution environment being used to host this Task.'),
-  "encryptionKey": zod.string().optional().describe('A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek'),
-  "vpcAccess": zod.object({
-  "connector": zod.string().optional().describe('VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.'),
-  "egress": zod.enum(['VPC_EGRESS_UNSPECIFIED', 'ALL_TRAFFIC', 'PRIVATE_RANGES_ONLY']).optional().describe('Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.'),
-  "networkInterfaces": zod.array(zod.object({
-  "network": zod.string().optional().describe('Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.'),
-  "subnetwork": zod.string().optional().describe('Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.'),
-  "tags": zod.array(zod.string()).optional().describe('Optional. Network tags applied to this Cloud Run resource.')
-}).describe('Direct VPC egress settings.')).optional().describe('Optional. Direct VPC egress settings. Currently only single network interface is supported.')
-}).optional().describe('VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.'),
-  "nodeSelector": zod.object({
-  "accelerator": zod.string().optional().describe('Required. GPU accelerator type to attach to an instance.')
-}).optional().describe('Hardware constraints configuration.'),
-  "gpuZonalRedundancyDisabled": zod.boolean().optional().describe('Optional. True if GPU zonal redundancy is disabled on this task template.')
-}).optional().describe('TaskTemplate describes the data a task should have when created from a template.'),
-  "client": zod.string().optional().describe('Optional. Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Optional. Arbitrary version identifier for the API client.')
-}).optional().describe('ExecutionTemplate describes the data an execution should have when created from a template.'),
-  "observedGeneration": zod.string().optional().describe('Output only. The generation of this Job. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.'),
-  "terminalCondition": zod.object({
-  "type": zod.string().optional().describe('type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.'),
-  "state": zod.enum(['STATE_UNSPECIFIED', 'CONDITION_PENDING', 'CONDITION_RECONCILING', 'CONDITION_FAILED', 'CONDITION_SUCCEEDED']).optional().describe('State of the condition.'),
-  "message": zod.string().optional().describe('Human readable message indicating details about the current status.'),
-  "lastTransitionTime": zod.string().optional().describe('Last time the condition transitioned from one status to another.'),
-  "severity": zod.enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO']).optional().describe('How to interpret failures of this condition, one of Error, Warning, Info'),
-  "reason": zod.enum(['COMMON_REASON_UNDEFINED', 'UNKNOWN', 'REVISION_FAILED', 'PROGRESS_DEADLINE_EXCEEDED', 'CONTAINER_MISSING', 'CONTAINER_PERMISSION_DENIED', 'CONTAINER_IMAGE_UNAUTHORIZED', 'CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED', 'ENCRYPTION_KEY_PERMISSION_DENIED', 'ENCRYPTION_KEY_CHECK_FAILED', 'SECRETS_ACCESS_CHECK_FAILED', 'WAITING_FOR_OPERATION', 'IMMEDIATE_RETRY', 'POSTPONED_RETRY', 'INTERNAL', 'VPC_NETWORK_NOT_FOUND']).optional().describe('Output only. A common (service-level) reason for this condition.'),
-  "revisionReason": zod.enum(['REVISION_REASON_UNDEFINED', 'PENDING', 'RESERVE', 'RETIRED', 'RETIRING', 'RECREATING', 'HEALTH_CHECK_CONTAINER_ERROR', 'CUSTOMIZED_PATH_RESPONSE_PENDING', 'MIN_INSTANCES_NOT_PROVISIONED', 'ACTIVE_REVISION_LIMIT_REACHED', 'NO_DEPLOYMENT', 'HEALTH_CHECK_SKIPPED', 'MIN_INSTANCES_WARMING']).optional().describe('Output only. A reason for the revision condition.'),
-  "executionReason": zod.enum(['EXECUTION_REASON_UNDEFINED', 'JOB_STATUS_SERVICE_POLLING_ERROR', 'NON_ZERO_EXIT_CODE', 'CANCELLED', 'CANCELLING', 'DELETED', 'DELAYED_START_PENDING']).optional().describe('Output only. A reason for the execution condition.')
-}).optional().describe('Defines a status condition for a resource.'),
-  "conditions": zod.array(zod.object({
-  "type": zod.string().optional().describe('type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.'),
-  "state": zod.enum(['STATE_UNSPECIFIED', 'CONDITION_PENDING', 'CONDITION_RECONCILING', 'CONDITION_FAILED', 'CONDITION_SUCCEEDED']).optional().describe('State of the condition.'),
-  "message": zod.string().optional().describe('Human readable message indicating details about the current status.'),
-  "lastTransitionTime": zod.string().optional().describe('Last time the condition transitioned from one status to another.'),
-  "severity": zod.enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO']).optional().describe('How to interpret failures of this condition, one of Error, Warning, Info'),
-  "reason": zod.enum(['COMMON_REASON_UNDEFINED', 'UNKNOWN', 'REVISION_FAILED', 'PROGRESS_DEADLINE_EXCEEDED', 'CONTAINER_MISSING', 'CONTAINER_PERMISSION_DENIED', 'CONTAINER_IMAGE_UNAUTHORIZED', 'CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED', 'ENCRYPTION_KEY_PERMISSION_DENIED', 'ENCRYPTION_KEY_CHECK_FAILED', 'SECRETS_ACCESS_CHECK_FAILED', 'WAITING_FOR_OPERATION', 'IMMEDIATE_RETRY', 'POSTPONED_RETRY', 'INTERNAL', 'VPC_NETWORK_NOT_FOUND']).optional().describe('Output only. A common (service-level) reason for this condition.'),
-  "revisionReason": zod.enum(['REVISION_REASON_UNDEFINED', 'PENDING', 'RESERVE', 'RETIRED', 'RETIRING', 'RECREATING', 'HEALTH_CHECK_CONTAINER_ERROR', 'CUSTOMIZED_PATH_RESPONSE_PENDING', 'MIN_INSTANCES_NOT_PROVISIONED', 'ACTIVE_REVISION_LIMIT_REACHED', 'NO_DEPLOYMENT', 'HEALTH_CHECK_SKIPPED', 'MIN_INSTANCES_WARMING']).optional().describe('Output only. A reason for the revision condition.'),
-  "executionReason": zod.enum(['EXECUTION_REASON_UNDEFINED', 'JOB_STATUS_SERVICE_POLLING_ERROR', 'NON_ZERO_EXIT_CODE', 'CANCELLED', 'CANCELLING', 'DELETED', 'DELAYED_START_PENDING']).optional().describe('Output only. A reason for the execution condition.')
-}).describe('Defines a status condition for a resource.')).optional().describe('Output only. The Conditions of all other associated sub-resources. They contain additional diagnostics information in case the Job does not reach its desired state. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.'),
-  "executionCount": zod.number().optional().describe('Output only. Number of executions created for this job.'),
-  "latestCreatedExecution": zod.object({
-  "name": zod.string().optional().describe('Name of the execution.'),
-  "createTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "completionTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "deleteTime": zod.string().optional().describe('The deletion time of the execution. It is only populated as a response to a Delete request.'),
-  "completionStatus": zod.enum(['COMPLETION_STATUS_UNSPECIFIED', 'EXECUTION_SUCCEEDED', 'EXECUTION_FAILED', 'EXECUTION_RUNNING', 'EXECUTION_PENDING', 'EXECUTION_CANCELLED']).optional().describe('Status for the execution completion.')
-}).optional().describe('Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.'),
-  "reconciling": zod.boolean().optional().describe('Output only. Returns true if the Job is currently being acted upon by the system to bring it into the desired state. When a new Job is created, or an existing one is updated, Cloud Run will asynchronously perform all necessary steps to bring the Job to the desired state. This process is called reconciliation. While reconciliation is in process, `observed_generation` and `latest_succeeded_execution`, will have transient values that might mismatch the intended state: Once reconciliation is over (and this field is false), there are two possible outcomes: reconciliation succeeded and the state matches the Job, or there was an error, and reconciliation failed. This state can be found in `terminal_condition.state`. If reconciliation succeeded, the following fields will match: `observed_generation` and `generation`, `latest_succeeded_execution` and `latest_created_execution`. If reconciliation failed, `observed_generation` and `latest_succeeded_execution` will have the state of the last succeeded execution or empty for newly created Job. Additional information on the failure can be found in `terminal_condition` and `conditions`.'),
-  "satisfiesPzs": zod.boolean().optional().describe('Output only. Reserved for future use.'),
-  "startExecutionToken": zod.string().optional().describe('A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.'),
-  "runExecutionToken": zod.string().optional().describe('A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.'),
-  "etag": zod.string().optional().describe('Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.')
-}).describe('Job represents the configuration of a single job, which references a container image that is run to completion.')
+export const runProjectsLocationsJobsGet200Response = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}",
+      ),
+    uid: zod
+      .string()
+      .optional()
+      .describe(
+        "Output only. Server assigned unique identifier for the Execution. The value is a UUID4 string and guaranteed to remain unchanged until the resource is deleted.",
+      ),
+    generation: zod
+      .string()
+      .optional()
+      .describe(
+        "Output only. A number that monotonically increases every time the user modifies the desired state.",
+      ),
+    labels: zod
+      .record(zod.string(), zod.string())
+      .optional()
+      .describe(
+        "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.",
+      ),
+    annotations: zod
+      .record(zod.string(), zod.string())
+      .optional()
+      .describe(
+        "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+      ),
+    createTime: zod
+      .string()
+      .optional()
+      .describe("Output only. The creation time."),
+    updateTime: zod
+      .string()
+      .optional()
+      .describe("Output only. The last-modified time."),
+    deleteTime: zod
+      .string()
+      .optional()
+      .describe(
+        "Output only. The deletion time. It is only populated as a response to a Delete request.",
+      ),
+    expireTime: zod
+      .string()
+      .optional()
+      .describe(
+        "Output only. For a deleted resource, the time after which it will be permamently deleted.",
+      ),
+    creator: zod
+      .string()
+      .optional()
+      .describe("Output only. Email address of the authenticated creator."),
+    lastModifier: zod
+      .string()
+      .optional()
+      .describe(
+        "Output only. Email address of the last authenticated modifier.",
+      ),
+    client: zod
+      .string()
+      .optional()
+      .describe("Arbitrary identifier for the API client."),
+    clientVersion: zod
+      .string()
+      .optional()
+      .describe("Arbitrary version identifier for the API client."),
+    launchStage: zod
+      .enum([
+        "LAUNCH_STAGE_UNSPECIFIED",
+        "UNIMPLEMENTED",
+        "PRELAUNCH",
+        "EARLY_ACCESS",
+        "ALPHA",
+        "BETA",
+        "GA",
+        "DEPRECATED",
+      ])
+      .optional()
+      .describe(
+        "The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.",
+      ),
+    binaryAuthorization: zod
+      .object({
+        useDefault: zod
+          .boolean()
+          .optional()
+          .describe(
+            "Optional. If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.",
+          ),
+        policy: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`",
+          ),
+        breakglassJustification: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass",
+          ),
+      })
+      .optional()
+      .describe("Settings for Binary Authorization feature."),
+    template: zod
+      .object({
+        labels: zod
+          .record(zod.string(), zod.string())
+          .optional()
+          .describe(
+            "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.",
+          ),
+        annotations: zod
+          .record(zod.string(), zod.string())
+          .optional()
+          .describe(
+            "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+          ),
+        parallelism: zod
+          .number()
+          .optional()
+          .describe(
+            "Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.",
+          ),
+        taskCount: zod
+          .number()
+          .optional()
+          .describe(
+            "Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.",
+          ),
+        template: zod
+          .object({
+            containers: zod
+              .array(
+                zod
+                  .object({
+                    name: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Name of the container specified as a DNS_LABEL (RFC 1123).",
+                      ),
+                    image: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.",
+                      ),
+                    sourceCode: zod
+                      .object({
+                        cloudStorageSource: zod
+                          .object({
+                            bucket: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. The Cloud Storage bucket name.",
+                              ),
+                            object: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. The Cloud Storage object name.",
+                              ),
+                            generation: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. The Cloud Storage object generation.",
+                              ),
+                          })
+                          .optional()
+                          .describe("Cloud Storage source."),
+                        inlinedSource: zod
+                          .object({
+                            sources: zod
+                              .array(
+                                zod
+                                  .object({
+                                    filename: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        'Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
+                                      ),
+                                    content: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
+                                      ),
+                                  })
+                                  .describe("Source file."),
+                              )
+                              .optional()
+                              .describe(
+                                "Required. Input only. The source code.",
+                              ),
+                          })
+                          .optional()
+                          .describe("Inlined source."),
+                      })
+                      .optional()
+                      .describe("Source type for the container."),
+                    command: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.",
+                      ),
+                    args: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Arguments to the entrypoint. The docker image's CMD is used if this is not provided.",
+                      ),
+                    env: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Name of the environment variable. Must not exceed 32768 characters.",
+                              ),
+                            value: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                'Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
+                              ),
+                            valueSource: zod
+                              .object({
+                                secretKeyRef: zod
+                                  .object({
+                                    secret: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.",
+                                      ),
+                                    version: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "SecretEnvVarSource represents a source for the value of an EnvVar.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "EnvVarSource represents a source for the value of an EnvVar.",
+                              ),
+                          })
+                          .describe(
+                            "EnvVar represents an environment variable present in a Container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "List of environment variables to set in the container.",
+                      ),
+                    resources: zod
+                      .object({
+                        limits: zod
+                          .record(zod.string(), zod.string())
+                          .optional()
+                          .describe(
+                            "Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported 'memory' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported 'nvidia.com\/gpu' value is '1'.",
+                          ),
+                        cpuIdle: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.",
+                          ),
+                        startupCpuBoost: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "ResourceRequirements describes the compute resource requirements.",
+                      ),
+                    ports: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                'If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".',
+                              ),
+                            containerPort: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.",
+                              ),
+                          })
+                          .describe(
+                            "ContainerPort represents a network port in a single container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.",
+                      ),
+                    volumeMounts: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. This must match the Name of a Volume.",
+                              ),
+                            mountPath: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run",
+                              ),
+                            subPath: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently rejected in Secret volume mounts.",
+                              ),
+                          })
+                          .describe(
+                            "VolumeMount describes a mounting of a Volume within a container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "Volume to mount into the container's filesystem.",
+                      ),
+                    workingDir: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.",
+                      ),
+                    livenessProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    startupProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    readinessProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    dependsOn: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Names of the containers that must start before this container.",
+                      ),
+                    baseImageUri: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.",
+                      ),
+                    buildInfo: zod
+                      .object({
+                        functionTarget: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Output only. Entry point of the function when the image is a Cloud Run function.",
+                          ),
+                        sourceLocation: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Output only. Source code location of the image.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Build information of the image."),
+                  })
+                  .describe(
+                    "A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.",
+                  ),
+              )
+              .optional()
+              .describe(
+                "Holds the single container that defines the unit of execution for this task.",
+              ),
+            volumes: zod
+              .array(
+                zod
+                  .object({
+                    name: zod
+                      .string()
+                      .optional()
+                      .describe("Required. Volume's name."),
+                    secret: zod
+                      .object({
+                        secret: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.",
+                          ),
+                        items: zod
+                          .array(
+                            zod
+                              .object({
+                                path: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Required. The relative path of the secret in the container.",
+                                  ),
+                                version: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
+                                  ),
+                                mode: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
+                                  ),
+                              })
+                              .describe(
+                                "VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount's mount_path.",
+                              ),
+                          )
+                          .optional()
+                          .describe(
+                            "If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.",
+                          ),
+                        defaultMode: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "The secret's value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.",
+                      ),
+                    cloudSqlInstance: zod
+                      .object({
+                        instances: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            "A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance's \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format='value(connectionName)' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                      ),
+                    emptyDir: zod
+                      .object({
+                        medium: zod
+                          .enum(["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"])
+                          .optional()
+                          .describe(
+                            "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
+                          ),
+                        sizeLimit: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).",
+                      ),
+                    nfs: zod
+                      .object({
+                        server: zod
+                          .string()
+                          .optional()
+                          .describe("Hostname or IP address of the NFS server"),
+                        path: zod
+                          .string()
+                          .optional()
+                          .describe("Path that is exported by the NFS server."),
+                        readOnly: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "If true, the volume will be mounted as read only for all mounts.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Represents an NFS mount."),
+                    gcs: zod
+                      .object({
+                        bucket: zod
+                          .string()
+                          .optional()
+                          .describe("Cloud Storage Bucket name."),
+                        readOnly: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "If true, the volume will be mounted as read only for all mounts.",
+                          ),
+                        mountOptions: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            'A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".',
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.",
+                      ),
+                  })
+                  .describe("Volume represents a named volume in a container."),
+              )
+              .optional()
+              .describe(
+                "Optional. A list of Volumes to make available to containers.",
+              ),
+            maxRetries: zod
+              .number()
+              .optional()
+              .describe(
+                "Number of retries allowed per Task, before marking this Task failed. Defaults to 3.",
+              ),
+            timeout: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.",
+              ),
+            serviceAccount: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project's default service account.",
+              ),
+            executionEnvironment: zod
+              .enum([
+                "EXECUTION_ENVIRONMENT_UNSPECIFIED",
+                "EXECUTION_ENVIRONMENT_GEN1",
+                "EXECUTION_ENVIRONMENT_GEN2",
+              ])
+              .optional()
+              .describe(
+                "Optional. The execution environment being used to host this Task.",
+              ),
+            encryptionKey: zod
+              .string()
+              .optional()
+              .describe(
+                "A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek",
+              ),
+            vpcAccess: zod
+              .object({
+                connector: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.",
+                  ),
+                egress: zod
+                  .enum([
+                    "VPC_EGRESS_UNSPECIFIED",
+                    "ALL_TRAFFIC",
+                    "PRIVATE_RANGES_ONLY",
+                  ])
+                  .optional()
+                  .describe(
+                    "Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.",
+                  ),
+                networkInterfaces: zod
+                  .array(
+                    zod
+                      .object({
+                        network: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.",
+                          ),
+                        subnetwork: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
+                          ),
+                        tags: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            "Optional. Network tags applied to this Cloud Run resource.",
+                          ),
+                      })
+                      .describe("Direct VPC egress settings."),
+                  )
+                  .optional()
+                  .describe(
+                    "Optional. Direct VPC egress settings. Currently only single network interface is supported.",
+                  ),
+              })
+              .optional()
+              .describe(
+                "VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.",
+              ),
+            nodeSelector: zod
+              .object({
+                accelerator: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Required. GPU accelerator type to attach to an instance.",
+                  ),
+              })
+              .optional()
+              .describe("Hardware constraints configuration."),
+            gpuZonalRedundancyDisabled: zod
+              .boolean()
+              .optional()
+              .describe(
+                "Optional. True if GPU zonal redundancy is disabled on this task template.",
+              ),
+          })
+          .optional()
+          .describe(
+            "TaskTemplate describes the data a task should have when created from a template.",
+          ),
+        client: zod
+          .string()
+          .optional()
+          .describe("Optional. Arbitrary identifier for the API client."),
+        clientVersion: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. Arbitrary version identifier for the API client.",
+          ),
+      })
+      .optional()
+      .describe(
+        "ExecutionTemplate describes the data an execution should have when created from a template.",
+      ),
+    observedGeneration: zod
+      .string()
+      .optional()
+      .describe(
+        "Output only. The generation of this Job. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.",
+      ),
+    terminalCondition: zod
+      .object({
+        type: zod
+          .string()
+          .optional()
+          .describe(
+            'type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.',
+          ),
+        state: zod
+          .enum([
+            "STATE_UNSPECIFIED",
+            "CONDITION_PENDING",
+            "CONDITION_RECONCILING",
+            "CONDITION_FAILED",
+            "CONDITION_SUCCEEDED",
+          ])
+          .optional()
+          .describe("State of the condition."),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "Human readable message indicating details about the current status.",
+          ),
+        lastTransitionTime: zod
+          .string()
+          .optional()
+          .describe(
+            "Last time the condition transitioned from one status to another.",
+          ),
+        severity: zod
+          .enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
+          .optional()
+          .describe(
+            "How to interpret failures of this condition, one of Error, Warning, Info",
+          ),
+        reason: zod
+          .enum([
+            "COMMON_REASON_UNDEFINED",
+            "UNKNOWN",
+            "REVISION_FAILED",
+            "PROGRESS_DEADLINE_EXCEEDED",
+            "CONTAINER_MISSING",
+            "CONTAINER_PERMISSION_DENIED",
+            "CONTAINER_IMAGE_UNAUTHORIZED",
+            "CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED",
+            "ENCRYPTION_KEY_PERMISSION_DENIED",
+            "ENCRYPTION_KEY_CHECK_FAILED",
+            "SECRETS_ACCESS_CHECK_FAILED",
+            "WAITING_FOR_OPERATION",
+            "IMMEDIATE_RETRY",
+            "POSTPONED_RETRY",
+            "INTERNAL",
+            "VPC_NETWORK_NOT_FOUND",
+          ])
+          .optional()
+          .describe(
+            "Output only. A common (service-level) reason for this condition.",
+          ),
+        revisionReason: zod
+          .enum([
+            "REVISION_REASON_UNDEFINED",
+            "PENDING",
+            "RESERVE",
+            "RETIRED",
+            "RETIRING",
+            "RECREATING",
+            "HEALTH_CHECK_CONTAINER_ERROR",
+            "CUSTOMIZED_PATH_RESPONSE_PENDING",
+            "MIN_INSTANCES_NOT_PROVISIONED",
+            "ACTIVE_REVISION_LIMIT_REACHED",
+            "NO_DEPLOYMENT",
+            "HEALTH_CHECK_SKIPPED",
+            "MIN_INSTANCES_WARMING",
+          ])
+          .optional()
+          .describe("Output only. A reason for the revision condition."),
+        executionReason: zod
+          .enum([
+            "EXECUTION_REASON_UNDEFINED",
+            "JOB_STATUS_SERVICE_POLLING_ERROR",
+            "NON_ZERO_EXIT_CODE",
+            "CANCELLED",
+            "CANCELLING",
+            "DELETED",
+            "DELAYED_START_PENDING",
+          ])
+          .optional()
+          .describe("Output only. A reason for the execution condition."),
+      })
+      .optional()
+      .describe("Defines a status condition for a resource."),
+    conditions: zod
+      .array(
+        zod
+          .object({
+            type: zod
+              .string()
+              .optional()
+              .describe(
+                'type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.',
+              ),
+            state: zod
+              .enum([
+                "STATE_UNSPECIFIED",
+                "CONDITION_PENDING",
+                "CONDITION_RECONCILING",
+                "CONDITION_FAILED",
+                "CONDITION_SUCCEEDED",
+              ])
+              .optional()
+              .describe("State of the condition."),
+            message: zod
+              .string()
+              .optional()
+              .describe(
+                "Human readable message indicating details about the current status.",
+              ),
+            lastTransitionTime: zod
+              .string()
+              .optional()
+              .describe(
+                "Last time the condition transitioned from one status to another.",
+              ),
+            severity: zod
+              .enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
+              .optional()
+              .describe(
+                "How to interpret failures of this condition, one of Error, Warning, Info",
+              ),
+            reason: zod
+              .enum([
+                "COMMON_REASON_UNDEFINED",
+                "UNKNOWN",
+                "REVISION_FAILED",
+                "PROGRESS_DEADLINE_EXCEEDED",
+                "CONTAINER_MISSING",
+                "CONTAINER_PERMISSION_DENIED",
+                "CONTAINER_IMAGE_UNAUTHORIZED",
+                "CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED",
+                "ENCRYPTION_KEY_PERMISSION_DENIED",
+                "ENCRYPTION_KEY_CHECK_FAILED",
+                "SECRETS_ACCESS_CHECK_FAILED",
+                "WAITING_FOR_OPERATION",
+                "IMMEDIATE_RETRY",
+                "POSTPONED_RETRY",
+                "INTERNAL",
+                "VPC_NETWORK_NOT_FOUND",
+              ])
+              .optional()
+              .describe(
+                "Output only. A common (service-level) reason for this condition.",
+              ),
+            revisionReason: zod
+              .enum([
+                "REVISION_REASON_UNDEFINED",
+                "PENDING",
+                "RESERVE",
+                "RETIRED",
+                "RETIRING",
+                "RECREATING",
+                "HEALTH_CHECK_CONTAINER_ERROR",
+                "CUSTOMIZED_PATH_RESPONSE_PENDING",
+                "MIN_INSTANCES_NOT_PROVISIONED",
+                "ACTIVE_REVISION_LIMIT_REACHED",
+                "NO_DEPLOYMENT",
+                "HEALTH_CHECK_SKIPPED",
+                "MIN_INSTANCES_WARMING",
+              ])
+              .optional()
+              .describe("Output only. A reason for the revision condition."),
+            executionReason: zod
+              .enum([
+                "EXECUTION_REASON_UNDEFINED",
+                "JOB_STATUS_SERVICE_POLLING_ERROR",
+                "NON_ZERO_EXIT_CODE",
+                "CANCELLED",
+                "CANCELLING",
+                "DELETED",
+                "DELAYED_START_PENDING",
+              ])
+              .optional()
+              .describe("Output only. A reason for the execution condition."),
+          })
+          .describe("Defines a status condition for a resource."),
+      )
+      .optional()
+      .describe(
+        "Output only. The Conditions of all other associated sub-resources. They contain additional diagnostics information in case the Job does not reach its desired state. See comments in `reconciling` for additional information on reconciliation process in Cloud Run.",
+      ),
+    executionCount: zod
+      .number()
+      .optional()
+      .describe("Output only. Number of executions created for this job."),
+    latestCreatedExecution: zod
+      .object({
+        name: zod.string().optional().describe("Name of the execution."),
+        createTime: zod
+          .string()
+          .optional()
+          .describe("Creation timestamp of the execution."),
+        completionTime: zod
+          .string()
+          .optional()
+          .describe("Creation timestamp of the execution."),
+        deleteTime: zod
+          .string()
+          .optional()
+          .describe(
+            "The deletion time of the execution. It is only populated as a response to a Delete request.",
+          ),
+        completionStatus: zod
+          .enum([
+            "COMPLETION_STATUS_UNSPECIFIED",
+            "EXECUTION_SUCCEEDED",
+            "EXECUTION_FAILED",
+            "EXECUTION_RUNNING",
+            "EXECUTION_PENDING",
+            "EXECUTION_CANCELLED",
+          ])
+          .optional()
+          .describe("Status for the execution completion."),
+      })
+      .optional()
+      .describe(
+        "Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.",
+      ),
+    reconciling: zod
+      .boolean()
+      .optional()
+      .describe(
+        "Output only. Returns true if the Job is currently being acted upon by the system to bring it into the desired state. When a new Job is created, or an existing one is updated, Cloud Run will asynchronously perform all necessary steps to bring the Job to the desired state. This process is called reconciliation. While reconciliation is in process, `observed_generation` and `latest_succeeded_execution`, will have transient values that might mismatch the intended state: Once reconciliation is over (and this field is false), there are two possible outcomes: reconciliation succeeded and the state matches the Job, or there was an error, and reconciliation failed. This state can be found in `terminal_condition.state`. If reconciliation succeeded, the following fields will match: `observed_generation` and `generation`, `latest_succeeded_execution` and `latest_created_execution`. If reconciliation failed, `observed_generation` and `latest_succeeded_execution` will have the state of the last succeeded execution or empty for newly created Job. Additional information on the failure can be found in `terminal_condition` and `conditions`.",
+      ),
+    satisfiesPzs: zod
+      .boolean()
+      .optional()
+      .describe("Output only. Reserved for future use."),
+    startExecutionToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.",
+      ),
+    runExecutionToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.",
+      ),
+    etag: zod
+      .string()
+      .optional()
+      .describe(
+        "Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.",
+      ),
+  })
+  .describe(
+    "Job represents the configuration of a single job, which references a container image that is run to completion.",
+  );
 
-export const runProjectsLocationsJobsGetDefaultResponse = zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).')
-
+export const runProjectsLocationsJobsGetDefaultResponse = zod
+  .object({
+    code: zod
+      .number()
+      .optional()
+      .describe(
+        "The status code, which should be an enum value of google.rpc.Code.",
+      ),
+    message: zod
+      .string()
+      .optional()
+      .describe(
+        "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+      ),
+    details: zod
+      .array(
+        zod.record(
+          zod.string(),
+          zod
+            .unknown()
+            .describe(
+              "Properties of the object. Contains field @type with type URL.",
+            ),
+        ),
+      )
+      .optional()
+      .describe(
+        "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+      ),
+  })
+  .describe(
+    "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+  );
 
 /**
  * Updates a Job.
  */
-export const runProjectsLocationsJobsPatchPathNameRegExp = new RegExp('^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$');
-
+export const runProjectsLocationsJobsPatchPathNameRegExp = new RegExp(
+  "^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$",
+);
 
 export const runProjectsLocationsJobsPatchParams = zod.object({
-  "name": zod.string().regex(runProjectsLocationsJobsPatchPathNameRegExp).describe('The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}')
-})
+  name: zod
+    .string()
+    .regex(runProjectsLocationsJobsPatchPathNameRegExp)
+    .describe(
+      "The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}",
+    ),
+});
 
 export const runProjectsLocationsJobsPatchQueryParams = zod.object({
-  "validateOnly": zod.boolean().optional().describe('Indicates that the request should be validated and default values populated, without persisting the request or updating any resources.'),
-  "allowMissing": zod.boolean().optional().describe('Optional. If set to true, and if the Job does not exist, it will create a new one. Caller must have both create and update permissions for this call if this is set to true.')
-})
+  validateOnly: zod
+    .boolean()
+    .optional()
+    .describe(
+      "Indicates that the request should be validated and default values populated, without persisting the request or updating any resources.",
+    ),
+  allowMissing: zod
+    .boolean()
+    .optional()
+    .describe(
+      "Optional. If set to true, and if the Job does not exist, it will create a new one. Caller must have both create and update permissions for this call if this is set to true.",
+    ),
+});
 
-export const runProjectsLocationsJobsPatchBody = zod.object({
-  "name": zod.string().optional().describe('The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}'),
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "client": zod.string().optional().describe('Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Arbitrary version identifier for the API client.'),
-  "launchStage": zod.enum(['LAUNCH_STAGE_UNSPECIFIED', 'UNIMPLEMENTED', 'PRELAUNCH', 'EARLY_ACCESS', 'ALPHA', 'BETA', 'GA', 'DEPRECATED']).optional().describe('The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.'),
-  "binaryAuthorization": zod.object({
-  "useDefault": zod.boolean().optional().describe('Optional. If True, indicates to use the default project\'s binary authorization policy. If False, binary authorization will be disabled.'),
-  "policy": zod.string().optional().describe('Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`'),
-  "breakglassJustification": zod.string().optional().describe('Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass')
-}).optional().describe('Settings for Binary Authorization feature.'),
-  "template": zod.object({
-  "labels": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google\'s billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.'),
-  "annotations": zod.record(zod.string(), zod.string()).optional().describe('Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations\' namespacing, limits, and rules.'),
-  "parallelism": zod.number().optional().describe('Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.'),
-  "taskCount": zod.number().optional().describe('Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.'),
-  "template": zod.object({
-  "containers": zod.array(zod.object({
-  "name": zod.string().optional().describe('Name of the container specified as a DNS_LABEL (RFC 1123).'),
-  "image": zod.string().optional().describe('Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.'),
-  "sourceCode": zod.object({
-  "cloudStorageSource": zod.object({
-  "bucket": zod.string().optional().describe('Required. The Cloud Storage bucket name.'),
-  "object": zod.string().optional().describe('Required. The Cloud Storage object name.'),
-  "generation": zod.string().optional().describe('Optional. The Cloud Storage object generation.')
-}).optional().describe('Cloud Storage source.'),
-  "inlinedSource": zod.object({
-  "sources": zod.array(zod.object({
-  "filename": zod.string().optional().describe('Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.'),
-  "content": zod.string().optional().describe('Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.')
-}).describe('Source file.')).optional().describe('Required. Input only. The source code.')
-}).optional().describe('Inlined source.')
-}).optional().describe('Source type for the container.'),
-  "command": zod.array(zod.string()).optional().describe('Entrypoint array. Not executed within a shell. The docker image\'s ENTRYPOINT is used if this is not provided.'),
-  "args": zod.array(zod.string()).optional().describe('Arguments to the entrypoint. The docker image\'s CMD is used if this is not provided.'),
-  "env": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Name of the environment variable. Must not exceed 32768 characters.'),
-  "value": zod.string().optional().describe('Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.'),
-  "valueSource": zod.object({
-  "secretKeyRef": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest version, an integer for a specific version, or a version alias.')
-}).optional().describe('SecretEnvVarSource represents a source for the value of an EnvVar.')
-}).optional().describe('EnvVarSource represents a source for the value of an EnvVar.')
-}).describe('EnvVar represents an environment variable present in a Container.')).optional().describe('List of environment variables to set in the container.'),
-  "resources": zod.object({
-  "limits": zod.record(zod.string(), zod.string()).optional().describe('Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are \'1\', \'2\', \'4\', and \'8\'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported \'memory\' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported \'nvidia.com\/gpu\' value is \'1\'.'),
-  "cpuIdle": zod.boolean().optional().describe('Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.'),
-  "startupCpuBoost": zod.boolean().optional().describe('Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.')
-}).optional().describe('ResourceRequirements describes the compute resource requirements.'),
-  "ports": zod.array(zod.object({
-  "name": zod.string().optional().describe('If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".'),
-  "containerPort": zod.number().optional().describe('Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.')
-}).describe('ContainerPort represents a network port in a single container.')).optional().describe('List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.'),
-  "volumeMounts": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. This must match the Name of a Volume.'),
-  "mountPath": zod.string().optional().describe('Required. Path within the container at which the volume should be mounted. Must not contain \':\'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run'),
-  "subPath": zod.string().optional().describe('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to \"\" (volume\'s root). This field is currently rejected in Secret volume mounts.')
-}).describe('VolumeMount describes a mounting of a Volume within a container.')).optional().describe('Volume to mount into the container\'s filesystem.'),
-  "workingDir": zod.string().optional().describe('Container\'s working directory. If not specified, the container runtime\'s default will be used, which might be configured in the container image.'),
-  "livenessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "startupProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "readinessProbe": zod.object({
-  "initialDelaySeconds": zod.number().optional().describe('Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.'),
-  "timeoutSeconds": zod.number().optional().describe('Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.'),
-  "periodSeconds": zod.number().optional().describe('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.'),
-  "failureThreshold": zod.number().optional().describe('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.'),
-  "httpGet": zod.object({
-  "path": zod.string().optional().describe('Optional. Path to access on the HTTP server. Defaults to \'\/\'.'),
-  "httpHeaders": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. The header field name'),
-  "value": zod.string().optional().describe('Optional. The header field value')
-}).describe('HTTPHeader describes a custom header to be used in HTTP probes')).optional().describe('Optional. Custom headers to set in the request. HTTP allows repeated headers.'),
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('HTTPGetAction describes an action based on HTTP Get requests.'),
-  "tcpSocket": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.')
-}).optional().describe('TCPSocketAction describes an action based on opening a socket'),
-  "grpc": zod.object({
-  "port": zod.number().optional().describe('Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.'),
-  "service": zod.string().optional().describe('Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.')
-}).optional().describe('GRPCAction describes an action involving a GRPC port.')
-}).optional().describe('Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.'),
-  "dependsOn": zod.array(zod.string()).optional().describe('Names of the containers that must start before this container.'),
-  "baseImageUri": zod.string().optional().describe('Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.'),
-  "buildInfo": zod.object({
-  "functionTarget": zod.string().optional().describe('Output only. Entry point of the function when the image is a Cloud Run function.'),
-  "sourceLocation": zod.string().optional().describe('Output only. Source code location of the image.')
-}).optional().describe('Build information of the image.')
-}).describe('A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.')).optional().describe('Holds the single container that defines the unit of execution for this task.'),
-  "volumes": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Volume\'s name.'),
-  "secret": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.'),
-  "items": zod.array(zod.object({
-  "path": zod.string().optional().describe('Required. The relative path of the secret in the container.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest value, or an integer or a secret alias for a specific version.'),
-  "mode": zod.number().optional().describe('Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume\'s default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.')
-}).describe('VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount\'s mount_path.')).optional().describe('If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.'),
-  "defaultMode": zod.number().optional().describe('Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.')
-}).optional().describe('The secret\'s value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.'),
-  "cloudSqlInstance": zod.object({
-  "instances": zod.array(zod.string()).optional().describe('A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance\'s \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format=\'value(connectionName)\' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.')
-}).optional().describe('Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.'),
-  "emptyDir": zod.object({
-  "medium": zod.enum(['MEDIUM_UNSPECIFIED', 'MEMORY', 'DISK']).optional().describe('The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional'),
-  "sizeLimit": zod.string().optional().describe('Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir')
-}).optional().describe('In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).'),
-  "nfs": zod.object({
-  "server": zod.string().optional().describe('Hostname or IP address of the NFS server'),
-  "path": zod.string().optional().describe('Path that is exported by the NFS server.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.')
-}).optional().describe('Represents an NFS mount.'),
-  "gcs": zod.object({
-  "bucket": zod.string().optional().describe('Cloud Storage Bucket name.'),
-  "readOnly": zod.boolean().optional().describe('If true, the volume will be mounted as read only for all mounts.'),
-  "mountOptions": zod.array(zod.string()).optional().describe('A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".')
-}).optional().describe('Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.')
-}).describe('Volume represents a named volume in a container.')).optional().describe('Optional. A list of Volumes to make available to containers.'),
-  "maxRetries": zod.number().optional().describe('Number of retries allowed per Task, before marking this Task failed. Defaults to 3.'),
-  "timeout": zod.string().optional().describe('Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.'),
-  "serviceAccount": zod.string().optional().describe('Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project\'s default service account.'),
-  "executionEnvironment": zod.enum(['EXECUTION_ENVIRONMENT_UNSPECIFIED', 'EXECUTION_ENVIRONMENT_GEN1', 'EXECUTION_ENVIRONMENT_GEN2']).optional().describe('Optional. The execution environment being used to host this Task.'),
-  "encryptionKey": zod.string().optional().describe('A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek'),
-  "vpcAccess": zod.object({
-  "connector": zod.string().optional().describe('VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.'),
-  "egress": zod.enum(['VPC_EGRESS_UNSPECIFIED', 'ALL_TRAFFIC', 'PRIVATE_RANGES_ONLY']).optional().describe('Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.'),
-  "networkInterfaces": zod.array(zod.object({
-  "network": zod.string().optional().describe('Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.'),
-  "subnetwork": zod.string().optional().describe('Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.'),
-  "tags": zod.array(zod.string()).optional().describe('Optional. Network tags applied to this Cloud Run resource.')
-}).describe('Direct VPC egress settings.')).optional().describe('Optional. Direct VPC egress settings. Currently only single network interface is supported.')
-}).optional().describe('VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.'),
-  "nodeSelector": zod.object({
-  "accelerator": zod.string().optional().describe('Required. GPU accelerator type to attach to an instance.')
-}).optional().describe('Hardware constraints configuration.'),
-  "gpuZonalRedundancyDisabled": zod.boolean().optional().describe('Optional. True if GPU zonal redundancy is disabled on this task template.')
-}).optional().describe('TaskTemplate describes the data a task should have when created from a template.'),
-  "client": zod.string().optional().describe('Optional. Arbitrary identifier for the API client.'),
-  "clientVersion": zod.string().optional().describe('Optional. Arbitrary version identifier for the API client.')
-}).optional().describe('ExecutionTemplate describes the data an execution should have when created from a template.'),
-  "terminalCondition": zod.object({
-  "type": zod.string().optional().describe('type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.'),
-  "state": zod.enum(['STATE_UNSPECIFIED', 'CONDITION_PENDING', 'CONDITION_RECONCILING', 'CONDITION_FAILED', 'CONDITION_SUCCEEDED']).optional().describe('State of the condition.'),
-  "message": zod.string().optional().describe('Human readable message indicating details about the current status.'),
-  "lastTransitionTime": zod.string().optional().describe('Last time the condition transitioned from one status to another.'),
-  "severity": zod.enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO']).optional().describe('How to interpret failures of this condition, one of Error, Warning, Info'),
-  "reason": zod.enum(['COMMON_REASON_UNDEFINED', 'UNKNOWN', 'REVISION_FAILED', 'PROGRESS_DEADLINE_EXCEEDED', 'CONTAINER_MISSING', 'CONTAINER_PERMISSION_DENIED', 'CONTAINER_IMAGE_UNAUTHORIZED', 'CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED', 'ENCRYPTION_KEY_PERMISSION_DENIED', 'ENCRYPTION_KEY_CHECK_FAILED', 'SECRETS_ACCESS_CHECK_FAILED', 'WAITING_FOR_OPERATION', 'IMMEDIATE_RETRY', 'POSTPONED_RETRY', 'INTERNAL', 'VPC_NETWORK_NOT_FOUND']).optional().describe('Output only. A common (service-level) reason for this condition.'),
-  "revisionReason": zod.enum(['REVISION_REASON_UNDEFINED', 'PENDING', 'RESERVE', 'RETIRED', 'RETIRING', 'RECREATING', 'HEALTH_CHECK_CONTAINER_ERROR', 'CUSTOMIZED_PATH_RESPONSE_PENDING', 'MIN_INSTANCES_NOT_PROVISIONED', 'ACTIVE_REVISION_LIMIT_REACHED', 'NO_DEPLOYMENT', 'HEALTH_CHECK_SKIPPED', 'MIN_INSTANCES_WARMING']).optional().describe('Output only. A reason for the revision condition.'),
-  "executionReason": zod.enum(['EXECUTION_REASON_UNDEFINED', 'JOB_STATUS_SERVICE_POLLING_ERROR', 'NON_ZERO_EXIT_CODE', 'CANCELLED', 'CANCELLING', 'DELETED', 'DELAYED_START_PENDING']).optional().describe('Output only. A reason for the execution condition.')
-}).optional().describe('Defines a status condition for a resource.'),
-  "latestCreatedExecution": zod.object({
-  "name": zod.string().optional().describe('Name of the execution.'),
-  "createTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "completionTime": zod.string().optional().describe('Creation timestamp of the execution.'),
-  "deleteTime": zod.string().optional().describe('The deletion time of the execution. It is only populated as a response to a Delete request.'),
-  "completionStatus": zod.enum(['COMPLETION_STATUS_UNSPECIFIED', 'EXECUTION_SUCCEEDED', 'EXECUTION_FAILED', 'EXECUTION_RUNNING', 'EXECUTION_PENDING', 'EXECUTION_CANCELLED']).optional().describe('Status for the execution completion.')
-}).optional().describe('Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.'),
-  "startExecutionToken": zod.string().optional().describe('A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.'),
-  "runExecutionToken": zod.string().optional().describe('A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.'),
-  "etag": zod.string().optional().describe('Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.')
-}).describe('Job represents the configuration of a single job, which references a container image that is run to completion.')
+export const runProjectsLocationsJobsPatchBody = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The fully qualified name of this Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}",
+      ),
+    labels: zod
+      .record(zod.string(), zod.string())
+      .optional()
+      .describe(
+        "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.",
+      ),
+    annotations: zod
+      .record(zod.string(), zod.string())
+      .optional()
+      .describe(
+        "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected on new resources. All system annotations in v1 now have a corresponding field in v2 Job. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+      ),
+    client: zod
+      .string()
+      .optional()
+      .describe("Arbitrary identifier for the API client."),
+    clientVersion: zod
+      .string()
+      .optional()
+      .describe("Arbitrary version identifier for the API client."),
+    launchStage: zod
+      .enum([
+        "LAUNCH_STAGE_UNSPECIFIED",
+        "UNIMPLEMENTED",
+        "PRELAUNCH",
+        "EARLY_ACCESS",
+        "ALPHA",
+        "BETA",
+        "GA",
+        "DEPRECATED",
+      ])
+      .optional()
+      .describe(
+        "The launch stage as defined by [Google Cloud Platform Launch Stages](https:\/\/cloud.google.com\/terms\/launch-stages). Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features. For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output.",
+      ),
+    binaryAuthorization: zod
+      .object({
+        useDefault: zod
+          .boolean()
+          .optional()
+          .describe(
+            "Optional. If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.",
+          ),
+        policy: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. The path to a binary authorization policy. Format: `projects\/{project}\/platforms\/cloudRun\/{policy-name}`",
+          ),
+        breakglassJustification: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https:\/\/cloud.google.com\/binary-authorization\/docs\/using-breakglass",
+          ),
+      })
+      .optional()
+      .describe("Settings for Binary Authorization feature."),
+    template: zod
+      .object({
+        labels: zod
+          .record(zod.string(), zod.string())
+          .optional()
+          .describe(
+            "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https:\/\/cloud.google.com\/resource-manager\/docs\/creating-managing-labels or https:\/\/cloud.google.com\/run\/docs\/configuring\/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.",
+          ),
+        annotations: zod
+          .record(zod.string(), zod.string())
+          .optional()
+          .describe(
+            "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+          ),
+        parallelism: zod
+          .number()
+          .optional()
+          .describe(
+            "Optional. Specifies the maximum desired number of tasks the execution should run at given time. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.",
+          ),
+        taskCount: zod
+          .number()
+          .optional()
+          .describe(
+            "Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.",
+          ),
+        template: zod
+          .object({
+            containers: zod
+              .array(
+                zod
+                  .object({
+                    name: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Name of the container specified as a DNS_LABEL (RFC 1123).",
+                      ),
+                    image: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.",
+                      ),
+                    sourceCode: zod
+                      .object({
+                        cloudStorageSource: zod
+                          .object({
+                            bucket: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. The Cloud Storage bucket name.",
+                              ),
+                            object: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. The Cloud Storage object name.",
+                              ),
+                            generation: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. The Cloud Storage object generation.",
+                              ),
+                          })
+                          .optional()
+                          .describe("Cloud Storage source."),
+                        inlinedSource: zod
+                          .object({
+                            sources: zod
+                              .array(
+                                zod
+                                  .object({
+                                    filename: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        'Required. Input only. The file name for the source code. e.g., `\"index.js\"` or `\"node_modules\/dependency.js\"`. The filename must be less than 255 characters and cannot contain `..`, `.\/`, `\/\/`, or end with a `\/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
+                                      ),
+                                    content: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
+                                      ),
+                                  })
+                                  .describe("Source file."),
+                              )
+                              .optional()
+                              .describe(
+                                "Required. Input only. The source code.",
+                              ),
+                          })
+                          .optional()
+                          .describe("Inlined source."),
+                      })
+                      .optional()
+                      .describe("Source type for the container."),
+                    command: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.",
+                      ),
+                    args: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Arguments to the entrypoint. The docker image's CMD is used if this is not provided.",
+                      ),
+                    env: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Name of the environment variable. Must not exceed 32768 characters.",
+                              ),
+                            value: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                'Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
+                              ),
+                            valueSource: zod
+                              .object({
+                                secretKeyRef: zod
+                                  .object({
+                                    secret: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.",
+                                      ),
+                                    version: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
+                                      ),
+                                  })
+                                  .optional()
+                                  .describe(
+                                    "SecretEnvVarSource represents a source for the value of an EnvVar.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "EnvVarSource represents a source for the value of an EnvVar.",
+                              ),
+                          })
+                          .describe(
+                            "EnvVar represents an environment variable present in a Container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "List of environment variables to set in the container.",
+                      ),
+                    resources: zod
+                      .object({
+                        limits: zod
+                          .record(zod.string(), zod.string())
+                          .optional()
+                          .describe(
+                            "Only `memory`, `cpu` and `nvidia.com\/gpu` keys in the map are supported. Notes: \* The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/cpu. \* For supported 'memory' values and syntax, go to https:\/\/cloud.google.com\/run\/docs\/configuring\/memory-limits \* The only supported 'nvidia.com\/gpu' value is '1'.",
+                          ),
+                        cpuIdle: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.",
+                          ),
+                        startupCpuBoost: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "ResourceRequirements describes the compute resource requirements.",
+                      ),
+                    ports: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                'If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".',
+                              ),
+                            containerPort: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.",
+                              ),
+                          })
+                          .describe(
+                            "ContainerPort represents a network port in a single container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.",
+                      ),
+                    volumeMounts: zod
+                      .array(
+                        zod
+                          .object({
+                            name: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. This must match the Name of a Volume.",
+                              ),
+                            mountPath: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Required. Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be `\/cloudsql`. All instances defined in the Volume will be available as `\/cloudsql\/[instance]`. For more information on Cloud SQL volumes, visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run",
+                              ),
+                            subPath: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently rejected in Secret volume mounts.",
+                              ),
+                          })
+                          .describe(
+                            "VolumeMount describes a mounting of a Volume within a container.",
+                          ),
+                      )
+                      .optional()
+                      .describe(
+                        "Volume to mount into the container's filesystem.",
+                      ),
+                    workingDir: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.",
+                      ),
+                    livenessProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    startupProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    readinessProbe: zod
+                      .object({
+                        initialDelaySeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
+                          ),
+                        timeoutSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
+                          ),
+                        periodSeconds: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
+                          ),
+                        failureThreshold: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+                          ),
+                        httpGet: zod
+                          .object({
+                            path: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Path to access on the HTTP server. Defaults to '\/'.",
+                              ),
+                            httpHeaders: zod
+                              .array(
+                                zod
+                                  .object({
+                                    name: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Required. The header field name",
+                                      ),
+                                    value: zod
+                                      .string()
+                                      .optional()
+                                      .describe(
+                                        "Optional. The header field value",
+                                      ),
+                                  })
+                                  .describe(
+                                    "HTTPHeader describes a custom header to be used in HTTP probes",
+                                  ),
+                              )
+                              .optional()
+                              .describe(
+                                "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
+                              ),
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "HTTPGetAction describes an action based on HTTP Get requests.",
+                          ),
+                        tcpSocket: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "TCPSocketAction describes an action based on opening a socket",
+                          ),
+                        grpc: zod
+                          .object({
+                            port: zod
+                              .number()
+                              .optional()
+                              .describe(
+                                "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
+                              ),
+                            service: zod
+                              .string()
+                              .optional()
+                              .describe(
+                                "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https:\/\/github.com\/grpc\/grpc\/blob\/master\/doc\/health-checking.md ). If this is not specified, the default behavior is defined by gRPC.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "GRPCAction describes an action involving a GRPC port.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+                      ),
+                    dependsOn: zod
+                      .array(zod.string())
+                      .optional()
+                      .describe(
+                        "Names of the containers that must start before this container.",
+                      ),
+                    baseImageUri: zod
+                      .string()
+                      .optional()
+                      .describe(
+                        "Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.",
+                      ),
+                    buildInfo: zod
+                      .object({
+                        functionTarget: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Output only. Entry point of the function when the image is a Cloud Run function.",
+                          ),
+                        sourceLocation: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Output only. Source code location of the image.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Build information of the image."),
+                  })
+                  .describe(
+                    "A single application container. This specifies both the container to run, the command to run in the container and the arguments to supply to it. Note that additional arguments can be supplied by the system to the container at runtime.",
+                  ),
+              )
+              .optional()
+              .describe(
+                "Holds the single container that defines the unit of execution for this task.",
+              ),
+            volumes: zod
+              .array(
+                zod
+                  .object({
+                    name: zod
+                      .string()
+                      .optional()
+                      .describe("Required. Volume's name."),
+                    secret: zod
+                      .object({
+                        secret: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects\/{project}\/secrets\/{secret} if the secret is in a different project.",
+                          ),
+                        items: zod
+                          .array(
+                            zod
+                              .object({
+                                path: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Required. The relative path of the secret in the container.",
+                                  ),
+                                version: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
+                                  ),
+                                mode: zod
+                                  .number()
+                                  .optional()
+                                  .describe(
+                                    "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
+                                  ),
+                              })
+                              .describe(
+                                "VersionToPath maps a specific version of a secret to a relative file to mount to, relative to VolumeMount's mount_path.",
+                              ),
+                          )
+                          .optional()
+                          .describe(
+                            "If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.",
+                          ),
+                        defaultMode: zod
+                          .number()
+                          .optional()
+                          .describe(
+                            "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes \* Internally, a umask of 0222 will be applied to any non-zero value. \* This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). \* This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "The secret's value will be presented as the content of a file whose name is defined in the item path. If no items are defined, the name of the file is the secret.",
+                      ),
+                    cloudSqlInstance: zod
+                      .object({
+                        instances: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            "A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance's \*\*Overview\*\* page in the Google Cloud console or by using the following `gcloud` command: ```sh gcloud sql instances describe INSTANCE_NAME \\ --format='value(connectionName)' ``` Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Represents a set of Cloud SQL instances. Each one will be available under \/cloudsql\/[instance]. Visit https:\/\/cloud.google.com\/sql\/docs\/mysql\/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
+                      ),
+                    emptyDir: zod
+                      .object({
+                        medium: zod
+                          .enum(["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"])
+                          .optional()
+                          .describe(
+                            "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
+                          ),
+                        sizeLimit: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https:\/\/cloud.google.com\/run\/docs\/configuring\/in-memory-volumes#configure-volume. Info in Kubernetes: https:\/\/kubernetes.io\/docs\/concepts\/storage\/volumes\/#emptydir",
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).",
+                      ),
+                    nfs: zod
+                      .object({
+                        server: zod
+                          .string()
+                          .optional()
+                          .describe("Hostname or IP address of the NFS server"),
+                        path: zod
+                          .string()
+                          .optional()
+                          .describe("Path that is exported by the NFS server."),
+                        readOnly: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "If true, the volume will be mounted as read only for all mounts.",
+                          ),
+                      })
+                      .optional()
+                      .describe("Represents an NFS mount."),
+                    gcs: zod
+                      .object({
+                        bucket: zod
+                          .string()
+                          .optional()
+                          .describe("Cloud Storage Bucket name."),
+                        readOnly: zod
+                          .boolean()
+                          .optional()
+                          .describe(
+                            "If true, the volume will be mounted as read only for all mounts.",
+                          ),
+                        mountOptions: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            'A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading \"--\".',
+                          ),
+                      })
+                      .optional()
+                      .describe(
+                        "Represents a volume backed by a Cloud Storage bucket using Cloud Storage FUSE.",
+                      ),
+                  })
+                  .describe("Volume represents a named volume in a container."),
+              )
+              .optional()
+              .describe(
+                "Optional. A list of Volumes to make available to containers.",
+              ),
+            maxRetries: zod
+              .number()
+              .optional()
+              .describe(
+                "Number of retries allowed per Task, before marking this Task failed. Defaults to 3.",
+              ),
+            timeout: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout. Defaults to 600 seconds.",
+              ),
+            serviceAccount: zod
+              .string()
+              .optional()
+              .describe(
+                "Optional. Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project's default service account.",
+              ),
+            executionEnvironment: zod
+              .enum([
+                "EXECUTION_ENVIRONMENT_UNSPECIFIED",
+                "EXECUTION_ENVIRONMENT_GEN1",
+                "EXECUTION_ENVIRONMENT_GEN2",
+              ])
+              .optional()
+              .describe(
+                "Optional. The execution environment being used to host this Task.",
+              ),
+            encryptionKey: zod
+              .string()
+              .optional()
+              .describe(
+                "A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https:\/\/cloud.google.com\/run\/docs\/securing\/using-cmek",
+              ),
+            vpcAccess: zod
+              .object({
+                connector: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "VPC Access connector name. Format: `projects\/{project}\/locations\/{location}\/connectors\/{connector}`, where `{project}` can be project id or number. For more information on sending traffic to a VPC network via a connector, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/vpc-connectors.",
+                  ),
+                egress: zod
+                  .enum([
+                    "VPC_EGRESS_UNSPECIFIED",
+                    "ALL_TRAFFIC",
+                    "PRIVATE_RANGES_ONLY",
+                  ])
+                  .optional()
+                  .describe(
+                    "Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.",
+                  ),
+                networkInterfaces: zod
+                  .array(
+                    zod
+                      .object({
+                        network: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.",
+                          ),
+                        subnetwork: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
+                          ),
+                        tags: zod
+                          .array(zod.string())
+                          .optional()
+                          .describe(
+                            "Optional. Network tags applied to this Cloud Run resource.",
+                          ),
+                      })
+                      .describe("Direct VPC egress settings."),
+                  )
+                  .optional()
+                  .describe(
+                    "Optional. Direct VPC egress settings. Currently only single network interface is supported.",
+                  ),
+              })
+              .optional()
+              .describe(
+                "VPC Access settings. For more information on sending traffic to a VPC network, visit https:\/\/cloud.google.com\/run\/docs\/configuring\/connecting-vpc.",
+              ),
+            nodeSelector: zod
+              .object({
+                accelerator: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "Required. GPU accelerator type to attach to an instance.",
+                  ),
+              })
+              .optional()
+              .describe("Hardware constraints configuration."),
+            gpuZonalRedundancyDisabled: zod
+              .boolean()
+              .optional()
+              .describe(
+                "Optional. True if GPU zonal redundancy is disabled on this task template.",
+              ),
+          })
+          .optional()
+          .describe(
+            "TaskTemplate describes the data a task should have when created from a template.",
+          ),
+        client: zod
+          .string()
+          .optional()
+          .describe("Optional. Arbitrary identifier for the API client."),
+        clientVersion: zod
+          .string()
+          .optional()
+          .describe(
+            "Optional. Arbitrary version identifier for the API client.",
+          ),
+      })
+      .optional()
+      .describe(
+        "ExecutionTemplate describes the data an execution should have when created from a template.",
+      ),
+    terminalCondition: zod
+      .object({
+        type: zod
+          .string()
+          .optional()
+          .describe(
+            'type is used to communicate the status of the reconciliation process. See also: https:\/\/github.com\/knative\/serving\/blob\/main\/docs\/spec\/errors.md#error-conditions-and-reporting Types common to all resources include: \* \"Ready\": True when the Resource is ready.',
+          ),
+        state: zod
+          .enum([
+            "STATE_UNSPECIFIED",
+            "CONDITION_PENDING",
+            "CONDITION_RECONCILING",
+            "CONDITION_FAILED",
+            "CONDITION_SUCCEEDED",
+          ])
+          .optional()
+          .describe("State of the condition."),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "Human readable message indicating details about the current status.",
+          ),
+        lastTransitionTime: zod
+          .string()
+          .optional()
+          .describe(
+            "Last time the condition transitioned from one status to another.",
+          ),
+        severity: zod
+          .enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
+          .optional()
+          .describe(
+            "How to interpret failures of this condition, one of Error, Warning, Info",
+          ),
+        reason: zod
+          .enum([
+            "COMMON_REASON_UNDEFINED",
+            "UNKNOWN",
+            "REVISION_FAILED",
+            "PROGRESS_DEADLINE_EXCEEDED",
+            "CONTAINER_MISSING",
+            "CONTAINER_PERMISSION_DENIED",
+            "CONTAINER_IMAGE_UNAUTHORIZED",
+            "CONTAINER_IMAGE_AUTHORIZATION_CHECK_FAILED",
+            "ENCRYPTION_KEY_PERMISSION_DENIED",
+            "ENCRYPTION_KEY_CHECK_FAILED",
+            "SECRETS_ACCESS_CHECK_FAILED",
+            "WAITING_FOR_OPERATION",
+            "IMMEDIATE_RETRY",
+            "POSTPONED_RETRY",
+            "INTERNAL",
+            "VPC_NETWORK_NOT_FOUND",
+          ])
+          .optional()
+          .describe(
+            "Output only. A common (service-level) reason for this condition.",
+          ),
+        revisionReason: zod
+          .enum([
+            "REVISION_REASON_UNDEFINED",
+            "PENDING",
+            "RESERVE",
+            "RETIRED",
+            "RETIRING",
+            "RECREATING",
+            "HEALTH_CHECK_CONTAINER_ERROR",
+            "CUSTOMIZED_PATH_RESPONSE_PENDING",
+            "MIN_INSTANCES_NOT_PROVISIONED",
+            "ACTIVE_REVISION_LIMIT_REACHED",
+            "NO_DEPLOYMENT",
+            "HEALTH_CHECK_SKIPPED",
+            "MIN_INSTANCES_WARMING",
+          ])
+          .optional()
+          .describe("Output only. A reason for the revision condition."),
+        executionReason: zod
+          .enum([
+            "EXECUTION_REASON_UNDEFINED",
+            "JOB_STATUS_SERVICE_POLLING_ERROR",
+            "NON_ZERO_EXIT_CODE",
+            "CANCELLED",
+            "CANCELLING",
+            "DELETED",
+            "DELAYED_START_PENDING",
+          ])
+          .optional()
+          .describe("Output only. A reason for the execution condition."),
+      })
+      .optional()
+      .describe("Defines a status condition for a resource."),
+    latestCreatedExecution: zod
+      .object({
+        name: zod.string().optional().describe("Name of the execution."),
+        createTime: zod
+          .string()
+          .optional()
+          .describe("Creation timestamp of the execution."),
+        completionTime: zod
+          .string()
+          .optional()
+          .describe("Creation timestamp of the execution."),
+        deleteTime: zod
+          .string()
+          .optional()
+          .describe(
+            "The deletion time of the execution. It is only populated as a response to a Delete request.",
+          ),
+        completionStatus: zod
+          .enum([
+            "COMPLETION_STATUS_UNSPECIFIED",
+            "EXECUTION_SUCCEEDED",
+            "EXECUTION_FAILED",
+            "EXECUTION_RUNNING",
+            "EXECUTION_PENDING",
+            "EXECUTION_CANCELLED",
+          ])
+          .optional()
+          .describe("Status for the execution completion."),
+      })
+      .optional()
+      .describe(
+        "Reference to an Execution. Use \/Executions.GetExecution with the given name to get full execution including the latest status.",
+      ),
+    startExecutionToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A unique string used as a suffix creating a new execution. The Job will become ready when the execution is successfully started. The sum of job name and token length must be fewer than 63 characters.",
+      ),
+    runExecutionToken: zod
+      .string()
+      .optional()
+      .describe(
+        "A unique string used as a suffix for creating a new execution. The Job will become ready when the execution is successfully completed. The sum of job name and token length must be fewer than 63 characters.",
+      ),
+    etag: zod
+      .string()
+      .optional()
+      .describe(
+        "Optional. A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.",
+      ),
+  })
+  .describe(
+    "Job represents the configuration of a single job, which references a container image that is run to completion.",
+  );
 
-export const runProjectsLocationsJobsPatch200Response = zod.object({
-  "name": zod.string().optional().describe('The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.'),
-  "metadata": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.'),
-  "done": zod.boolean().optional().describe('If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.'),
-  "error": zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).optional().describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).'),
-  "response": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.')
-}).describe('This resource represents a long-running operation that is the result of a network API call.')
+export const runProjectsLocationsJobsPatch200Response = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.",
+      ),
+    metadata: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.",
+      ),
+    done: zod
+      .boolean()
+      .optional()
+      .describe(
+        "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.",
+      ),
+    error: zod
+      .object({
+        code: zod
+          .number()
+          .optional()
+          .describe(
+            "The status code, which should be an enum value of google.rpc.Code.",
+          ),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+          ),
+        details: zod
+          .array(
+            zod.record(
+              zod.string(),
+              zod
+                .unknown()
+                .describe(
+                  "Properties of the object. Contains field @type with type URL.",
+                ),
+            ),
+          )
+          .optional()
+          .describe(
+            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+          ),
+      })
+      .optional()
+      .describe(
+        "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+      ),
+    response: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.",
+      ),
+  })
+  .describe(
+    "This resource represents a long-running operation that is the result of a network API call.",
+  );
 
-export const runProjectsLocationsJobsPatchDefaultResponse = zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).')
-
+export const runProjectsLocationsJobsPatchDefaultResponse = zod
+  .object({
+    code: zod
+      .number()
+      .optional()
+      .describe(
+        "The status code, which should be an enum value of google.rpc.Code.",
+      ),
+    message: zod
+      .string()
+      .optional()
+      .describe(
+        "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+      ),
+    details: zod
+      .array(
+        zod.record(
+          zod.string(),
+          zod
+            .unknown()
+            .describe(
+              "Properties of the object. Contains field @type with type URL.",
+            ),
+        ),
+      )
+      .optional()
+      .describe(
+        "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+      ),
+  })
+  .describe(
+    "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+  );
 
 /**
  * Deletes a Job.
  */
-export const runProjectsLocationsJobsDeletePathNameRegExp = new RegExp('^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$');
-
+export const runProjectsLocationsJobsDeletePathNameRegExp = new RegExp(
+  "^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$",
+);
 
 export const runProjectsLocationsJobsDeleteParams = zod.object({
-  "name": zod.string().regex(runProjectsLocationsJobsDeletePathNameRegExp).describe('Required. The full name of the Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}, where {project} can be project id or number.')
-})
+  name: zod
+    .string()
+    .regex(runProjectsLocationsJobsDeletePathNameRegExp)
+    .describe(
+      "Required. The full name of the Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}, where {project} can be project id or number.",
+    ),
+});
 
 export const runProjectsLocationsJobsDeleteQueryParams = zod.object({
-  "validateOnly": zod.boolean().optional().describe('Indicates that the request should be validated without actually deleting any resources.'),
-  "etag": zod.string().optional().describe('A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.')
-})
+  validateOnly: zod
+    .boolean()
+    .optional()
+    .describe(
+      "Indicates that the request should be validated without actually deleting any resources.",
+    ),
+  etag: zod
+    .string()
+    .optional()
+    .describe(
+      "A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.",
+    ),
+});
 
-export const runProjectsLocationsJobsDelete200Response = zod.object({
-  "name": zod.string().optional().describe('The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.'),
-  "metadata": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.'),
-  "done": zod.boolean().optional().describe('If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.'),
-  "error": zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).optional().describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).'),
-  "response": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.')
-}).describe('This resource represents a long-running operation that is the result of a network API call.')
+export const runProjectsLocationsJobsDelete200Response = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.",
+      ),
+    metadata: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.",
+      ),
+    done: zod
+      .boolean()
+      .optional()
+      .describe(
+        "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.",
+      ),
+    error: zod
+      .object({
+        code: zod
+          .number()
+          .optional()
+          .describe(
+            "The status code, which should be an enum value of google.rpc.Code.",
+          ),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+          ),
+        details: zod
+          .array(
+            zod.record(
+              zod.string(),
+              zod
+                .unknown()
+                .describe(
+                  "Properties of the object. Contains field @type with type URL.",
+                ),
+            ),
+          )
+          .optional()
+          .describe(
+            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+          ),
+      })
+      .optional()
+      .describe(
+        "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+      ),
+    response: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.",
+      ),
+  })
+  .describe(
+    "This resource represents a long-running operation that is the result of a network API call.",
+  );
 
-export const runProjectsLocationsJobsDeleteDefaultResponse = zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).')
-
+export const runProjectsLocationsJobsDeleteDefaultResponse = zod
+  .object({
+    code: zod
+      .number()
+      .optional()
+      .describe(
+        "The status code, which should be an enum value of google.rpc.Code.",
+      ),
+    message: zod
+      .string()
+      .optional()
+      .describe(
+        "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+      ),
+    details: zod
+      .array(
+        zod.record(
+          zod.string(),
+          zod
+            .unknown()
+            .describe(
+              "Properties of the object. Contains field @type with type URL.",
+            ),
+        ),
+      )
+      .optional()
+      .describe(
+        "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+      ),
+  })
+  .describe(
+    "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+  );
 
 /**
  * Triggers creation of a new Execution of this Job.
  */
-export const runProjectsLocationsJobsRunPathNameRegExp = new RegExp('^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$');
-
+export const runProjectsLocationsJobsRunPathNameRegExp = new RegExp(
+  "^projects\/[^\/]+\/locations\/[^\/]+\/jobs\/[^\/]+$",
+);
 
 export const runProjectsLocationsJobsRunParams = zod.object({
-  "name": zod.string().regex(runProjectsLocationsJobsRunPathNameRegExp).describe('Required. The full name of the Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}, where {project} can be project id or number.')
-})
+  name: zod
+    .string()
+    .regex(runProjectsLocationsJobsRunPathNameRegExp)
+    .describe(
+      "Required. The full name of the Job. Format: projects\/{project}\/locations\/{location}\/jobs\/{job}, where {project} can be project id or number.",
+    ),
+});
 
-export const runProjectsLocationsJobsRunBody = zod.object({
-  "validateOnly": zod.boolean().optional().describe('Indicates that the request should be validated without actually deleting any resources.'),
-  "etag": zod.string().optional().describe('A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.'),
-  "overrides": zod.object({
-  "containerOverrides": zod.array(zod.object({
-  "name": zod.string().optional().describe('The name of the container specified as a DNS_LABEL.'),
-  "args": zod.array(zod.string()).optional().describe('Optional. Arguments to the entrypoint. Will replace existing args for override.'),
-  "env": zod.array(zod.object({
-  "name": zod.string().optional().describe('Required. Name of the environment variable. Must not exceed 32768 characters.'),
-  "value": zod.string().optional().describe('Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.'),
-  "valueSource": zod.object({
-  "secretKeyRef": zod.object({
-  "secret": zod.string().optional().describe('Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.'),
-  "version": zod.string().optional().describe('The Cloud Secret Manager secret version. Can be \'latest\' for the latest version, an integer for a specific version, or a version alias.')
-}).optional().describe('SecretEnvVarSource represents a source for the value of an EnvVar.')
-}).optional().describe('EnvVarSource represents a source for the value of an EnvVar.')
-}).describe('EnvVar represents an environment variable present in a Container.')).optional().describe('List of environment variables to set in the container. Will be merged with existing env for override.'),
-  "clearArgs": zod.boolean().optional().describe('Optional. True if the intention is to clear out existing args list.')
-}).describe('Per-container override specification.')).optional().describe('Per container override specification.'),
-  "taskCount": zod.number().optional().describe('Optional. The desired number of tasks the execution should run. Will replace existing task_count value.'),
-  "timeout": zod.string().optional().describe('Duration in seconds the task may be active before the system will actively try to mark it failed and kill associated containers. Will replace existing timeout_seconds value.')
-}).optional().describe('RunJob Overrides that contains Execution fields to be overridden.')
-}).describe('Request message to create a new Execution of a Job.')
+export const runProjectsLocationsJobsRunBody = zod
+  .object({
+    validateOnly: zod
+      .boolean()
+      .optional()
+      .describe(
+        "Indicates that the request should be validated without actually deleting any resources.",
+      ),
+    etag: zod
+      .string()
+      .optional()
+      .describe(
+        "A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.",
+      ),
+    overrides: zod
+      .object({
+        containerOverrides: zod
+          .array(
+            zod
+              .object({
+                name: zod
+                  .string()
+                  .optional()
+                  .describe(
+                    "The name of the container specified as a DNS_LABEL.",
+                  ),
+                args: zod
+                  .array(zod.string())
+                  .optional()
+                  .describe(
+                    "Optional. Arguments to the entrypoint. Will replace existing args for override.",
+                  ),
+                env: zod
+                  .array(
+                    zod
+                      .object({
+                        name: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            "Required. Name of the environment variable. Must not exceed 32768 characters.",
+                          ),
+                        value: zod
+                          .string()
+                          .optional()
+                          .describe(
+                            'Literal value of the environment variable. Defaults to \"\", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
+                          ),
+                        valueSource: zod
+                          .object({
+                            secretKeyRef: zod
+                              .object({
+                                secret: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects\/{project}\/secrets\/{secret_name} if the secret is in a different project.",
+                                  ),
+                                version: zod
+                                  .string()
+                                  .optional()
+                                  .describe(
+                                    "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
+                                  ),
+                              })
+                              .optional()
+                              .describe(
+                                "SecretEnvVarSource represents a source for the value of an EnvVar.",
+                              ),
+                          })
+                          .optional()
+                          .describe(
+                            "EnvVarSource represents a source for the value of an EnvVar.",
+                          ),
+                      })
+                      .describe(
+                        "EnvVar represents an environment variable present in a Container.",
+                      ),
+                  )
+                  .optional()
+                  .describe(
+                    "List of environment variables to set in the container. Will be merged with existing env for override.",
+                  ),
+                clearArgs: zod
+                  .boolean()
+                  .optional()
+                  .describe(
+                    "Optional. True if the intention is to clear out existing args list.",
+                  ),
+              })
+              .describe("Per-container override specification."),
+          )
+          .optional()
+          .describe("Per container override specification."),
+        taskCount: zod
+          .number()
+          .optional()
+          .describe(
+            "Optional. The desired number of tasks the execution should run. Will replace existing task_count value.",
+          ),
+        timeout: zod
+          .string()
+          .optional()
+          .describe(
+            "Duration in seconds the task may be active before the system will actively try to mark it failed and kill associated containers. Will replace existing timeout_seconds value.",
+          ),
+      })
+      .optional()
+      .describe(
+        "RunJob Overrides that contains Execution fields to be overridden.",
+      ),
+  })
+  .describe("Request message to create a new Execution of a Job.");
 
-export const runProjectsLocationsJobsRun200Response = zod.object({
-  "name": zod.string().optional().describe('The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.'),
-  "metadata": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.'),
-  "done": zod.boolean().optional().describe('If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.'),
-  "error": zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).optional().describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).'),
-  "response": zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.')).optional().describe('The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.')
-}).describe('This resource represents a long-running operation that is the result of a network API call.')
+export const runProjectsLocationsJobsRun200Response = zod
+  .object({
+    name: zod
+      .string()
+      .optional()
+      .describe(
+        "The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations\/{unique_id}`.",
+      ),
+    metadata: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.",
+      ),
+    done: zod
+      .boolean()
+      .optional()
+      .describe(
+        "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.",
+      ),
+    error: zod
+      .object({
+        code: zod
+          .number()
+          .optional()
+          .describe(
+            "The status code, which should be an enum value of google.rpc.Code.",
+          ),
+        message: zod
+          .string()
+          .optional()
+          .describe(
+            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+          ),
+        details: zod
+          .array(
+            zod.record(
+              zod.string(),
+              zod
+                .unknown()
+                .describe(
+                  "Properties of the object. Contains field @type with type URL.",
+                ),
+            ),
+          )
+          .optional()
+          .describe(
+            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+          ),
+      })
+      .optional()
+      .describe(
+        "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+      ),
+    response: zod
+      .record(
+        zod.string(),
+        zod
+          .unknown()
+          .describe(
+            "Properties of the object. Contains field @type with type URL.",
+          ),
+      )
+      .optional()
+      .describe(
+        "The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`\/`Create`\/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.",
+      ),
+  })
+  .describe(
+    "This resource represents a long-running operation that is the result of a network API call.",
+  );
 
-export const runProjectsLocationsJobsRunDefaultResponse = zod.object({
-  "code": zod.number().optional().describe('The status code, which should be an enum value of google.rpc.Code.'),
-  "message": zod.string().optional().describe('A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.'),
-  "details": zod.array(zod.record(zod.string(), zod.unknown().describe('Properties of the object. Contains field @type with type URL.'))).optional().describe('A list of messages that carry the error details. There is a common set of message types for APIs to use.')
-}).describe('The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).')
+export const runProjectsLocationsJobsRunDefaultResponse = zod
+  .object({
+    code: zod
+      .number()
+      .optional()
+      .describe(
+        "The status code, which should be an enum value of google.rpc.Code.",
+      ),
+    message: zod
+      .string()
+      .optional()
+      .describe(
+        "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
+      ),
+    details: zod
+      .array(
+        zod.record(
+          zod.string(),
+          zod
+            .unknown()
+            .describe(
+              "Properties of the object. Contains field @type with type URL.",
+            ),
+        ),
+      )
+      .optional()
+      .describe(
+        "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+      ),
+  })
+  .describe(
+    "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+  );

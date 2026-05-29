@@ -8,13 +8,13 @@
 /**
  * The type of identity that created the resource.
  */
-export type SystemDataCreatedByType = typeof SystemDataCreatedByType[keyof typeof SystemDataCreatedByType];
-
+export type SystemDataCreatedByType =
+  (typeof SystemDataCreatedByType)[keyof typeof SystemDataCreatedByType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SystemDataCreatedByType = {
-  User: 'User',
-  Application: 'Application',
-  ManagedIdentity: 'ManagedIdentity',
-  Key: 'Key',
+  User: "User",
+  Application: "Application",
+  ManagedIdentity: "ManagedIdentity",
+  Key: "Key",
 } as const;

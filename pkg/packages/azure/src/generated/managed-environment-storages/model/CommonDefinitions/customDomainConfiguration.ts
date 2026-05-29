@@ -4,7 +4,7 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { CertificateKeyVaultProperties } from './certificateKeyVaultProperties';
+import type { CertificateKeyVaultProperties } from "./certificateKeyVaultProperties";
 
 /**
  * Configuration properties for apps environment custom domain

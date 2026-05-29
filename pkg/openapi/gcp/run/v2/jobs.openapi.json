@@ -471,12 +471,7 @@
           "severity": {
             "type": "string",
             "description": "How to interpret failures of this condition, one of Error, Warning, Info",
-            "enum": [
-              "SEVERITY_UNSPECIFIED",
-              "ERROR",
-              "WARNING",
-              "INFO"
-            ]
+            "enum": ["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"]
           },
           "reason": {
             "type": "string",
@@ -669,11 +664,7 @@
           "medium": {
             "type": "string",
             "description": "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
-            "enum": [
-              "MEDIUM_UNSPECIFIED",
-              "MEMORY",
-              "DISK"
-            ]
+            "enum": ["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"]
           },
           "sizeLimit": {
             "type": "string",

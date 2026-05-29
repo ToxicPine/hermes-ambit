@@ -4,9 +4,9 @@
  * Agent Platform API
  * OpenAPI spec version: v1beta1
  */
-import type { GoogleCloudAiplatformV1beta1EnvVar } from './googleCloudAiplatformV1beta1EnvVar';
-import type { GoogleCloudAiplatformV1beta1Port } from './googleCloudAiplatformV1beta1Port';
-import type { GoogleCloudAiplatformV1beta1Probe } from './googleCloudAiplatformV1beta1Probe';
+import type { GoogleCloudAiplatformV1beta1EnvVar } from "./googleCloudAiplatformV1beta1EnvVar";
+import type { GoogleCloudAiplatformV1beta1Port } from "./googleCloudAiplatformV1beta1Port";
+import type { GoogleCloudAiplatformV1beta1Probe } from "./googleCloudAiplatformV1beta1Probe";
 
 /**
  * Specification of a container for serving predictions. Some fields in this message correspond to fields in the [Kubernetes Container v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#container-v1-core).

@@ -4,8 +4,8 @@
  * ContainerApps API Client
  * OpenAPI spec version: 2025-07-01
  */
-import type { ProxyResource } from '../common-types-resource-management-v5-types/proxyResource';
-import type { DaprComponentProperties } from './daprComponentProperties';
+import type { ProxyResource } from "../common-types-resource-management-v5-types/proxyResource";
+import type { DaprComponentProperties } from "./daprComponentProperties";
 
 /**
  * Dapr Component.
