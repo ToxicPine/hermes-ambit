@@ -58,6 +58,18 @@
       "url": "https://github.com/nix-community/home-manager/archive/3ee51fbdac8c8bdfe1e7e1fcaba6520a563f394f.tar.gz",
       "hash": "13fmry1jd0na71fxhzms9qf3ybj6shgvnphq4p1akxxmv44gzq20"
     },
+    "nestail": {
+      "type": "Git",
+      "repository": {
+        "type": "Git",
+        "url": "https://github.com/ToxicPine/nestail.git"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "d2ddcc8b9af319fc1301cbd39915a6e245911185",
+      "url": null,
+      "hash": "1pm2jdd4f6g37xrrnadd06p5x2wa1jk1xdh1pl0r3g9a5z628min"
+    },
     "nixpkgs": {
       "type": "Channel",
       "name": "nixos-25.11",
@@ -69,6 +81,18 @@
       "name": "nixos-unstable",
       "url": "https://releases.nixos.org/nixos/unstable/nixos-26.05pre1003640.299164534138/nixexprs.tar.xz",
       "hash": "00sipscprpd0wyr48wswan0mahkyvxfq35g8lc14vfsdcvgxgm9s"
+    },
+    "tissloolly": {
+      "type": "Git",
+      "repository": {
+        "type": "Git",
+        "url": "https://github.com/ToxicPine/tissloolly.git"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "94a4defd3f92ecc840d94839e8f748aeb188ac8d",
+      "url": null,
+      "hash": "1ix3p3l9p7b9ccgia2y9v7qbd2v6a3pbcaxiq8i8hl1icbw46ndp"
     }
   },
   "version": 5

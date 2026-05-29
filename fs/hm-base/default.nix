@@ -8,8 +8,9 @@
 }:
 
 let
+  system = pkgs.stdenv.hostPlatform.system;
   nixpkgs-unstable = import sources.nixpkgs-unstable {
-    inherit (pkgs.stdenv.hostPlatform) system;
+    inherit system;
     config = (pkgs.config or { }) // {
       allowUnfree = true;
     };
@@ -17,6 +18,14 @@ let
   hermes = import ../hermes {
     pkgs = nixpkgs-unstable;
     inherit sources;
+  };
+  flake-compat = import sources.flake-compat;
+  nestailFlake = (flake-compat { src = sources.nestail; }).defaultNix;
+  nestail = nestailFlake.packages.${system}.default;
+  tissloolly = {
+    boondoggle = nixpkgs-unstable.callPackage (sources.tissloolly + "/packages/boondoggle") { };
+    ghwc = nixpkgs-unstable.callPackage (sources.tissloolly + "/packages/ghwc") { };
+    ghwrc = nixpkgs-unstable.callPackage (sources.tissloolly + "/packages/ghwrc") { };
   };
 in
 
@@ -37,6 +46,10 @@ in
 
     packages = with pkgs; [
       nixpkgs-unstable.codex
+      nestail
+      tissloolly.boondoggle
+      tissloolly.ghwc
+      tissloolly.ghwrc
       openssh
       curl
       git
