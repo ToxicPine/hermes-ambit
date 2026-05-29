@@ -2,134 +2,170 @@
 set -euo pipefail
 
 DATA="/data"
-CACHE_DIR="$DATA/nix-cache"
+CACHE_DIR="${DATA}/nix-cache"
 
 resolve_uid() {
   jq -r --arg u "$1" '.[] | select(.name == $u) | .uid' /etc/users.json
 }
 
 run_as_user() {
-  local name="$1"; shift
+  local name="$1"
+  shift
   local uid home user_path
-  uid=$(resolve_uid "$name")
-  home="/home/$name"
-  user_path="$home/.nix-profile/bin:$home/.local/state/nix/profiles/home-manager/home-path/bin"
+  uid=$(resolve_uid "${name}")
+  home="/home/${name}"
+  user_path="${home}/.nix-profile/bin:${home}/.local/state/nix/profiles/home-manager/home-path/bin"
 
-  setpriv --reuid="$uid" --regid="$uid" --init-groups \
-    env HOME="$home" USER="$name" PATH="$user_path:$PATH" \
+  setpriv --reuid="${uid}" --regid="${uid}" --init-groups \
+    env HOME="${home}" USER="${name}" PATH="${user_path}:${PATH}" \
     "$@"
+}
+
+run_as_user_status=0
+try_run_as_user() {
+  set +e
+  run_as_user "$@"
+  run_as_user_status=$?
+  set -e
+}
+
+directory_is_empty() {
+  local dir="$1"
+  shopt -s nullglob dotglob
+  local entries=("${dir}"/*)
+  shopt -u nullglob dotglob
+  ((${#entries[@]} == 0))
 }
 
 BG_PIDS=()
 cleanup() {
   for pid in "${BG_PIDS[@]}"; do
-    kill "$pid" 2>/dev/null || true
+    kill "${pid}" 2>/dev/null || true
   done
   wait
 }
 trap cleanup EXIT TERM INT
 
-mkdir -p "$CACHE_DIR" /nix/store /nix/var/nix
-touch "$CACHE_DIR/.copy-lock"
-chmod 0666 "$CACHE_DIR/.copy-lock"
-chmod 1777 "$CACHE_DIR"
-cp -an /nix-base/store/. /nix/store/
-nix-store --load-db < /nix-base/var/nix/db-base 2>/dev/null || true
+mkdir -p "${CACHE_DIR}" /nix/store /nix/var/nix
+touch "${CACHE_DIR}/.copy-lock"
+chmod 0666 "${CACHE_DIR}/.copy-lock"
+chmod 1777 "${CACHE_DIR}"
+chmod -R a+rwX "${CACHE_DIR}" 2>/dev/null || true
+cp -aln /nix-base/store/. /nix/store/
+nix-store --load-db </nix-base/var/nix/db-base 2>/dev/null || true
 
 # Nix daemon
 nix-daemon &
 BG_PIDS+=($!)
-while [ ! -S /nix/var/nix/daemon-socket/socket ]; do sleep 0.05; done
+while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do sleep 0.05; done
 
 # Per-user persistent homes and Home Manager activation
+users_tsv="$(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)"
 while IFS=$'\t' read -r name uid; do
-  persist="$DATA/homes/$name"
-  home="/home/$name"
-  shared_user_dir="/opt/app/hm-user/$name"
-  persist_nixcfg="$persist/nixcfg"
+  persist="${DATA}/homes/${name}"
+  home="/home/${name}"
+  factory_settings_dir="/opt/defaults/hm-user/${name}"
+  shared_user_dir="/opt/app/hm-user/${name}"
+  persist_nixcfg="${persist}/nixcfg"
 
-  mkdir -p "$persist"
-  chown "$uid:$uid" "$persist"
+  mkdir -p "${persist}"
+  chown "${uid}:${uid}" "${persist}"
 
-  # One-time seed transfer from image to persistent volume.
-  if [ ! -d "$persist_nixcfg" ] || [ -z "$(ls -A "$persist_nixcfg" 2>/dev/null)" ]; then
-    mkdir -p "$persist_nixcfg"
-    cp -R "$shared_user_dir/." "$persist_nixcfg/"
+  # One-time seed transfer from the image-baked Home Manager config to
+  # the persistent volume.
+  set +e
+  directory_is_empty "${persist_nixcfg}"
+  dir_empty_status=$?
+  set -e
+  if [[ ! -d "${persist_nixcfg}" ]] || [[ "${dir_empty_status}" -eq 0 ]]; then
+    mkdir -p "${persist_nixcfg}"
+    cp -R "${factory_settings_dir}/." "${persist_nixcfg}/"
   fi
-  chown -R "$uid:$uid" "$persist_nixcfg"
-  chmod -R u+rwX "$persist_nixcfg"
+  chown -R "${uid}:${uid}" "${persist_nixcfg}"
+  chmod -R u+rwX "${persist_nixcfg}"
 
   # Symlink the user's editable nixcfg into the shared /opt/app flake
   # tree, so relative refs like `imports = [ ../../hm-base ]` inside
   # the user's home.nix still resolve when Nix copies /opt/app to the
   # store.
-  rm -rf "$shared_user_dir"
-  ln -snf "$persist_nixcfg" "$shared_user_dir"
+  rm -rf "${shared_user_dir}"
+  ln -snf "${persist_nixcfg}" "${shared_user_dir}"
 
   # Persistent home directory + ~/.nixcfg → the user's editable nixcfg
   # dir (so ~/.nixcfg/home.nix is the file they actually edit).
-  rm -rf "$home"
-  ln -snf "$persist" "$home"
-  ln -snf "$persist_nixcfg" "$persist/.nixcfg"
+  rm -rf "${home}"
+  ln -snf "${persist}" "${home}"
+  ln -snf "${persist_nixcfg}" "${persist}/.nixcfg"
 
-  hm_profiles="$home/.local/state/nix/profiles"
-  hm_gcroots="$home/.local/state/home-manager/gcroots"
-  activation=$(jq -r --arg u "$name" '.[$u]' /etc/home-manager-activations.json)
+  hm_profiles="${home}/.local/state/nix/profiles"
+  hm_gcroots="${home}/.local/state/home-manager/gcroots"
+  activation=$(jq -r --arg u "${name}" '.[$u]' /etc/home-manager-activations.json)
 
-  run_as_user "$name" mkdir -p "$hm_profiles" "$hm_gcroots"
+  run_as_user "${name}" mkdir -p "${hm_profiles}" "${hm_gcroots}"
 
-  if [ "$(jq -r '.rebuildOnBoot == true' /etc/home-manager-policy.json)" = "true" ]; then
-    if [ -n "$activation" ] && [ "$activation" != "null" ]; then
-      run_as_user "$name" "$activation/activate" 2>/dev/null || true
+  rebuild_on_boot="$(jq -r '.rebuildOnBoot == true' /etc/home-manager-policy.json)"
+  activate_on_boot="$(jq -r '.activateOnBoot != false' /etc/home-manager-policy.json)"
+  if [[ "${rebuild_on_boot}" = "true" ]]; then
+    if [[ -n "${activation}" ]] && [[ "${activation}" != "null" ]]; then
+      try_run_as_user "${name}" "${activation}/activate" 2>/dev/null
     fi
-    echo "Rebuilding Home Manager from user config for $name..." >&2
-    run_as_user "$name" /opt/app/bin/rebuild \
-      || echo "Warning: Home Manager rebuild failed for $name, using image default" >&2
-  elif [ "$(jq -r '.activateOnBoot != false' /etc/home-manager-policy.json)" = "true" ] \
-    && [ -n "$activation" ] && [ "$activation" != "null" ]; then
-    run_as_user "$name" "$activation/activate" \
-      || echo "Warning: Home Manager activation failed for $name" >&2
+    echo "Refreshing Home Manager from user config for ${name}..." >&2
+    try_run_as_user "${name}" /opt/app/bin/refresh-system
+    if [[ "${run_as_user_status}" -ne 0 ]]; then
+      echo "Warning: Home Manager refresh failed for ${name}, using image default" >&2
+    fi
+  elif [[ "${activate_on_boot}" = "true" ]] &&
+    [[ -n "${activation}" ]] && [[ "${activation}" != "null" ]]; then
+    try_run_as_user "${name}" "${activation}/activate"
+    if [[ "${run_as_user_status}" -ne 0 ]]; then
+      echo "Warning: Home Manager activation failed for ${name}" >&2
+    fi
   fi
-done < <(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)
+done <<<"${users_tsv}"
 
 # Spawnables: background processes launched once at boot.
 # user: "*" = all users, ["a","b"] = listed users, "name" = single user, omitted = root
+spawnables_json="$(jq -c '.[]' /etc/spawnables.json)"
 while IFS= read -r spawnable; do
-  readarray -t cmd < <(echo "$spawnable" | jq -r '.command[]')
-  user_field=$(echo "$spawnable" | jq -c '.user // empty')
+  cmd_text="$(jq -r '.command[]' <<<"${spawnable}")"
+  readarray -t cmd <<<"${cmd_text}"
+  user_field=$(jq -c '.user // empty' <<<"${spawnable}")
 
-  if [ "$user_field" = '"*"' ]; then
+  if [[ "${user_field}" = '"*"' ]]; then
     while IFS=$'\t' read -r name uid; do
-      run_as_user "$name" "${cmd[@]}" &
+      run_as_user "${name}" "${cmd[@]}" &
       BG_PIDS+=($!)
-    done < <(jq -r '.[] | [.name, .uid] | @tsv' /etc/users.json)
-  elif echo "$spawnable" | jq -e '.user | type == "array"' >/dev/null 2>&1; then
+    done <<<"${users_tsv}"
+  elif jq -e '.user | type == "array"' >/dev/null 2>&1 <<<"${spawnable}"; then
+    spawn_users="$(jq -r '.user[]' <<<"${spawnable}")"
     while IFS= read -r name; do
-      run_as_user "$name" "${cmd[@]}" &
+      run_as_user "${name}" "${cmd[@]}" &
       BG_PIDS+=($!)
-    done < <(echo "$spawnable" | jq -r '.user[]')
-  elif [ -n "$user_field" ] && [ "$user_field" != '""' ]; then
-    run_as_user "$(echo "$spawnable" | jq -r '.user')" "${cmd[@]}" &
+    done <<<"${spawn_users}"
+  elif [[ -n "${user_field}" ]] && [[ "${user_field}" != '""' ]]; then
+    spawn_user="$(jq -r '.user' <<<"${spawnable}")"
+    run_as_user "${spawn_user}" "${cmd[@]}" &
     BG_PIDS+=($!)
   else
     "${cmd[@]}" &
     BG_PIDS+=($!)
   fi
-done < <(jq -c '.[]' /etc/spawnables.json)
+done <<<"${spawnables_json}"
 
 # Foreground entrypoint
 ep_user=$(jq -r '.user' /etc/entrypoint.json)
-readarray -t ep_cmd < <(jq -r '.command[]' /etc/entrypoint.json)
+ep_cmd_text="$(jq -r '.command[]' /etc/entrypoint.json)"
+readarray -t ep_cmd <<<"${ep_cmd_text}"
 
-if [ "$ep_user" = "root" ]; then
+if [[ "${ep_user}" = "root" ]]; then
   cd /root
   exec env HOME=/root USER=root "${ep_cmd[@]}"
 fi
 
-ep_uid=$(resolve_uid "$ep_user")
-ep_home="/home/$ep_user"
-ep_path="$ep_home/.nix-profile/bin:$ep_home/.local/state/nix/profiles/home-manager/home-path/bin"
-cd "$ep_home"
-exec setpriv --reuid="$ep_uid" --regid="$ep_uid" --init-groups \
-  env HOME="$ep_home" USER="$ep_user" PATH="$ep_path:$PATH" \
+ep_uid=$(resolve_uid "${ep_user}")
+ep_home="/home/${ep_user}"
+ep_path="${ep_home}/.nix-profile/bin:${ep_home}/.local/state/nix/profiles/home-manager/home-path/bin"
+cd "${ep_home}"
+exec setpriv --reuid="${ep_uid}" --regid="${ep_uid}" --init-groups \
+  env HOME="${ep_home}" USER="${ep_user}" PATH="${ep_path}:${PATH}" \
   "${ep_cmd[@]}"

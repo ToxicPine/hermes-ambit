@@ -1,21 +1,31 @@
-{ sources ? import ./npins }:
 {
-  config,
+  sources ? import ./npins,
+}:
+{
   lib,
   pkgs,
   ...
 }:
 
 let
-  flake-compat = import sources.flake-compat;
-  hermes-agent = (flake-compat { src = sources.hermes-agent; }).defaultNix;
+  nixpkgs-unstable = import sources.nixpkgs-unstable {
+    inherit (pkgs.stdenv.hostPlatform) system;
+    config = (pkgs.config or { }) // {
+      allowUnfree = true;
+    };
+  };
+  hermes = import ../hermes {
+    pkgs = nixpkgs-unstable;
+    inherit sources;
+  };
 in
 
 {
   imports = [
-    (import "${sources.direnv-instant}/home.nix")
-    (import ../hermes { inherit hermes-agent; }).hmModule
+    hermes.hmModule
   ];
+
+  i18n.glibcLocales = pkgs.glibcLocalesUtf8;
 
   home = {
     stateVersion = "25.11";
@@ -26,17 +36,12 @@ in
     ];
 
     packages = with pkgs; [
-      bun
-      curl
-      gh
-      git
-      htop
-      nodejs
+      nixpkgs-unstable.codex
       openssh
-      flyctl
-      deno
+      curl
+      git
+      gh
       tmux
-      vim
     ];
 
     activation.cacheHomeManagerGeneration = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -61,32 +66,55 @@ in
   programs = {
     home-manager.enable = true;
 
+    hermes-agent = {
+      enable = true;
+
+      packageOverrides = {
+        ffmpeg = pkgs.ffmpeg-headless;
+        dependencyGroups = [
+          "cli"
+          "pty"
+          "mcp"
+          "acp"
+          "web"
+          "messaging"
+        ];
+      };
+
+      settings = {
+        gateway = {
+          host = "::";
+          port = 8080;
+        };
+
+        model = {
+          default = "gpt-5.5";
+          provider = "openai-codex";
+          base_url = "https://chatgpt.com/backend-api/codex";
+        };
+
+        approvals.mode = "off";
+        security = {
+          tirith_enabled = false;
+          redact_secrets = false;
+        };
+        terminal.backend = "local";
+
+        platforms.telegram.extra = { };
+      };
+    };
+
     bash = {
       enable = true;
       initExtra = ''[[ "$PWD" == "/" ]] && cd'';
       shellAliases = {
         ll = "ls -la";
-        rebuild = "/opt/app/bin/rebuild";
       };
-    };
-
-    # direnv-instant replaces direnv's normal shell hook, but still relies on
-    # direnv itself. Keep nix-direnv enabled alongside it for cached flake envs.
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
     };
 
     tmux = {
       enable = true;
       terminal = "screen-256color";
     };
-
-    direnv-instant.enable = true;
   };
-
-  xdg.configFile."direnv/direnv.toml".text = ''
-    [whitelist]
-    prefix = [ "${config.home.homeDirectory}" ]
-  '';
 }

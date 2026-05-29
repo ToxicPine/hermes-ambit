@@ -1,0 +1,9 @@
+#!/bin/bash
+set -uo pipefail
+
+# Runs nix-collect-garbage daily at 03:00. snooze blocks in timerfd until
+# the next match, execs the command, then this loop forks a fresh snooze.
+# Failures don't break the loop -- a bad GC shouldn't disarm the schedule.
+while true; do
+  snooze -H3 -M0 '-d*' nix-collect-garbage --delete-older-than 7d || true
+done

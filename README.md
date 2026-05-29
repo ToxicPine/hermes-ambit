@@ -18,32 +18,28 @@ On your own machine, installing `ffmpeg` changes the same system the agent is al
 
 ## Quick Start
 
-With Docker:
+Build the local image:
 
 ```sh
-nix-build
+nix build .#container
 docker load < result
-docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 hermes-gateway:latest
+docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 container-agent:latest
 ```
-
-You can edit the default Hermes Agent settings via `fs/hm-user/user/home.nix`. For Hermes Agent set-up, see `docs/HERMES.md`.
-
-If you want to deploy `hermes-ambit` on the cloud, see `DEPLOYMENT.md`.
 
 ## Features
 
 - The important stuff lives on `/data`, not inside the throwaway part of the container. That is why files, credentials, agent state, etc, survive restarts.
-- The agent has a config file it can edit from inside the container: `~/.nixcfg/home.nix`. After editing it, `rebuild` applies the new tools and settings.
+- The agent has a config file it can edit from inside the container: `~/.nixcfg/home.nix`. After editing it, `refresh-system` applies the new tools and settings.
 - The default tools are already in the image, so the container can start without waiting for a big install step.
-- When `rebuild` finishes, its results are saved in `/data/nix-cache`. If the agent asks for the same tools again, they can be reused from that cache.
-- `hmPolicy` decides what happens on startup: use the ready-cached environment, rebuild from the saved config, or leave the user environment alone.
+- When `refresh-system` finishes, its results are saved in `/data/nix-cache`. If the agent asks for the same tools again, they can be reused from that cache.
+- By default, startup rebuilds Home Manager from the saved config, so provider-written `managed.nix` changes take effect when the runtime is rolled.
 - Each agent can run as a separate Linux user with its own home directory, configuration, installed tools, and unique uid.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `default.nix` declares which users exist. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and controls that user's tools, shell settings, and Hermes settings.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `nix/system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `nix/default.nix` declares which users exist and builds the image. The root `flake.nix` exposes `container` for the runtime image. Shared Home Manager defaults live in `fs/hm-base/default.nix`. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and can add user-specific tools, shell settings, and Hermes overrides.
 
-In `system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
+In `nix/system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
 
 ```nix
 {
@@ -59,7 +55,7 @@ In `system.nix`, the entrypoint is the main command for the container. If it exi
 }
 ```
 
-In `default.nix`, users are just named accounts with stable uids:
+In `nix/default.nix`, users are just named accounts with stable uids:
 
 ```nix
 userConfig = {
@@ -67,12 +63,15 @@ userConfig = {
 };
 ```
 
-Inside the running container, that user's config appears at `~/.nixcfg`. The agent can edit `~/.nixcfg/home.nix`, then run `rebuild` to apply it:
+Inside the running container, that user's config appears at `~/.nixcfg`. The agent can edit `~/.nixcfg/home.nix`, then run `refresh-system` to apply it:
 
 ```nix
 { pkgs, ... }:
 {
-  imports = [ ../../hm-base ];
+  imports = [
+    (import ../../hm-base { })
+    ./managed.nix
+  ];
   home.packages = with pkgs; [ ffmpeg jq ];
   programs.bash.shellAliases.ll = "ls -la";
   programs.hermes-agent.settings.gateway.port = 8080;

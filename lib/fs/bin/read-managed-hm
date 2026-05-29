@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+command_name="read-managed-hm"
+user="${HERMES_AMBIT_USER:?HERMES_AMBIT_USER must be set}"
+
+if [[ "${HERMES_AMBIT_READ_MANAGED_USER_MODE:-}" != "1" ]]; then
+  uid="$(jq -r --arg u "${user}" '.[] | select(.name == $u) | .uid' /etc/users.json)"
+  if [[ -z "${uid}" ]] || [[ "${uid}" = "null" ]]; then
+    echo "${command_name}: unknown user ${user}" >&2
+    exit 1
+  fi
+
+  exec setpriv --reuid="${uid}" --regid="${uid}" --init-groups \
+    env HOME="/data/homes/${user}" USER="${user}" PATH="${PATH}" HERMES_AMBIT_USER="${user}" \
+    HERMES_AMBIT_READ_MANAGED_USER_MODE=1 "$0"
+fi
+
+managed_file="/data/homes/${user}/nixcfg/managed.nix"
+
+if [[ ! -f "${managed_file}" ]]; then
+  echo "${command_name}: no managed.nix found at ${managed_file}; run write-managed-hm --reset" >&2
+  exit 1
+fi
+
+while IFS= read -r line || [[ -n "${line}" ]]; do
+  printf '%s\n' "${line}"
+done <"${managed_file}"

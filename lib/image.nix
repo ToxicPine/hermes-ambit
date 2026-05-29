@@ -94,7 +94,8 @@ let
   _filesChecked = assertAbsoluteKeys "runtime.files" cfg.runtime.files;
   _treesChecked = assertAbsoluteKeys "runtime.trees" cfg.runtime.trees;
 
-  appPrefix = "/opt/app";
+  mutableConfigPrefix = "/opt/app";
+  factorySettingsPrefix = "/opt/defaults";
   nixbldCount = 10;
 
   userList = lib.mapAttrsToList (name: u: {
@@ -160,22 +161,39 @@ let
       find ${dest}/bin -type f -exec chmod 0755 {} +
     fi
   '';
+
+  fsBinNames = lib.attrNames (
+    lib.filterAttrs (_name: type: type == "regular" || type == "symlink") (builtins.readDir ./fs/bin)
+  );
+
+  linkFsBins = lib.concatMapStringsSep "\n" (name: ''
+    ln -s ${mutableConfigPrefix}/bin/${name} usr/bin/${name}
+  '') fsBinNames;
 in
 
 let
+  # Bootstrap contents land in the image's /nix/store as docker
+  # layers, so the entrypoint can run before /nix-base is unpacked.
+  # Everything else only lives in /nix-base and is materialized into
+  # /nix/store on boot via `cp -an`, avoiding a double copy of the
+  # full closure inside the image.
+  # Anything the entrypoint / nix-gc-loop / refresh-system scripts need on
+  # PATH (`/bin`, populated by docker layers) before /nix-base is
+  # unpacked must live here. snooze is needed by nix-gc-loop on every
+  # iteration, not just first boot.
+  bootstrapContents = [
+    pkgs.dockerTools.binSh
+    pkgs.dockerTools.caCertificates
+    pkgs.bashInteractive
+    pkgs.util-linux
+    pkgs.coreutils
+    pkgs.nix
+    pkgs.jq
+    pkgs.snooze
+  ];
+
   imageContents = lib.unique (
-    [
-      pkgs.dockerTools.binSh
-      pkgs.dockerTools.caCertificates
-      pkgs.bashInteractive
-      pkgs.util-linux
-      pkgs.coreutils
-      pkgs.nix
-      pkgs.git
-      pkgs.jq
-    ]
-    ++ cfg.system.packages
-    ++ cfg.runtime.contents
+    bootstrapContents ++ [ pkgs.git ] ++ cfg.system.packages ++ cfg.runtime.contents
   );
 
   # The full closure of the image, materialized as a real directory
@@ -200,7 +218,7 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
   tag = "latest";
   maxLayers = 125;
 
-  contents = imageContents;
+  contents = bootstrapContents;
 
   fakeRootCommands = ''
     mkdir -p etc/nixcfg etc/nix
@@ -226,10 +244,15 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     cp -R ${nixBase}/. nix-base/
     mkdir -p usr/bin
     ln -s ${pkgs.coreutils}/bin/env usr/bin/env
-    ln -s ${appPrefix}/bin/rebuild usr/bin/rebuild
+    ${linkFsBins}
 
-    ${installTree ./fs appPrefix false}
-    ${installTree ../fs appPrefix true}
+    ${installTree ./fs mutableConfigPrefix false}
+    ${installTree ../fs mutableConfigPrefix true}
+
+    ${installTree ./fs factorySettingsPrefix false}
+    ${installTree ../fs factorySettingsPrefix true}
+
+    chmod -R a-w ${factorySettingsPrefix}
 
     ${lib.concatStringsSep "\n" (
       map (u: ''
@@ -244,7 +267,7 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
   enableFakechroot = true;
 
   config = {
-    Entrypoint = [ "${appPrefix}/bin/entrypoint" ];
+    Entrypoint = [ "${mutableConfigPrefix}/bin/entrypoint" ];
     Env = [
       "PATH=/bin:/sbin:/usr/bin:/usr/sbin"
       "NIX_PAGER=cat"

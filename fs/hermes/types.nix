@@ -8,15 +8,73 @@
 
 { lib }:
 
+let
+  isOverride =
+    value:
+    builtins.isAttrs value
+    && value ? _type
+    && value._type == "override"
+    && value ? priority
+    && value ? content;
+
+  flattenConfig =
+    order: priority: path: value:
+    if isOverride value then
+      flattenConfig order value.priority path value.content
+    else if builtins.isAttrs value && value != { } then
+      lib.flatten (
+        lib.mapAttrsToList (name: nested: flattenConfig order priority (path ++ [ name ]) nested) value
+      )
+    else
+      [
+        {
+          inherit
+            order
+            path
+            priority
+            value
+            ;
+        }
+      ];
+
+  preferredDefinition =
+    current: candidate:
+    if
+      current == null
+      || candidate.priority < current.priority
+      || (candidate.priority == current.priority && candidate.order > current.order)
+    then
+      candidate
+    else
+      current;
+
+  mergeDeepConfig =
+    defs:
+    let
+      indexedDefs = lib.imap0 (order: def: flattenConfig order 100 [ ] def.value) defs;
+      flattened = lib.flatten indexedDefs;
+      selected = lib.foldl' (
+        acc: definition:
+        acc
+        // {
+          ${lib.concatStringsSep "." definition.path} =
+            preferredDefinition (acc.${lib.concatStringsSep "." definition.path} or null)
+              definition;
+        }
+      ) { } flattened;
+    in
+    lib.foldl' (
+      acc: definition: lib.recursiveUpdate acc (lib.setAttrByPath definition.path definition.value)
+    ) { } (lib.attrValues selected);
+in
 {
-  # Deep-merge attrset type used for `settings`. Module definitions merge via
-  # lib.recursiveUpdate, matching upstream behavior so multiple modules can
-  # contribute nested config fragments without clobbering each other.
+  # Deep-merge attrset type used for `settings`. Module definitions merge
+  # recursively while honoring nested `lib.mkForce`/`lib.mkOverride` priorities.
   deepConfigType = lib.types.mkOptionType {
     name = "hermes-config-attrs";
-    description = "Hermes YAML config (attrset), merged deeply via lib.recursiveUpdate.";
+    description = "Hermes YAML config (attrset), merged deeply with nested override priority support.";
     check = builtins.isAttrs;
-    merge = _loc: defs: lib.foldl' lib.recursiveUpdate { } (map (d: d.value) defs);
+    merge = _loc: mergeDeepConfig;
   };
 
   # Submodule for each entry under `mcpServers`. Field set matches upstream

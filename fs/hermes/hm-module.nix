@@ -9,7 +9,7 @@
 #
 #   stateDir, user, group, createUser, restart, restartSec,
 #   addToSystemPackages, container.*, hostUsers, extraPackages,
-#   extraPythonPackages, extraDependencyGroups, extraArgs
+#   extraPythonPackages, extraArgs
 #
 # `extraArgs` is omitted because plumbing it into the container's PID-1
 # argv would force this user-scoped module to know which user owns the
@@ -17,18 +17,18 @@
 # Either set arguments via the YAML config / settings, or override
 # system.entrypoint.command at the flake level.
 #
-# `extraPythonPackages` / `extraDependencyGroups` are not lost — set them by
-# overriding the package directly:
+# `extraPythonPackages` is not lost — set it through packageOverrides.
+# The local hermes-package wrapper also accepts `dependencyGroups` when you need
+# to replace the default optional dependency group set:
 #
-#     programs.hermes-agent.package =
-#       hermes-agent.packages.${system}.default.override {
-#         extraDependencyGroups = [ "hindsight" ];
-#         extraPythonPackages   = [ ... ];
-#       };
+#     programs.hermes-agent.packageOverrides = {
+#       dependencyGroups    = [ "cli" "pty" "mcp" "acp" "web" "hindsight" ];
+#       extraPythonPackages = [ ... ];
+#     };
 #
-# The upstream `nix/hermes-agent.nix` derivation supports this natively.
+# `dependencyGroups` is provided by this repo's package wrapper.
 
-{ hermes-agent }:
+{ package }:
 
 {
   config,
@@ -133,14 +133,20 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      inherit (hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}) default;
-      defaultText = lib.literalExpression "hermes-agent.packages.\${system}.default";
+      default = package.override cfg.packageOverrides;
+      defaultText = lib.literalExpression "package.override config.programs.hermes-agent.packageOverrides";
       description = ''
-        Hermes Agent package. Override to add Python deps:
-          programs.hermes-agent.package =
-            hermes-agent.packages.''${system}.default.override {
-              extraDependencyGroups = [ "hindsight" ];
-            };
+        Hermes Agent package. Set this to replace the package entirely, or use
+        packageOverrides to customize the default package.
+      '';
+    };
+
+    packageOverrides = lib.mkOption {
+      type = lib.types.attrsOf lib.types.raw;
+      default = { };
+      description = ''
+        Arguments passed to the default Hermes Agent package's override
+        function. Ignored when programs.hermes-agent.package is set explicitly.
       '';
     };
 

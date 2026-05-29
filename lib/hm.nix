@@ -22,7 +22,7 @@ let
       };
       rebuildOnBoot = mkOption {
         type = types.bool;
-        default = false;
+        default = true;
       };
     };
   };
