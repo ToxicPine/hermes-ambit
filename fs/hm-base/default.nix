@@ -1,4 +1,6 @@
-{ sources ? import ./npins }:
+{
+  sources ? import ./npins,
+}:
 {
   lib,
   pkgs,

@@ -26,36 +26,6 @@ docker load < result
 docker run -v hermes-data:/data -v hermes-nix:/nix -p 8080:8080 container-agent:latest
 ```
 
-## Cloud Deployer
-
-The local cloud deployer is separate from the runtime image:
-
-```sh
-nix build .#deployer
-```
-
-It exposes one main command and provider-scoped wrappers:
-
-```text
-hermes-ambit
-hermes-ambit-gcp
-hermes-ambit-azure
-```
-
-The public command surface is `setup`, `auth check`, `discover`, `models`,
-`deploy`, `status`, `config`, `secrets`, `restart`, `destroy`, `doctor`, and
-`tui`. There is no public `plan` command; `deploy`, `restart`, and `destroy`
-compute their preview internally before mutating cloud resources.
-
-Profiles include provider-specific model selection: GCP uses `--model`, and
-Azure uses `--endpoint` plus `--model`. `deploy` applies that model config after
-creating or updating the runtime; secrets remain explicit `secrets` commands.
-
-Cloud deploys use the fixed universal runtime image URL in
-`pkg/packages/shared/src/constants.ts`. The publish workflow builds the Nix
-container and pushes the image to GHCR; the local deployer never depends on the
-local image build output.
-
 ## Features
 
 - The important stuff lives on `/data`, not inside the throwaway part of the container. That is why files, credentials, agent state, etc, survive restarts.
@@ -67,7 +37,7 @@ local image build output.
 
 ## Architecture
 
-The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `nix/system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `nix/default.nix` declares which users exist and builds the image. The root `flake.nix` exposes `container` for the runtime image and `deployer` for the local cloud deployer tools. Shared Home Manager defaults live in `fs/hm-base/default.nix`. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and can add user-specific tools, shell settings, and Hermes overrides.
+The container has a read-only layer and a changeable layer. The read-only layer is the image you build: `nix/system.nix` sets the shared packages, fixed background processes, main process, and exposed port, while `nix/default.nix` declares which users exist and builds the image. The root `flake.nix` exposes `container` for the runtime image. Shared Home Manager defaults live in `fs/hm-base/default.nix`. The changeable layer is per user: each user gets `fs/hm-user/<name>/home.nix`, which becomes `~/.nixcfg/home.nix` inside the running container and can add user-specific tools, shell settings, and Hermes overrides.
 
 In `nix/system.nix`, the entrypoint is the main command for the container. If it exits, the container is done. A spawnable is a background command started once at boot, alongside the entrypoint:
 

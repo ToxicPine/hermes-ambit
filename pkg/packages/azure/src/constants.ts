@@ -1,2 +1,0 @@
-export const AZURE_OWNERSHIP_SCOPE = "azure";
-export const AZURE_CONTAINER_APPS_API_VERSION = "2025-07-01";
