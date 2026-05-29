@@ -1,8 +1,12 @@
 {
   description = "hermes-ambit";
 
+  inputs = {
+    main.url = "path:./pkg";
+  };
+
   outputs =
-    { self }:
+    { self, main }:
     let
       systems = [ "x86_64-linux" ];
 
@@ -46,6 +50,7 @@
       mkMainPackages = system: {
         default = container system;
         container = container system;
+        deployer = main.packages.${system}.default;
       };
 
     in

@@ -1,0 +1,969 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Agent Platform API",
+    "version": "v1beta1"
+  },
+  "servers": [
+    {
+      "url": "https://aiplatform.googleapis.com/"
+    }
+  ],
+  "paths": {
+    "/v1beta1/{parent}/models": {
+      "get": {
+        "operationId": "aiplatform_publishers_models_list",
+        "description": "Lists publisher models in Model Garden.",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "path",
+            "required": true,
+            "description": "Required. The name of the Publisher from which to list the PublisherModels. Format: `publishers/{publisher}`",
+            "schema": {
+              "type": "string",
+              "description": "Required. The name of the Publisher from which to list the PublisherModels. Format: `publishers/{publisher}`",
+              "pattern": "^publishers/[^/]+$"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Optional. The standard list filter.",
+            "schema": {
+              "type": "string",
+              "description": "Optional. The standard list filter."
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "description": "Optional. The standard list page size.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "description": "Optional. The standard list page size."
+            }
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "description": "Optional. The standard list page token. Typically obtained via ListPublisherModelsResponse.next_page_token of the previous ModelGardenService.ListPublisherModels call.",
+            "schema": {
+              "type": "string",
+              "description": "Optional. The standard list page token. Typically obtained via ListPublisherModelsResponse.next_page_token of the previous ModelGardenService.ListPublisherModels call."
+            }
+          },
+          {
+            "name": "view",
+            "in": "query",
+            "required": false,
+            "description": "Optional. PublisherModel view specifying which fields to read.",
+            "schema": {
+              "type": "string",
+              "description": "Optional. PublisherModel view specifying which fields to read.",
+              "enum": [
+                "PUBLISHER_MODEL_VIEW_UNSPECIFIED",
+                "PUBLISHER_MODEL_VIEW_BASIC",
+                "PUBLISHER_MODEL_VIEW_FULL",
+                "PUBLISHER_MODEL_VERSION_VIEW_BASIC"
+              ]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "description": "Optional. A comma-separated list of fields to order by, sorted in ascending order. Use \"desc\" after a field name for descending.",
+            "schema": {
+              "type": "string",
+              "description": "Optional. A comma-separated list of fields to order by, sorted in ascending order. Use \"desc\" after a field name for descending."
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": false,
+            "description": "Optional. The IETF BCP-47 language code representing the language in which the publisher models' text information should be written in. If not set, by default English (en).",
+            "schema": {
+              "type": "string",
+              "description": "Optional. The IETF BCP-47 language code representing the language in which the publisher models' text information should be written in. If not set, by default English (en)."
+            }
+          },
+          {
+            "name": "listAllVersions",
+            "in": "query",
+            "required": false,
+            "description": "Optional. List all publisher model versions if the flag is set to true.",
+            "schema": {
+              "type": "boolean",
+              "description": "Optional. List all publisher model versions if the flag is set to true."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ListPublisherModelsResponse"
+                }
+              }
+            },
+            "description": "Lists publisher models in Model Garden."
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleRpcStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GoogleCloudAiplatformV1beta1AutomaticResources": {
+        "type": "object",
+        "description": "A description of resources that to large degree are decided by Vertex AI, and require only a modest additional configuration. Each Model supporting these resources documents its specific guidelines.",
+        "properties": {
+          "minReplicaCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Immutable. The minimum number of replicas that will be always deployed on. If traffic against it increases, it may dynamically be deployed onto more replicas up to max_replica_count, and as traffic decreases, some of these extra replicas may be freed. If the requested value is too large, the deployment will error."
+          },
+          "maxReplicaCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Immutable. The maximum number of replicas that may be deployed on when the traffic against it increases. If the requested value is too large, the deployment will error, but if deployment succeeds then the ability to scale to that many replicas is guaranteed (barring service outages). If traffic increases beyond what its replicas at maximum may handle, a portion of the traffic will be dropped. If this value is not provided, a no upper bound for scaling under heavy traffic will be assume, though Vertex AI may be unable to scale beyond certain replica number."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1AutoscalingMetricSpec": {
+        "type": "object",
+        "description": "The metric specification that defines the target resource utilization (CPU utilization, accelerator's duty cycle, and so on) for calculating the desired replica count.",
+        "properties": {
+          "metricName": {
+            "type": "string",
+            "description": "Required. The resource metric name. Supported metrics: * For Online Prediction: * `aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle` * `aiplatform.googleapis.com/prediction/online/cpu/utilization` * `aiplatform.googleapis.com/prediction/online/request_count` * `pubsub.googleapis.com/subscription/num_undelivered_messages` * `prometheus.googleapis.com/vertex_dcgm_fi_dev_gpu_util` * `prometheus.googleapis.com/vertex_vllm_gpu_cache_usage_perc` * `prometheus.googleapis.com/vertex_vllm_num_requests_waiting`"
+          },
+          "target": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The target resource utilization in percentage (1% - 100%) for the given metric; once the real usage deviates from the target by a certain percentage, the machine replicas change. The default value is 60 (representing 60%) if not provided."
+          },
+          "monitoredResourceLabels": {
+            "type": "object",
+            "description": "Optional. The Cloud Monitoring monitored resource labels as key value pairs used for metrics filtering. See Cloud Monitoring Labels https://cloud.google.com/monitoring/api/v3/metric-model#generic-label-info",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1DedicatedResources": {
+        "type": "object",
+        "description": "A description of resources that are dedicated to a DeployedModel or DeployedIndex, and that need a higher degree of manual configuration.",
+        "properties": {
+          "machineSpec": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1MachineSpec"
+          },
+          "minReplicaCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Required. Immutable. The minimum number of machine replicas that will be always deployed on. This value must be greater than or equal to 1. If traffic increases, it may dynamically be deployed onto more replicas, and as traffic decreases, some of these extra replicas may be freed."
+          },
+          "maxReplicaCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Immutable. The maximum number of replicas that may be deployed on when the traffic against it increases. If the requested value is too large, the deployment will error, but if deployment succeeds then the ability to scale to that many replicas is guaranteed (barring service outages). If traffic increases beyond what its replicas at maximum may handle, a portion of the traffic will be dropped. If this value is not provided, will use min_replica_count as the default value. The value of this field impacts the charge against Vertex CPU and GPU quotas. Specifically, you will be charged for (max_replica_count * number of cores in the selected machine type) and (max_replica_count * number of GPUs per replica in the selected machine type)."
+          },
+          "requiredReplicaCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Optional. Number of required available replicas for the deployment to succeed. This field is only needed when partial deployment/mutation is desired. If set, the deploy/mutate operation will succeed once available_replica_count reaches required_replica_count, and the rest of the replicas will be retried. If not set, the default required_replica_count will be min_replica_count."
+          },
+          "initialReplicaCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Immutable. Number of initial replicas being deployed on when scaling the workload up from zero or when creating the workload in case min_replica_count = 0. When min_replica_count > 0 (meaning that the scale-to-zero feature is not enabled), initial_replica_count should not be set. When min_replica_count = 0 (meaning that the scale-to-zero feature is enabled), initial_replica_count should be larger than zero, but no greater than max_replica_count."
+          },
+          "autoscalingMetricSpecs": {
+            "type": "array",
+            "description": "Immutable. The metric specifications that overrides a resource utilization metric (CPU utilization, accelerator's duty cycle, and so on) target value (default to 60 if not set). At most one entry is allowed per metric. If machine_spec.accelerator_count is above 0, the autoscaling will be based on both CPU utilization and accelerator's duty cycle metrics and scale up when either metrics exceeds its target value while scale down if both metrics are under their target value. The default target value is 60 for both metrics. If machine_spec.accelerator_count is 0, the autoscaling will be based on CPU utilization metric only with default target value 60 if not explicitly set. For example, in the case of Online Prediction, if you want to override target CPU utilization to 80, you should set autoscaling_metric_specs.metric_name to `aiplatform.googleapis.com/prediction/online/cpu/utilization` and autoscaling_metric_specs.target to `80`.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1AutoscalingMetricSpec"
+            }
+          },
+          "spot": {
+            "type": "boolean",
+            "description": "Optional. If true, schedule the deployment workload on [spot VMs](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms)."
+          },
+          "flexStart": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1FlexStart"
+          },
+          "scaleToZeroSpec": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1DedicatedResourcesScaleToZeroSpec"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1DedicatedResourcesScaleToZeroSpec": {
+        "type": "object",
+        "description": "Specification for scale-to-zero feature.",
+        "properties": {
+          "minScaleupPeriod": {
+            "type": "string",
+            "format": "google-duration",
+            "description": "Optional. Minimum duration that a deployment will be scaled up before traffic is evaluated for potential scale-down. [MinValue=300] (5 minutes) [MaxValue=28800] (8 hours)"
+          },
+          "idleScaledownPeriod": {
+            "type": "string",
+            "format": "google-duration",
+            "description": "Optional. Duration of no traffic before scaling to zero. [MinValue=300] (5 minutes) [MaxValue=28800] (8 hours)"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1EnvVar": {
+        "type": "object",
+        "description": "Represents an environment variable present in a Container or Python Module.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Required. Name of the environment variable. Must be a valid C identifier."
+          },
+          "value": {
+            "type": "string",
+            "description": "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1FlexStart": {
+        "type": "object",
+        "description": "FlexStart is used to schedule the deployment workload on DWS resource. It contains the max duration of the deployment.",
+        "properties": {
+          "maxRuntimeDuration": {
+            "type": "string",
+            "format": "google-duration",
+            "description": "The max duration of the deployment is max_runtime_duration. The deployment will be terminated after the duration. The max_runtime_duration can be set up to 7 days."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1LargeModelReference": {
+        "type": "object",
+        "description": "Contains information about the Large Model.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Required. The unique name of the large Foundation or pre-built model. Like \"chat-bison\", \"text-bison\". Or model name with version ID, like \"chat-bison@001\", \"text-bison@005\", etc."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ListPublisherModelsResponse": {
+        "type": "object",
+        "description": "Response message for ModelGardenService.ListPublisherModels.",
+        "properties": {
+          "publisherModels": {
+            "type": "array",
+            "description": "List of PublisherModels in the requested page.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModel"
+            }
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "A token to retrieve next page of results. Pass to ListPublisherModels.page_token to obtain that page."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1MachineSpec": {
+        "type": "object",
+        "description": "Specification of a single machine.",
+        "properties": {
+          "machineType": {
+            "type": "string",
+            "description": "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required."
+          },
+          "acceleratorType": {
+            "type": "string",
+            "description": "Immutable. The type of accelerator(s) that may be attached to the machine as per accelerator_count.",
+            "enum": [
+              "ACCELERATOR_TYPE_UNSPECIFIED",
+              "NVIDIA_TESLA_K80",
+              "NVIDIA_TESLA_P100",
+              "NVIDIA_TESLA_V100",
+              "NVIDIA_TESLA_P4",
+              "NVIDIA_TESLA_T4",
+              "NVIDIA_TESLA_A100",
+              "NVIDIA_A100_80GB",
+              "NVIDIA_L4",
+              "NVIDIA_H100_80GB",
+              "NVIDIA_H100_MEGA_80GB",
+              "NVIDIA_H200_141GB",
+              "NVIDIA_B200",
+              "NVIDIA_GB200",
+              "NVIDIA_RTX_PRO_6000",
+              "TPU_V2",
+              "TPU_V3",
+              "TPU_V4_POD",
+              "TPU_V5_LITEPOD"
+            ]
+          },
+          "acceleratorCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of accelerators to attach to the machine. For accelerator optimized machine types (https://cloud.google.com/compute/docs/accelerator-optimized-machines), One may set the accelerator_count from 1 to N for machine with N GPUs. If accelerator_count is less than or equal to N / 2, Vertex will co-schedule the replicas of the model into the same VM to save cost. For example, if the machine type is a3-highgpu-8g, which has 8 H100 GPUs, one can set accelerator_count to 1 to 8. If accelerator_count is 1, 2, 3, or 4, Vertex will co-schedule 8, 4, 2, or 2 replicas of the model into the same VM to save cost. When co-scheduling, CPU, memory and storage on the VM will be distributed to replicas on the VM. For example, one can expect a co-scheduled replica requesting 2 GPUs out of a 8-GPU VM will receive 25% of the CPU, memory and storage of the VM. Note that the feature is not compatible with multihost_gpu_node_count. When multihost_gpu_node_count is set, the co-scheduling will not be enabled."
+          },
+          "gpuPartitionSize": {
+            "type": "string",
+            "description": "Optional. Immutable. The Nvidia GPU partition size. When specified, the requested accelerators will be partitioned into smaller GPU partitions. For example, if the request is for 8 units of NVIDIA A100 GPUs, and gpu_partition_size=\"1g.10gb\", the service will create 8 * 7 = 56 partitioned MIG instances. The partition size must be a value supported by the requested accelerator. Refer to [Nvidia GPU Partitioning](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus-multi#multi-instance_gpu_partitions) for the available partition sizes. If set, the accelerator_count should be set to 1."
+          },
+          "tpuTopology": {
+            "type": "string",
+            "description": "Immutable. The topology of the TPUs. Corresponds to the TPU topologies available from GKE. (Example: tpu_topology: \"2x2x1\")."
+          },
+          "multihostGpuNodeCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Optional. Immutable. The number of nodes per replica for multihost GPU deployments."
+          },
+          "reservationAffinity": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ReservationAffinity"
+          },
+          "minGpuDriverVersion": {
+            "type": "string",
+            "description": "Optional. Immutable. The minimum GPU driver version that this machine requires. For example, \"535.104.06\". If not specified, the default GPU driver version will be used by the underlying infrastructure."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ModelContainerSpec": {
+        "type": "object",
+        "description": "Specification of a container for serving predictions. Some fields in this message correspond to fields in the [Kubernetes Container v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#container-v1-core).",
+        "properties": {
+          "imageUri": {
+            "type": "string",
+            "description": "Required. Immutable. URI of the Docker image to be used as the custom container for serving predictions. This URI must identify an image in Artifact Registry or Container Registry. Learn more about the [container publishing requirements](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#publishing), including permissions requirements for the Vertex AI Service Agent. The container image is ingested upon ModelService.UploadModel, stored internally, and this original path is afterwards not used. To learn about the requirements for the Docker image itself, see [Custom container requirements](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#). You can use the URI to one of Vertex AI's [pre-built container images for prediction](https://cloud.google.com/vertex-ai/docs/predictions/pre-built-containers) in this field."
+          },
+          "command": {
+            "type": "array",
+            "description": "Immutable. Specifies the command that runs when the container starts. This overrides the container's [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint). Specify this field as an array of executable and arguments, similar to a Docker `ENTRYPOINT`'s \"exec\" form, not its \"shell\" form. If you do not specify this field, then the container's `ENTRYPOINT` runs, in conjunction with the args field or the container's [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd), if either exists. If this field is not specified and the container does not have an `ENTRYPOINT`, then refer to the Docker documentation about [how `CMD` and `ENTRYPOINT` interact](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact). If you specify this field, then you can also specify the `args` field to provide additional arguments for this command. However, if you specify this field, then the container's `CMD` is ignored. See the [Kubernetes documentation about how the `command` and `args` fields interact with a container's `ENTRYPOINT` and `CMD`](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes). In this field, you can reference [environment variables set by Vertex AI](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables) and environment variables set in the env field. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $( VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME) This field corresponds to the `command` field of the Kubernetes Containers [v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#container-v1-core).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "args": {
+            "type": "array",
+            "description": "Immutable. Specifies arguments for the command that runs when the container starts. This overrides the container's [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd). Specify this field as an array of executable and arguments, similar to a Docker `CMD`'s \"default parameters\" form. If you don't specify this field but do specify the command field, then the command from the `command` field runs without any additional arguments. See the [Kubernetes documentation about how the `command` and `args` fields interact with a container's `ENTRYPOINT` and `CMD`](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes). If you don't specify this field and don't specify the `command` field, then the container's [`ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#cmd) and `CMD` determine what runs based on their default behavior. See the Docker documentation about [how `CMD` and `ENTRYPOINT` interact](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact). In this field, you can reference [environment variables set by Vertex AI](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables) and environment variables set in the env field. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $( VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME) This field corresponds to the `args` field of the Kubernetes Containers [v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#container-v1-core).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "env": {
+            "type": "array",
+            "description": "Immutable. List of environment variables to set in the container. After the container starts running, code running in the container can read these environment variables. Additionally, the command and args fields can reference these variables. Later entries in this list can also reference earlier entries. For example, the following example sets the variable `VAR_2` to have the value `foo bar`: ```json [ { \"name\": \"VAR_1\", \"value\": \"foo\" }, { \"name\": \"VAR_2\", \"value\": \"$(VAR_1) bar\" } ] ``` If you switch the order of the variables in the example, then the expansion does not occur. This field corresponds to the `env` field of the Kubernetes Containers [v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#container-v1-core).",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1EnvVar"
+            }
+          },
+          "ports": {
+            "type": "array",
+            "description": "Immutable. List of ports to expose from the container. Vertex AI sends any prediction requests that it receives to the first port on this list. Vertex AI also sends [liveness and health checks](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#liveness) to this port. If you do not specify this field, it defaults to following value: ```json [ { \"containerPort\": 8080 } ] ``` Vertex AI does not use ports other than the first one listed. This field corresponds to the `ports` field of the Kubernetes Containers [v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.23/#container-v1-core).",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1Port"
+            }
+          },
+          "predictRoute": {
+            "type": "string",
+            "description": "Immutable. HTTP path on the container to send prediction requests to. Vertex AI forwards requests sent using projects.locations.endpoints.predict to this path on the container's IP address and port. Vertex AI then returns the container's response in the API response. For example, if you set this field to `/foo`, then when Vertex AI receives a prediction request, it forwards the request body in a POST request to the `/foo` path on the port of your container specified by the first value of this `ModelContainerSpec`'s ports field. If you don't specify this field, it defaults to the following value when you deploy this Model to an Endpoint: /v1/endpoints/ENDPOINT/deployedModels/DEPLOYED_MODEL:predict The placeholders in this value are replaced as follows: * ENDPOINT: The last segment (following `endpoints/`)of the Endpoint.name][] field of the Endpoint where this Model has been deployed. (Vertex AI makes this value available to your container code as the [`AIP_ENDPOINT_ID` environment variable](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables).) * DEPLOYED_MODEL: DeployedModel.id of the `DeployedModel`. (Vertex AI makes this value available to your container code as the [`AIP_DEPLOYED_MODEL_ID` environment variable](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables).)"
+          },
+          "healthRoute": {
+            "type": "string",
+            "description": "Immutable. HTTP path on the container to send health checks to. Vertex AI intermittently sends GET requests to this path on the container's IP address and port to check that the container is healthy. Read more about [health checks](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#health). For example, if you set this field to `/bar`, then Vertex AI intermittently sends a GET request to the `/bar` path on the port of your container specified by the first value of this `ModelContainerSpec`'s ports field. If you don't specify this field, it defaults to the following value when you deploy this Model to an Endpoint: /v1/endpoints/ENDPOINT/deployedModels/ DEPLOYED_MODEL:predict The placeholders in this value are replaced as follows: * ENDPOINT: The last segment (following `endpoints/`)of the Endpoint.name][] field of the Endpoint where this Model has been deployed. (Vertex AI makes this value available to your container code as the [`AIP_ENDPOINT_ID` environment variable](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables).) * DEPLOYED_MODEL: DeployedModel.id of the `DeployedModel`. (Vertex AI makes this value available to your container code as the [`AIP_DEPLOYED_MODEL_ID` environment variable](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables).)"
+          },
+          "invokeRoutePrefix": {
+            "type": "string",
+            "description": "Immutable. Invoke route prefix for the custom container. \"/*\" is the only supported value right now. By setting this field, any non-root route on this model will be accessible with invoke http call eg: \"/invoke/foo/bar\", however the [PredictionService.Invoke] RPC is not supported yet. Only one of `predict_route` or `invoke_route_prefix` can be set, and we default to using `predict_route` if this field is not set. If this field is set, the Model can only be deployed to dedicated endpoint."
+          },
+          "grpcPorts": {
+            "type": "array",
+            "description": "Immutable. List of ports to expose from the container. Vertex AI sends gRPC prediction requests that it receives to the first port on this list. Vertex AI also sends liveness and health checks to this port. If you do not specify this field, gRPC requests to the container will be disabled. Vertex AI does not use ports other than the first one listed. This field corresponds to the `ports` field of the Kubernetes Containers v1 core API.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1Port"
+            }
+          },
+          "deploymentTimeout": {
+            "type": "string",
+            "format": "google-duration",
+            "description": "Immutable. Deployment timeout. Limit for deployment timeout is 2 hours."
+          },
+          "sharedMemorySizeMb": {
+            "type": "string",
+            "format": "int64",
+            "description": "Immutable. The amount of the VM memory to reserve as the shared memory for the model in megabytes."
+          },
+          "startupProbe": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1Probe"
+          },
+          "healthProbe": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1Probe"
+          },
+          "livenessProbe": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1Probe"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1Port": {
+        "type": "object",
+        "description": "Represents a network port in a container.",
+        "properties": {
+          "containerPort": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of the port to expose on the pod's IP address. Must be a valid port number, between 1 and 65535 inclusive."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PredictSchemata": {
+        "type": "object",
+        "description": "Contains the schemata used in Model's predictions and explanations via PredictionService.Predict, PredictionService.Explain and BatchPredictionJob.",
+        "properties": {
+          "instanceSchemaUri": {
+            "type": "string",
+            "description": "Immutable. Points to a YAML file stored on Google Cloud Storage describing the format of a single instance, which are used in PredictRequest.instances, ExplainRequest.instances and BatchPredictionJob.input_config. The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject). AutoML Models always have this field populated by Vertex AI. Note: The URI given on output will be immutable and probably different, including the URI scheme, than the one given on input. The output URI will point to a location where the user only has a read access."
+          },
+          "parametersSchemaUri": {
+            "type": "string",
+            "description": "Immutable. Points to a YAML file stored on Google Cloud Storage describing the parameters of prediction and explanation via PredictRequest.parameters, ExplainRequest.parameters and BatchPredictionJob.model_parameters. The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject). AutoML Models always have this field populated by Vertex AI, if no parameters are supported, then it is set to an empty string. Note: The URI given on output will be immutable and probably different, including the URI scheme, than the one given on input. The output URI will point to a location where the user only has a read access."
+          },
+          "predictionSchemaUri": {
+            "type": "string",
+            "description": "Immutable. Points to a YAML file stored on Google Cloud Storage describing the format of a single prediction produced by this Model, which are returned via PredictResponse.predictions, ExplainResponse.explanations, and BatchPredictionJob.output_config. The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject). AutoML Models always have this field populated by Vertex AI. Note: The URI given on output will be immutable and probably different, including the URI scheme, than the one given on input. The output URI will point to a location where the user only has a read access."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1Probe": {
+        "type": "object",
+        "description": "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+        "properties": {
+          "exec": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ProbeExecAction"
+          },
+          "httpGet": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ProbeHttpGetAction"
+          },
+          "grpc": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ProbeGrpcAction"
+          },
+          "tcpSocket": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ProbeTcpSocketAction"
+          },
+          "periodSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Must be less than timeout_seconds. Maps to Kubernetes probe argument 'periodSeconds'."
+          },
+          "timeoutSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Must be greater or equal to period_seconds. Maps to Kubernetes probe argument 'timeoutSeconds'."
+          },
+          "failureThreshold": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of consecutive failures before the probe is considered failed. Defaults to 3. Minimum value is 1. Maps to Kubernetes probe argument 'failureThreshold'."
+          },
+          "successThreshold": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of consecutive successes before the probe is considered successful. Defaults to 1. Minimum value is 1. Maps to Kubernetes probe argument 'successThreshold'."
+          },
+          "initialDelaySeconds": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of seconds to wait before starting the probe. Defaults to 0. Minimum value is 0. Maps to Kubernetes probe argument 'initialDelaySeconds'."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ProbeExecAction": {
+        "type": "object",
+        "description": "ExecAction specifies a command to execute.",
+        "properties": {
+          "command": {
+            "type": "array",
+            "description": "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ProbeGrpcAction": {
+        "type": "object",
+        "description": "GrpcAction checks the health of a container using a gRPC service.",
+        "properties": {
+          "port": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Port number of the gRPC service. Number must be in the range 1 to 65535."
+          },
+          "service": {
+            "type": "string",
+            "description": "Service is the name of the service to place in the gRPC HealthCheckRequest. See https://github.com/grpc/grpc/blob/master/doc/health-checking.md. If this is not specified, the default behavior is defined by gRPC."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ProbeHttpGetAction": {
+        "type": "object",
+        "description": "HttpGetAction describes an action based on HTTP Get requests.",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to access on the HTTP server."
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of the port to access on the container. Number must be in the range 1 to 65535."
+          },
+          "host": {
+            "type": "string",
+            "description": "Host name to connect to, defaults to the model serving container's IP. You probably want to set \"Host\" in httpHeaders instead."
+          },
+          "scheme": {
+            "type": "string",
+            "description": "Scheme to use for connecting to the host. Defaults to HTTP. Acceptable values are \"HTTP\" or \"HTTPS\"."
+          },
+          "httpHeaders": {
+            "type": "array",
+            "description": "Custom headers to set in the request. HTTP allows repeated headers.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ProbeHttpHeader"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ProbeHttpHeader": {
+        "type": "object",
+        "description": "HttpHeader describes a custom header to be used in HTTP probes",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header."
+          },
+          "value": {
+            "type": "string",
+            "description": "The header field value"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ProbeTcpSocketAction": {
+        "type": "object",
+        "description": "TcpSocketAction probes the health of a container by opening a TCP socket connection.",
+        "properties": {
+          "port": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of the port to access on the container. Number must be in the range 1 to 65535."
+          },
+          "host": {
+            "type": "string",
+            "description": "Optional: Host name to connect to, defaults to the model serving container's IP."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModel": {
+        "type": "object",
+        "description": "A Model Garden Publisher Model.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Output only. Identifier. The resource name of the PublisherModel.",
+            "readOnly": true
+          },
+          "versionId": {
+            "type": "string",
+            "description": "Output only. Immutable. The version ID of the PublisherModel. A new version is committed when a new model version is uploaded under an existing model id. It is an auto-incrementing decimal number in string representation.",
+            "readOnly": true
+          },
+          "openSourceCategory": {
+            "type": "string",
+            "description": "Required. Indicates the open source category of the publisher model.",
+            "enum": [
+              "OPEN_SOURCE_CATEGORY_UNSPECIFIED",
+              "PROPRIETARY",
+              "GOOGLE_OWNED_OSS_WITH_GOOGLE_CHECKPOINT",
+              "THIRD_PARTY_OWNED_OSS_WITH_GOOGLE_CHECKPOINT",
+              "GOOGLE_OWNED_OSS",
+              "THIRD_PARTY_OWNED_OSS"
+            ]
+          },
+          "parent": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelParent"
+          },
+          "supportedActions": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToAction"
+          },
+          "frameworks": {
+            "type": "array",
+            "description": "Optional. Additional information about the model's Frameworks.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "launchStage": {
+            "type": "string",
+            "description": "Optional. Indicates the launch stage of the model.",
+            "enum": [
+              "LAUNCH_STAGE_UNSPECIFIED",
+              "EXPERIMENTAL",
+              "PRIVATE_PREVIEW",
+              "PUBLIC_PREVIEW",
+              "GA"
+            ]
+          },
+          "versionState": {
+            "type": "string",
+            "description": "Optional. Indicates the state of the model version.",
+            "enum": [
+              "VERSION_STATE_UNSPECIFIED",
+              "VERSION_STATE_STABLE",
+              "VERSION_STATE_UNSTABLE"
+            ]
+          },
+          "publisherModelTemplate": {
+            "type": "string",
+            "description": "Optional. Output only. Immutable. Used to indicate this model has a publisher model and provide the template of the publisher model resource name.",
+            "readOnly": true
+          },
+          "predictSchemata": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PredictSchemata"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToAction": {
+        "type": "object",
+        "description": "Actions could take on this Publisher Model.",
+        "properties": {
+          "viewRestApi": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionViewRestApi"
+          },
+          "openNotebook": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "openNotebooks": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenNotebooks"
+          },
+          "createApplication": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "openFineTuningPipeline": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "openFineTuningPipelines": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenFineTuningPipelines"
+          },
+          "openPromptTuningPipeline": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "openGenie": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "deploy": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy"
+          },
+          "multiDeployVertex": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployVertex"
+          },
+          "deployGke": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployGke"
+          },
+          "openGenerationAiStudio": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "requestAccess": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          },
+          "openEvaluationPipeline": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy": {
+        "type": "object",
+        "description": "Model metadata that is needed for UploadModel or DeployModel/CreateEndpoint requests.",
+        "properties": {
+          "dedicatedResources": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1DedicatedResources"
+          },
+          "automaticResources": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1AutomaticResources"
+          },
+          "sharedResources": {
+            "type": "string",
+            "description": "The resource name of the shared DeploymentResourcePool to deploy on. Format: `projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}`"
+          },
+          "modelDisplayName": {
+            "type": "string",
+            "description": "Optional. Default model display name."
+          },
+          "largeModelReference": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1LargeModelReference"
+          },
+          "containerSpec": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1ModelContainerSpec"
+          },
+          "artifactUri": {
+            "type": "string",
+            "description": "Optional. The path to the directory containing the Model artifact and any of its supporting files."
+          },
+          "deployTaskName": {
+            "type": "string",
+            "description": "Optional. The name of the deploy task (e.g., \"text to image generation\")."
+          },
+          "deployMetadata": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadata"
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The title of the regional resource reference."
+          },
+          "publicArtifactUri": {
+            "type": "string",
+            "description": "Optional. The signed URI for ephemeral Cloud Storage access to model artifact."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployDeployMetadata": {
+        "type": "object",
+        "description": "Metadata information about the deployment for managing deployment config.",
+        "properties": {
+          "labels": {
+            "type": "object",
+            "description": "Optional. Labels for the deployment config. For managing deployment config like verifying, source of deployment config, etc.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "sampleRequest": {
+            "type": "string",
+            "description": "Optional. Sample request for deployed endpoint."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployGke": {
+        "type": "object",
+        "description": "Configurations for PublisherModel GKE deployment",
+        "properties": {
+          "gkeYamlConfigs": {
+            "type": "array",
+            "description": "Optional. GKE deployment configuration in yaml format.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeployVertex": {
+        "type": "object",
+        "description": "Multiple setups to deploy the PublisherModel.",
+        "properties": {
+          "multiDeployVertex": {
+            "type": "array",
+            "description": "Optional. One click deployment configurations.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionDeploy"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenFineTuningPipelines": {
+        "type": "object",
+        "description": "Open fine tuning pipelines.",
+        "properties": {
+          "fineTuningPipelines": {
+            "type": "array",
+            "description": "Required. Regional resource references to fine tuning pipelines.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionOpenNotebooks": {
+        "type": "object",
+        "description": "Open notebooks.",
+        "properties": {
+          "notebooks": {
+            "type": "array",
+            "description": "Required. Regional resource references to notebooks.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences"
+            }
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionRegionalResourceReferences": {
+        "type": "object",
+        "description": "The regional resource name or the URI. Key is region, e.g., us-central1, europe-west2, global, etc..",
+        "properties": {
+          "references": {
+            "type": "object",
+            "description": "Required.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelResourceReference"
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. "
+          },
+          "resourceTitle": {
+            "type": "string",
+            "description": "Optional. Title of the resource."
+          },
+          "resourceUseCase": {
+            "type": "string",
+            "description": "Optional. Use case (CUJ) of the resource."
+          },
+          "resourceDescription": {
+            "type": "string",
+            "description": "Optional. Description of the resource."
+          },
+          "supportsWorkbench": {
+            "type": "boolean",
+            "description": "Optional. For notebook resource, whether the notebook supports Workbench."
+          },
+          "colabNotebookDisabled": {
+            "type": "boolean",
+            "description": "Optional. For notebook resource. When set to true, the Colab Enterprise link will be disabled in the \"open notebook\" dialog in UI."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelCallToActionViewRestApi": {
+        "type": "object",
+        "description": "Rest API docs.",
+        "properties": {
+          "documentations": {
+            "type": "array",
+            "description": "Required.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelDocumentation"
+            }
+          },
+          "title": {
+            "type": "string",
+            "description": "Required. The title of the view rest API."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelDocumentation": {
+        "type": "object",
+        "description": "A named piece of documentation.",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Required. E.g., OVERVIEW, USE CASES, DOCUMENTATION, SDK & SAMPLES, JAVA, NODE.JS, etc.."
+          },
+          "content": {
+            "type": "string",
+            "description": "Required. Content of this piece of document (in Markdown format)."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelParent": {
+        "type": "object",
+        "description": "The information about the parent of a model.",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "Required. The display name of the parent. E.g., LaMDA, T5, Vision API, Natural Language API."
+          },
+          "reference": {
+            "$ref": "#/components/schemas/GoogleCloudAiplatformV1beta1PublisherModelResourceReference"
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1PublisherModelResourceReference": {
+        "type": "object",
+        "description": "Reference to a resource.",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "The URI of the resource."
+          },
+          "resourceName": {
+            "type": "string",
+            "description": "The resource name of the Google Cloud resource."
+          },
+          "useCase": {
+            "type": "string",
+            "description": "Use case (CUJ) of the resource."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the resource."
+          }
+        }
+      },
+      "GoogleCloudAiplatformV1beta1ReservationAffinity": {
+        "type": "object",
+        "description": "A ReservationAffinity can be used to configure a Vertex AI resource (e.g., a DeployedModel) to draw its Compute Engine resources from a Shared Reservation, or exclusively from on-demand capacity.",
+        "properties": {
+          "reservationAffinityType": {
+            "type": "string",
+            "description": "Required. Specifies the reservation affinity type.",
+            "enum": [
+              "TYPE_UNSPECIFIED",
+              "NO_RESERVATION",
+              "ANY_RESERVATION",
+              "SPECIFIC_RESERVATION"
+            ]
+          },
+          "key": {
+            "type": "string",
+            "description": "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value."
+          },
+          "values": {
+            "type": "array",
+            "description": "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GoogleRpcStatus": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "description": "Properties of the object. Contains field @type with type URL."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Azure Foundry OpenAI-Compatible Models API",
+    "version": "2024-10-21"
+  },
+  "servers": [
+    {
+      "url": ""
+    }
+  ],
+  "paths": {
+    "/openai/models": {
+      "get": {
+        "operationId": "azureFoundryOpenAICompatibleModelsList",
+        "description": "Gets a list of models exposed through an Azure Foundry OpenAI-compatible route.",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2024-10-21"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Capabilities": {
+        "type": "object",
+        "properties": {
+          "fine_tune": {
+            "type": "boolean"
+          },
+          "inference": {
+            "type": "boolean"
+          },
+          "completion": {
+            "type": "boolean"
+          },
+          "chat_completion": {
+            "type": "boolean"
+          },
+          "embeddings": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Deprecation": {
+        "type": "object",
+        "properties": {
+          "fine_tune": {
+            "type": "integer",
+            "format": "unixtime",
+            "nullable": true
+          },
+          "inference": {
+            "type": "integer",
+            "format": "unixtime"
+          }
+        }
+      },
+      "Model": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "$ref": "#/components/schemas/TypeDiscriminator"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "unixtime"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FineTuningState"
+          },
+          "model": {
+            "type": "string",
+            "nullable": true
+          },
+          "fine_tune": {
+            "type": "string",
+            "nullable": true
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/Capabilities"
+          },
+          "lifecycle_status": {
+            "$ref": "#/components/schemas/LifeCycleStatus"
+          },
+          "deprecation": {
+            "$ref": "#/components/schemas/Deprecation"
+          }
+        }
+      },
+      "ModelList": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "$ref": "#/components/schemas/TypeDiscriminator"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Model"
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "innererror": {
+            "$ref": "#/components/schemas/InnerError"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
+      },
+      "InnerError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/InnerErrorCode"
+          },
+          "innererror": {
+            "$ref": "#/components/schemas/InnerError"
+          }
+        }
+      },
+      "ErrorCode": {
+        "type": "string",
+        "enum": [
+          "conflict",
+          "invalidPayload",
+          "forbidden",
+          "notFound",
+          "unexpectedEntityState",
+          "itemDoesAlreadyExist",
+          "serviceUnavailable",
+          "internalFailure",
+          "quotaExceeded",
+          "jsonlValidationFailed",
+          "fileImportFailed",
+          "tooManyRequests",
+          "unauthorized",
+          "contentFilter"
+        ]
+      },
+      "InnerErrorCode": {
+        "type": "string",
+        "enum": ["invalidPayload"]
+      },
+      "FineTuningState": {
+        "type": "string",
+        "enum": [
+          "created",
+          "pending",
+          "running",
+          "succeeded",
+          "cancelled",
+          "failed"
+        ]
+      },
+      "LifeCycleStatus": {
+        "type": "string",
+        "enum": ["preview", "generally-available"]
+      },
+      "TypeDiscriminator": {
+        "type": "string",
+        "enum": [
+          "list",
+          "fine_tuning.job",
+          "file",
+          "fine_tuning.job.event",
+          "fine_tuning.job.checkpoint",
+          "model",
+          "batch",
+          "upload",
+          "upload.part"
+        ]
+      }
+    }
+  }
+}

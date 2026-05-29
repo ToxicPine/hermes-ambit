@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/shared"
+    },
+    {
+      "path": "./packages/gcp"
+    },
+    {
+      "path": "./packages/azure"
+    },
+    {
+      "path": "./packages/tui"
+    }
+  ]
+}

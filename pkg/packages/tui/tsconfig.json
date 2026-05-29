@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "@opentui/solid",
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "references": [
+    {
+      "path": "../shared"
+    },
+    {
+      "path": "../gcp"
+    },
+    {
+      "path": "../azure"
+    }
+  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
