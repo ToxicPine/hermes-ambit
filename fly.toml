@@ -1,5 +1,8 @@
 primary_region = "lhr"
 
+[build]
+  image = "docker.io/cardellier/container-agent:latest-opinionated"
+
 [[mounts]]
   source = "hermes_data"
   destination = "/data"
