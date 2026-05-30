@@ -69,10 +69,8 @@ if [[ ! -L /nix/var/nix ]]; then
   ln -snf "${PERSISTENT_NIX}/var/nix" /nix/var/nix
 fi
 mkdir -p /nix/var/nix/daemon-socket "${PERSISTENT_NIX}/builds"
-if [[ -f /nix-base.tar.gz ]]; then
-  tar -xzf /nix-base.tar.gz -C "${PERSISTENT_NIX}" --skip-old-files store
-  tar -xzOf /nix-base.tar.gz var/nix/db-base | nix-store --load-db 2>/dev/null || true
-fi
+cp -aln /nix-base/store/. /nix/store/
+nix-store --load-db </nix-base/var/nix/db-base 2>/dev/null || true
 
 # Nix daemon
 nix-daemon &

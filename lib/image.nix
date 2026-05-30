@@ -188,8 +188,6 @@ let
     pkgs.util-linux
     pkgs.coreutils
     pkgs.nix
-    pkgs.gnutar
-    pkgs.gzip
     pkgs.jq
     pkgs.git
     pkgs.snooze
@@ -197,18 +195,21 @@ let
 
   imageContents = lib.unique (bootstrapContents ++ cfg.system.packages ++ cfg.runtime.contents);
 
-  # The full closure of the image, materialized as a tarball rather
-  # than a directory. Keeping this as one store output file avoids
-  # exhausting inode-constrained builders while still letting the
-  # entrypoint seed /data-backed /nix on every boot. The included db
-  # registration lets nix-daemon learn about freshly-seeded paths after
-  # an image upgrade.
+  # The full closure of the image, materialized as a real directory
+  # tree at build time (outside the image's proot/fakechroot, so cp
+  # actually works). The entrypoint seeds /nix from this on every
+  # boot via `cp -an`, so image upgrades that introduce new store
+  # paths heal themselves without needing CAP_SYS_ADMIN or a manual
+  # volume reset. The included db registration lets nix-daemon learn
+  # about the freshly-seeded paths after upgrade.
   imageClosure = pkgs.closureInfo { rootPaths = imageContents; };
-  nixBaseTar = pkgs.runCommand "nix-base.tar.gz" { nativeBuildInputs = [ pkgs.gnutar pkgs.gzip ]; } ''
+  nixBase = pkgs.runCommand "nix-base" { } ''
     : "''${out:?out must be set by runCommand}"
-    mkdir -p root/var/nix
-    cp ${imageClosure}/registration root/var/nix/db-base
-    tar -czf "$out" -C root var/nix --transform='s|^/nix/||' -T ${imageClosure}/store-paths
+    mkdir -p "$out/store" "$out/var/nix"
+    while IFS= read -r p; do
+      [ -n "$p" ] && cp -a "$p" "$out/store/"
+    done < ${imageClosure}/store-paths
+    cp ${imageClosure}/registration "$out/var/nix/db-base"
   '';
 in
 pkgs.dockerTools.buildLayeredImageWithNixDb {
@@ -239,7 +240,8 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     substituters = file:///data/nix-cache?trusted=true https://cache.nixos.org/
     EOF
     mkdir -p nix/var/nix/daemon-socket
-    cp ${nixBaseTar} nix-base.tar.gz
+    mkdir -p nix-base
+    cp -R ${nixBase}/. nix-base/
     mkdir -p usr/bin
     ln -s ${pkgs.coreutils}/bin/env usr/bin/env
     ${linkFsBins}
