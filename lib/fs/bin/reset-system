@@ -81,6 +81,7 @@ cleanup() {
 trap cleanup EXIT
 
 cp -R "${factory}/." "${tmp}/"
+chmod -R u+rwX "${tmp}"
 rm -rf "${nixcfg}"
 mv "${tmp}" "${nixcfg}"
 trap - EXIT

@@ -44,6 +44,10 @@ in
       "$HOME/.local/state/nix/profiles/home-manager/home-path/bin"
     ];
 
+    sessionVariables = {
+      NIX_REMOTE = "daemon";
+    };
+
     packages = with pkgs; [
       nixpkgs-unstable.codex
       nestail
