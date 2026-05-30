@@ -66,9 +66,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "d2ddcc8b9af319fc1301cbd39915a6e245911185",
+      "revision": "52ebbfc294319b26913275ef423bb91f4fc098ad",
       "url": null,
-      "hash": "1pm2jdd4f6g37xrrnadd06p5x2wa1jk1xdh1pl0r3g9a5z628min"
+      "hash": "0fqp7l195s8qjpfbm20nb0pf703jw2jw5hvlmiqgrh2mg7b50x88"
     },
     "nixpkgs": {
       "type": "Channel",

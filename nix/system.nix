@@ -9,16 +9,34 @@
   entrypoint = {
     user = "user";
     command = [
-      "hermes"
-      "gateway"
+      "env"
+      "SCRAMJET_HOST=0.0.0.0"
+      "SCRAMJET_PORT=4096"
+      "nestail"
     ];
-    port = 8080;
+    port = 4096;
   };
 
   spawnables = [
     {
+      name = "hermes-gateway";
+      command = [
+        "hermes"
+        "gateway"
+      ];
+      user = "user";
+    }
+    {
       name = "nix-gc";
       command = [ "/opt/app/bin/nix-gc-loop" ];
+    }
+    {
+      name = "codex-remote-control";
+      command = [
+        "codex"
+        "remote-control"
+      ];
+      user = "user";
     }
   ];
 
