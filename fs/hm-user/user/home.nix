@@ -7,6 +7,8 @@
 
 let
   sources = import ../../hm-base/npins;
+  flake-compat = import sources.flake-compat;
+  tissloolly = (flake-compat { src = sources.tissloolly; }).defaultNix;
 
   unstable = import sources.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
@@ -16,21 +18,16 @@ in
 {
   imports = [
     (import ../../hm-base { })
+    tissloolly.homeModules."boondoggle-skills"
+    tissloolly.homeModules."ghwc-skills"
+    tissloolly.homeModules."ghwrc-skills"
+    tissloolly.homeModules."vusperize-skills"
     ./managed.nix
   ];
 
   home.file = {
-    ".agents/skills/ghwc-worktrees".source = ./skills/ghwc-worktrees;
-    ".agents/skills/ghwrc-repos".source = ./skills/ghwrc-repos;
-    ".agents/skills/foolfad-task-state".source = ./skills/foolfad-task-state;
     ".agents/skills/nestail-service-urls".source = ./skills/nestail-service-urls;
 
-    ".hermes/skills/ghwc-worktrees".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/ghwc-worktrees";
-    ".hermes/skills/ghwrc-repos".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/ghwrc-repos";
-    ".hermes/skills/foolfad-task-state".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/foolfad-task-state";
     ".hermes/skills/nestail-service-urls".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/nestail-service-urls";
 
@@ -49,6 +46,8 @@ in
     mkdir -p "$state_dir"
 
     cd "$HOME"
-    ${unstable.codex}/bin/codex remote-control start >>"$log_file" 2>&1
+    if ! ${unstable.codex}/bin/codex remote-control start >>"$log_file" 2>&1; then
+      echo "Warning: failed to start Codex remote control; see $log_file" >&2
+    fi
   '';
 }

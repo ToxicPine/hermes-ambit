@@ -22,11 +22,8 @@ let
   flake-compat = import sources.flake-compat;
   nestailFlake = (flake-compat { src = sources.nestail; }).defaultNix;
   nestail = nestailFlake.packages.${system}.default;
-  tissloolly = {
-    boondoggle = nixpkgs-unstable.callPackage (sources.tissloolly + "/packages/boondoggle") { };
-    ghwc = nixpkgs-unstable.callPackage (sources.tissloolly + "/packages/ghwc") { };
-    ghwrc = nixpkgs-unstable.callPackage (sources.tissloolly + "/packages/ghwrc") { };
-  };
+  tissloollyFlake = (flake-compat { src = sources.tissloolly; }).defaultNix;
+  tissloolly = tissloollyFlake.packages.${system};
 in
 
 {
@@ -54,10 +51,12 @@ in
       tissloolly.boondoggle
       tissloolly.ghwc
       tissloolly.ghwrc
+      tissloolly.vusperize
       openssh
       curl
       git
       gh
+      procps
       tmux
     ];
 
