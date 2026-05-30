@@ -189,12 +189,11 @@ let
     pkgs.coreutils
     pkgs.nix
     pkgs.jq
+    pkgs.git
     pkgs.snooze
   ];
 
-  imageContents = lib.unique (
-    bootstrapContents ++ [ pkgs.git ] ++ cfg.system.packages ++ cfg.runtime.contents
-  );
+  imageContents = lib.unique (bootstrapContents ++ cfg.system.packages ++ cfg.runtime.contents);
 
   # The full closure of the image, materialized as a real directory
   # tree at build time (outside the image's proot/fakechroot, so cp
