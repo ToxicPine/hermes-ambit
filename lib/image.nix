@@ -236,7 +236,6 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     cat > etc/nix/nix.conf <<'EOF'
     experimental-features = nix-command flakes
     sandbox = false
-    build-dir = /data/nix/builds
     substituters = file:///data/nix-cache?trusted=true https://cache.nixos.org/
     EOF
     mkdir -p nix/var/nix/daemon-socket
@@ -271,7 +270,6 @@ pkgs.dockerTools.buildLayeredImageWithNixDb {
     Env = [
       "PATH=/bin:/sbin:/usr/bin:/usr/sbin"
       "NIX_PAGER=cat"
-      "TMPDIR=/data/tmp"
       "HOME=/root"
     ];
     ExposedPorts = {
