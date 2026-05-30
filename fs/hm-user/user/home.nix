@@ -12,8 +12,6 @@ let
     inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
   };
-
-  wghc = pkgs.callPackage ./wghc { };
 in
 {
   imports = [
@@ -21,18 +19,20 @@ in
     ./managed.nix
   ];
 
-  home.packages = [
-    wghc
-  ];
-
   home.file = {
-    ".agents/skills/wghc-cloning/SKILL.md".source = ./skills/wghc-cloning/SKILL.md;
-    ".agents/skills/terry-task-state/SKILL.md".source = ./skills/terry-task-state/SKILL.md;
+    ".agents/skills/ghwc-worktrees".source = ./skills/ghwc-worktrees;
+    ".agents/skills/ghwrc-repos".source = ./skills/ghwrc-repos;
+    ".agents/skills/foolfad-task-state".source = ./skills/foolfad-task-state;
+    ".agents/skills/nestail-service-urls".source = ./skills/nestail-service-urls;
 
-    ".hermes/skills/wghc-cloning".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/wghc-cloning";
-    ".hermes/skills/terry-task-state".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/terry-task-state";
+    ".hermes/skills/ghwc-worktrees".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/ghwc-worktrees";
+    ".hermes/skills/ghwrc-repos".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/ghwrc-repos";
+    ".hermes/skills/foolfad-task-state".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/foolfad-task-state";
+    ".hermes/skills/nestail-service-urls".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/nestail-service-urls";
   };
 
   home.activation.startCodexRemoteControl = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
