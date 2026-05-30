@@ -9,6 +9,9 @@ let
   sources = import ../../hm-base/npins;
   flake-compat = import sources.flake-compat;
   tissloolly = (flake-compat { src = sources.tissloolly; }).defaultNix;
+  codexRemoteControlPath = lib.makeBinPath [
+    pkgs.procps
+  ];
 
   unstable = import sources.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
@@ -46,7 +49,7 @@ in
     mkdir -p "$state_dir"
 
     cd "$HOME"
-    if ! ${unstable.codex}/bin/codex remote-control start >>"$log_file" 2>&1; then
+    if ! PATH="${codexRemoteControlPath}:$PATH" ${unstable.codex}/bin/codex remote-control start >>"$log_file" 2>&1; then
       echo "Warning: failed to start Codex remote control; see $log_file" >&2
     fi
   '';
