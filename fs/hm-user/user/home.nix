@@ -33,27 +33,22 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/foolfad-task-state";
     ".hermes/skills/nestail-service-urls".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/nestail-service-urls";
+
+    ".codex/packages/standalone/current/codex" = {
+      source = "${unstable.codex}/bin/codex";
+      force = true;
+    };
   };
 
-  home.activation.startCodexRemoteControl = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.startCodexRemoteControl = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     [ -n "''${DRY_RUN:-}" ] && exit 0
 
     state_dir="$HOME/.local/state/codex-remote-control"
-    pid_file="$state_dir/run.pid"
     log_file="$state_dir/run.log"
 
     mkdir -p "$state_dir"
 
-    if [ -f "$pid_file" ] && ${pkgs.coreutils}/bin/kill -0 "$(${pkgs.coreutils}/bin/cat "$pid_file")" 2>/dev/null; then
-      exit 0
-    fi
-
     cd "$HOME"
-    ${pkgs.util-linux}/bin/setsid \
-      ${pkgs.coreutils}/bin/nohup \
-      ${unstable.codex}/bin/codex remote-control \
-      >"$log_file" 2>&1 </dev/null &
-    echo $! > "$pid_file"
-    disown || true
+    ${unstable.codex}/bin/codex remote-control start >>"$log_file" 2>&1
   '';
 }
