@@ -14,7 +14,7 @@
       "version": "1.1.0",
       "revision": "fb9079adcef8b8ef97f91a1385be7ab5e3ff2b18",
       "url": "https://api.github.com/repos/Mic92/direnv-instant/tarball/1.1.0",
-      "hash": "0cl93055c2jpb33xks9g64fg2s0n6s6ybal7p6n527xsak8jf2w6"
+      "hash": "sha256-hgsn0VS6H1GsuYeq5Y02FmjxHDEv6dnHWFcKVgoYiTI="
     },
     "flake-compat": {
       "type": "Git",
@@ -27,7 +27,7 @@
       "submodules": false,
       "revision": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
       "url": "https://github.com/edolstra/flake-compat/archive/5edf11c44bc78a0d334f6334cdaf7d60d732daab.tar.gz",
-      "hash": "0yqfa6rx8md81bcn4szfp0hjq2f3h9i8zjzhqqyfqdkrj5559nmw"
+      "hash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns="
     },
     "hermes-agent": {
       "type": "GitRelease",
@@ -43,7 +43,7 @@
       "version": "v2026.5.29.2",
       "revision": "51f432685e4bc73379abe70367f196400dd44054",
       "url": "https://api.github.com/repos/NousResearch/hermes-agent/tarball/v2026.5.29.2",
-      "hash": "08q431978n1bfqadriix9qs12vqn4iwxds6c0807p3pxrqgqsafh"
+      "hash": "sha256-0CmNH879jnsAAszo1nkkFm8RNE49xtwUditYdFIYBCM="
     },
     "home-manager": {
       "type": "Git",
@@ -56,7 +56,7 @@
       "submodules": false,
       "revision": "3ee51fbdac8c8bdfe1e7e1fcaba6520a563f394f",
       "url": "https://github.com/nix-community/home-manager/archive/3ee51fbdac8c8bdfe1e7e1fcaba6520a563f394f.tar.gz",
-      "hash": "13fmry1jd0na71fxhzms9qf3ybj6shgvnphq4p1akxxmv44gzq20"
+      "hash": "sha256-QOD/CNm196nCJRheux/URi4/HE66fthdOMqCJoPP1Y0="
     },
     "nestail": {
       "type": "Git",
@@ -68,19 +68,19 @@
       "submodules": false,
       "revision": "224af275f153789680890fed5d11256cfa47c444",
       "url": null,
-      "hash": "08k8whj569znqjg8v3yg1y2zphiir2r9vqnj1r64hjdwgji74nlb"
+      "hash": "sha256-i1pyony8SUhMDtLinbLIMcL7hQ/Pj42exPYnUyTkaCI="
     },
     "nixpkgs": {
       "type": "Channel",
       "name": "nixos-25.11",
       "url": "https://releases.nixos.org/nixos/25.11/nixos-25.11.11278.b77b3de87756/nixexprs.tar.xz",
-      "hash": "04vnbnf44x0cvzfcdgsgi30aal3lvfxpay7l53iz5gjwbn4xpv5z"
+      "hash": "sha256-v+zbiV1cvvLjKPR4dbvbdFClwIhPv8bc3wx0QpxddhM="
     },
     "nixpkgs-unstable": {
       "type": "Channel",
       "name": "nixos-unstable",
       "url": "https://releases.nixos.org/nixos/unstable/nixos-26.05pre1003640.299164534138/nixexprs.tar.xz",
-      "hash": "00sipscprpd0wyr48wswan0mahkyvxfq35g8lc14vfsdcvgxgm9s"
+      "hash": "sha256-OtXX32ZNu00Co+iVgV3ffkJVgVVcc0Sy56DdfJm+UQM="
     },
     "tissloolly": {
       "type": "Git",
@@ -90,10 +90,10 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "98eb6543b264a3b9c3e53d0d7e2239c428c70f5d",
+      "revision": "9b277abe0fa4b758ecbf553fe283500365b2bbc7",
       "url": null,
-      "hash": "0lfxn9giwbaq57rxcdibx82jjzc5b6kyvd9jjg2ps0j5sm4nyprj"
+      "hash": "sha256-qIdB9yOlvgDlP8NfXJztvaRV9zovp+WwK8S6lOximCA="
     }
   },
-  "version": 5
+  "version": 7
 }
