@@ -30,14 +30,6 @@
       name = "nix-gc";
       command = [ "/opt/app/bin/nix-gc-loop" ];
     }
-    {
-      name = "codex-remote-control";
-      command = [
-        "codex"
-        "remote-control"
-      ];
-      user = "user";
-    }
   ];
 
   packages = with pkgs; [
