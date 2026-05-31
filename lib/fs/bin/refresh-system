@@ -19,7 +19,7 @@ fi
 result=$(nix-build --no-out-link -E "
   let
     sources = import ${APP}/hm-base/npins;
-    pkgs    = import sources.nixpkgs { };
+    pkgs    = import sources.nixpkgs { config.allowUnfree = true; };
     hm      = import sources.home-manager { inherit pkgs; };
   in (hm.lib.homeManagerConfiguration {
     inherit pkgs;

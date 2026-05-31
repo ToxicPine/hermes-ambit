@@ -16,7 +16,12 @@
         );
 
       sources = import ./fs/hm-base/npins;
-      pkgsFor = system: import sources.nixpkgs { inherit system; };
+      pkgsFor =
+        system:
+        import sources.nixpkgs {
+          localSystem.system = system;
+          config.allowUnfree = true;
+        };
 
       container =
         system:

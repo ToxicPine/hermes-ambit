@@ -4,7 +4,10 @@
 }:
 
 let
-  pkgs = import sources.nixpkgs { inherit system; };
+  pkgs = import sources.nixpkgs {
+    localSystem.system = system;
+    config.allowUnfree = true;
+  };
   home-manager = import sources.home-manager { inherit pkgs; };
 
   systemConfig = import ./system.nix { inherit pkgs; };

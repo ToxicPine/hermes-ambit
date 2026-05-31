@@ -9,14 +9,8 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
-  nixpkgs-unstable = import sources.nixpkgs-unstable {
-    inherit system;
-    config = (pkgs.config or { }) // {
-      allowUnfree = true;
-    };
-  };
   hermes = import ../hermes {
-    pkgs = nixpkgs-unstable;
+    inherit pkgs;
     inherit sources;
   };
   flake-compat = import sources.flake-compat;
@@ -46,7 +40,7 @@ in
     };
 
     packages = with pkgs; [
-      nixpkgs-unstable.codex
+      codex
       nestail
       tissloolly.boondoggle
       tissloolly.ghwc
