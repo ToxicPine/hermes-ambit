@@ -97,6 +97,7 @@ let
   mutableConfigPrefix = "/opt/app";
   factorySettingsPrefix = "/opt/defaults";
   nixbldCount = 10;
+  util-linux-minimal = pkgs.util-linuxMinimal;
 
   userList = lib.mapAttrsToList (name: u: {
     inherit name;
@@ -185,7 +186,7 @@ let
     pkgs.dockerTools.binSh
     pkgs.dockerTools.caCertificates
     pkgs.bashInteractive
-    pkgs.util-linux
+    util-linux-minimal
     pkgs.coreutils
     pkgs.nix
     pkgs.jq

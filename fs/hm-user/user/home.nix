@@ -9,9 +9,18 @@ let
   sources = import ../../hm-base/npins;
   flake-compat = import sources.flake-compat;
   tissloolly = (flake-compat { src = sources.tissloolly; }).defaultNix;
-  codexRemoteControlPath = lib.makeBinPath [
-    pkgs.procps
-  ];
+  procps-container = pkgs.procps.override {
+    withSystemd = false;
+  };
+  codex-container = pkgs.symlinkJoin {
+    name = "codex-container";
+    paths = [ pkgs.codex ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/codex \
+        --prefix PATH : ${lib.makeBinPath [ procps-container ]}
+    '';
+  };
 in
 {
   imports = [
@@ -30,7 +39,7 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.agents/skills/nestail-service-urls";
 
     ".codex/packages/standalone/current/codex" = {
-      source = "${pkgs.codex}/bin/codex";
+      source = "${codex-container}/bin/codex";
       force = true;
     };
   };
@@ -44,7 +53,7 @@ in
     mkdir -p "$state_dir"
 
     cd "$HOME"
-    if ! PATH="${codexRemoteControlPath}:$PATH" ${pkgs.codex}/bin/codex remote-control start >>"$log_file" 2>&1; then
+    if ! ${codex-container}/bin/codex remote-control start >>"$log_file" 2>&1; then
       echo "Warning: failed to start Codex remote control; see $log_file" >&2
     fi
   '';

@@ -16,6 +16,8 @@ primary_region = "lhr"
 
 [env]
   HOSTNAME = "hermes.codex"
+  WEBHOOK_ENABLED = "true"
+  WEBHOOK_PORT = "8644"
 
 [[vm]]
   size = "shared-cpu-4x"

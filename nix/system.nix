@@ -3,6 +3,11 @@
   ...
 }:
 
+let
+  procps-container = pkgs.procps.override {
+    withSystemd = false;
+  };
+in
 {
   imageName = "container-agent";
 
@@ -46,7 +51,7 @@
     less
     ncurses
     openssl
-    procps
+    procps-container
     psmisc
     ripgrep
     rsync

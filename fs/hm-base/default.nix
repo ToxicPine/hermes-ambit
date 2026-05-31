@@ -18,6 +18,29 @@ let
   nestail = nestailFlake.packages.${system}.default;
   tissloollyFlake = (flake-compat { src = sources.tissloolly; }).defaultNix;
   tissloolly = tissloollyFlake.packages.${system};
+  openssh-container = pkgs.openssh.override {
+    withFIDO = false;
+    withPAM = false;
+    withSecurityKey = false;
+  };
+  ffmpeg-container = pkgs.ffmpeg-headless.override {
+    withOpenmpt = false;
+    withPulse = false;
+  };
+  does-nothing = pkgs.runCommand "empty-bin" { } "mkdir -p $out/bin";
+  util-linux-minimal = pkgs.util-linuxMinimal;
+  procps-container = pkgs.procps.override {
+    withSystemd = false;
+  };
+  codex-container = pkgs.symlinkJoin {
+    name = "codex-container";
+    paths = [ pkgs.codex ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/codex \
+        --prefix PATH : ${lib.makeBinPath [ procps-container ]}
+    '';
+  };
 in
 
 {
@@ -40,17 +63,17 @@ in
     };
 
     packages = with pkgs; [
-      codex
+      codex-container
       nestail
       tissloolly.boondoggle
       tissloolly.ghwc
       tissloolly.ghwrc
       tissloolly.vusperize
-      openssh
+      openssh-container
+      procps-container
       curl
       git
       gh
-      procps
       tmux
     ];
 
@@ -63,7 +86,7 @@ in
         if mkdir -p /data/nix-cache; then
           touch /data/nix-cache/.copy-lock 2>/dev/null || true
           chmod 0666 /data/nix-cache/.copy-lock 2>/dev/null || true
-          ${pkgs.util-linux}/bin/flock /data/nix-cache/.copy-lock \
+          ${util-linux-minimal}/bin/flock /data/nix-cache/.copy-lock \
             ${pkgs.nix}/bin/nix copy --to "$cache" "$newGenPath" \
             || echo "Warning: failed to export Home Manager generation to local Nix cache" >&2
         else
@@ -80,7 +103,10 @@ in
       enable = true;
 
       packageOverrides = {
-        ffmpeg = pkgs.ffmpeg-headless;
+        ffmpeg = ffmpeg-container;
+        openssh = openssh-container;
+        wl-clipboard = does-nothing;
+        xclip = does-nothing;
         dependencyGroups = [
           "cli"
           "pty"
@@ -111,6 +137,12 @@ in
         terminal.backend = "local";
 
         platforms.telegram.extra = { };
+        platforms.webhook = {
+          enabled = true;
+          extra = {
+            port = 8644;
+          };
+        };
       };
     };
 
@@ -127,4 +159,6 @@ in
       terminal = "screen-256color";
     };
   };
+
+  systemd.user.enable = false;
 }
